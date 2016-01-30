@@ -177,10 +177,12 @@
         }
     }
     function save(){
+        if(confirm('是否下载?')){
+            var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+            window.location.href = image;
+        }
         localStorage.setItem('line',JSON.stringify(line));
         console.log(JSON.parse(localStorage.line));
-        var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-        window.location.href = image;
     }
     function clean(){
         console.log('clean');
