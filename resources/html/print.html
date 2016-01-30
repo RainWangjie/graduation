@@ -169,7 +169,7 @@
             el=$.tips({
                 content:'你没写字呐！',
                 stayTime:2000,
-                type:"success"
+                type:"error"
             })
             el.on("tips:hide",function(){
                 console.log("tips hide");
@@ -177,12 +177,24 @@
         }
     }
     function save(){
-        if(confirm('是否下载?')){
-            var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-            window.location.href = image;
+        if(lineNum > 0) {
+            if (confirm('是否下载?')) {
+                var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+                window.location.href = image;
+            }
+            localStorage.setItem('line', JSON.stringify(line));
+            console.log(JSON.parse(localStorage.line));
+        }else{
+            el=$.tips({
+                content:'你没写字呐！',
+                stayTime:2000,
+                type:"error"
+            })
+            el.on("tips:hide",function(){
+                console.log("tips hide");
+            })
         }
-        localStorage.setItem('line',JSON.stringify(line));
-        console.log(JSON.parse(localStorage.line));
+
     }
     function clean(){
         console.log('clean');
