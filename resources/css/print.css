@@ -1,0 +1,30 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    text-align: center;
+    background: #f1f1f1;
+}
+
+.box {
+    position: relative;
+    width: 300px;
+    margin: 10px auto;
+    border: 1px solid #646464;
+}
+
+#info {
+    width: 300px;
+    margin: 10px auto;
+}
+
+button {
+    border: 1px solid #000;
+}
+
+.operate {
+    margin: 10px 20px;
+    text-align: left
+}
