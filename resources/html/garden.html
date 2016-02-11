@@ -1,6 +1,5 @@
 <!DOCTYPE HTML>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-
+<html>
 <head>
     <title>我们的时间</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
@@ -15,17 +14,18 @@
             top: 435px;
         }
     </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <script type="text/javascript" src="../js/jquery.js"></script>
     <script type="text/javascript" src="../js/garden.js"></script>
     <script type="text/javascript" src="../js/functions.js"></script>
 </head>
 
 <body>
-<embed src="../attachment/music.mp3" autostart="true" hidden="true" loop="-1"></embed>
+<!--<embed src="../attachment/music.mp3" autostart="true" hidden="true" loop="-1"></embed>-->
 <div id="mainDiv">
     <div id="content">
         <div id="code">
-            <span class="comments">/**</span><br/>
+                <span class="comments">/**</span><br/>
 				<span class="space"><span class="comments">* Girl's day is coming.</span><br/>
 				<span class="space"><span class="comments">* so I write some code to celebrate girl's day.</span><br/>
 				<span class="space"><span class="comments">*/</span><br/>
@@ -81,7 +81,6 @@
     together.setMilliseconds(0);
     var nowTime = Date();
     var f = (Date.parse(nowTime) - Date.parse(together)) / 1000;
-    console.log(f);
     if (!document.createElement('canvas').getContext) {
         var msg = document.createElement("div");
         msg.id = "errorMsg";
