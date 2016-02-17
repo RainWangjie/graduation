@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>canvas基础</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        #operate {
+            margin: 20px auto;
+            width: 800px;
+            border: 1px solid #f10000;
+        }
+
+        canvas {
+        }
+    </style>
+</head>
+<body>
+<div id="operate">
+    <canvas id="canvas" width="800" height="500">
+        canvas not supported
+    </canvas>
+</div>
+<div class="button">
+    <button id="clear" onclick="clear()">清屏</button>
+    <button id="study_1" onclick="study_1()">描边填充</button>
+    <button id="study_2" onclick="study_2()">线性渐变</button>
+    <button id="study_3" onclick="study_3()">放射渐变</button>
+    <button id="study_4" onclick="study_4()">路径</button>
+    <button id="study_5" onclick="study_5()">剪纸效果1</button>
+    <button id="study_6" onclick="study_6()">剪纸效果2</button>
+    <button id="study_7" onclick="study_7()">坐标系(带标签)</button>
+    <button id="study_8" onclick="study_8()">贝塞尔曲线</button>
+    <button id="study_9" onclick="study_9()">画多边形</button>
+
+</div>
+<script>
+    var canvas = document.getElementById('canvas'),
+            context = canvas.getContext('2d');
+    function study_1() {
+        console.log('study_1');
+
+        context.lineJoin = 'round';
+        context.lineWidth = '20';
+
+        context.font = '24px Helvetica';
+        context.fillText('hello world', 175, 40);
+
+        context.strokeStyle = 'goldenrod';
+        context.fillStyle = 'rgba(0,0,255,.5)';
+
+        context.strokeRect(75, 100, 200, 200);
+        context.fillRect(325, 100, 200, 200);
+    }
+    function study_2() {
+        console.log('study_2');
+        var gradient = context.createLinearGradient(0, 0, canvas.width, 0);
+        gradient.addColorStop(0, 'blue');
+        gradient.addColorStop(0.25, 'white');
+        gradient.addColorStop(0.5, 'purple');
+        gradient.addColorStop(0.75, 'red');
+        gradient.addColorStop(1, 'yellow');
+
+        context.fillStyle = gradient;
+        context.fillRect(0, 0, canvas.width, canvas.height);
+    }
+    function study_3() {
+        var radialGradient = context.createRadialGradient(canvas.width / 2, canvas.height, 10, canvas.width / 2, 0, 100);
+        radialGradient.addColorStop(0, 'blue');
+        radialGradient.addColorStop(0.25, 'white');
+        radialGradient.addColorStop(0.5, 'purple');
+        radialGradient.addColorStop(0.75, 'red');
+        radialGradient.addColorStop(1, 'yellow');
+
+        context.fillStyle = radialGradient;
+        context.fillRect(0, 0, canvas.width, canvas.height);
+    }
+    function study_4() {
+        canvas.height = 800;
+        context.font = '48px Helvetica';
+        context.strokeStyle = 'red';
+        context.fillStyle = 'red';
+        context.lineWidth = '2';
+
+        /*
+         TEXT
+         */
+        context.strokeText('Storke', 60, 110);
+        context.fillText('Fill', 300, 110);
+        context.strokeText('stroke & Fill', 500, 110);
+        context.fillText('stroke & Fill', 500, 110);
+        /*
+         Rectangles
+         */
+        context.lineWidth = '5';
+
+        context.beginPath();
+        context.rect(50, 150, 150, 100);
+        context.stroke();
+
+        context.beginPath();
+        context.rect(300, 150, 150, 100);
+        context.fill();
+
+        context.beginPath();
+        context.rect(550, 150, 150, 100);
+        context.stroke();
+        context.fill();
+        /*
+         open arcs
+         */
+        context.beginPath();
+        context.arc(100, 370, 60, 0, Math.PI * 3 / 2);
+        context.stroke();
+
+        context.beginPath();
+        context.arc(400, 370, 60, 0, Math.PI * 3 / 2);
+        context.fill();
+
+        context.beginPath();
+        context.arc(650, 370, 60, 0, Math.PI * 3 / 2);
+        context.stroke();
+        context.fill();
+
+        /*
+         closed arcs
+         */
+        context.beginPath();
+        context.arc(100, 550, 60, 0, Math.PI * 3 / 2);
+        context.closePath();
+        context.stroke();
+
+        context.beginPath();
+        context.arc(400, 550, 60, 0, Math.PI * 3 / 2);
+        context.closePath();
+        context.fill();
+
+        context.beginPath();
+        context.arc(650, 550, 60, 0, Math.PI * 3 / 2);
+        context.closePath();
+        context.stroke();
+        context.fill();
+    }
+    function study_5() {
+        context.fillStyle = 'rgba(100,140,230,.5)';
+        context.strokeStyle = 'rgba(100,140,230,.5)';
+        context.save();
+        context.beginPath();
+        context.arc(300, 190, 150, 0, Math.PI * 2, false);
+        context.arc(300, 190, 100, 0, Math.PI * 2, true);
+
+        context.fill();
+        context.shadowColor = 'rgba(0,0,0,.8)';
+        context.shadowOffsetX = 12;
+        context.shadowOffsetY = 12;
+        context.shadowBlur = 15;
+        context.stroke();
+
+        context.restore();
+    }
+    function study_6() {
+        ;
+        clear();
+        context.save();
+        context.fillStyle = 'goldenrod';
+        context.strokeStyle = 'rgba(0,0,0,.7)';
+        context.shadowColor = 'rgba(200,200,0,.5)';
+        context.shadowOffsetX = 12;
+        context.shadowOffsetY = 12;
+        context.shadowBlur = 15;
+
+        context.beginPath();
+        function addOuter() {
+            context.rect(110, 25, 370, 335);
+        }
+
+        function addCirle() {
+            context.arc(300, 300, 40, 0, Math.PI * 2, true);
+        }
+
+        function addRectangle() {
+            rect(310, 55, 70, 35, true);
+        }
+
+        function addTriangle() {
+            context.moveTo(400, 200);
+            context.lineTo(250, 115);
+            context.lineTo(200, 200);
+            context.closePath();
+        }
+
+        addOuter();
+        addRectangle();
+        addCirle();
+        addTriangle();
+        context.fill();
+
+        context.beginPath();
+        addOuter();
+        context.stroke();
+
+        context.beginPath();
+        addCirle();
+        addRectangle();
+        addTriangle();
+        context.stroke();
+
+        context.restore();
+
+    }
+    function study_7() {
+        console.log('study_7');
+        var AXIS_MARGIN = 40;
+        var AXIS_ORIGIN = {
+            x: AXIS_MARGIN,
+            y: canvas.height - AXIS_MARGIN
+        };
+
+        var AXIS_TOP = AXIS_MARGIN;
+        var AXIS_RIGHT = canvas.width - AXIS_MARGIN;
+
+        var HORIZONTAL_TICK_SPACING = 10;
+        var VERYICAL_TICK_SPACING = 10;
+
+        var AXIS_WIDTH = AXIS_RIGHT - AXIS_ORIGIN.x;
+        var AXIS_HEIGHT = AXIS_ORIGIN.y - AXIS_TOP;
+
+        var NUM_VARYICAL = AXIS_HEIGHT / VERYICAL_TICK_SPACING;
+        var NUM_HORIZONTAL = AXIS_WIDTH / HORIZONTAL_TICK_SPACING;
+
+        var TICK_WIDTH = 10,
+                TICKS_LINEWIDTH = .5,
+                TICKS_COLOR = 'navy';
+
+        var AXIS_LINEWIDTH = 1.0,
+                AXIS_COLOR = 'blue';
+
+        var SPACE_BETWEEN_LABELS_AND_AXIS = 10;
+
+        drawGrid(context, 'lightgray', 10, 10);
+        context.save();
+        context.strokeStyle = AXIS_COLOR;
+        context.lineWidth = AXIS_LINEWIDTH;
+        context.font= '13px Arial';
+
+        context.beginPath();
+        context.moveTo(AXIS_ORIGIN.x, AXIS_ORIGIN.y);
+        context.lineTo(AXIS_RIGHT, AXIS_ORIGIN.y);
+        context.stroke();
+
+        context.beginPath();
+        context.moveTo(AXIS_ORIGIN.x, AXIS_ORIGIN.y);
+        context.lineTo(AXIS_ORIGIN.x, AXIS_TOP);
+        context.stroke();
+
+        context.lineWidth = TICKS_LINEWIDTH;
+        context.strokeStyle = TICKS_COLOR;
+        var deltaX, deltaY;
+        context.fillStyle= 'blue';
+        context.textAlign='right';
+        context.textBaseline='middle';
+        for (var i = 1; i < NUM_VARYICAL; ++i) {
+            context.beginPath();
+            if(i % 5 === 0){
+                deltaX = TICK_WIDTH;
+                context.fillText(i,AXIS_ORIGIN.x - deltaX-SPACE_BETWEEN_LABELS_AND_AXIS,AXIS_ORIGIN.y - i * VERYICAL_TICK_SPACING);
+            }else{
+                deltaX =TICK_WIDTH / 2;
+            }
+            context.moveTo(AXIS_ORIGIN.x - deltaX, AXIS_ORIGIN.y - i * VERYICAL_TICK_SPACING);
+            context.lineTo(AXIS_ORIGIN.x + deltaX, AXIS_ORIGIN.y - i * VERYICAL_TICK_SPACING);
+            context.stroke();
+        }
+        context.textAlign='center';
+        context.textBaseline='top';
+        for (var j = 1; j < NUM_HORIZONTAL; ++j) {
+            context.beginPath();
+            if(j % 5 === 0){
+                deltaY = TICK_WIDTH;
+                context.fillText(j,AXIS_ORIGIN.x + j * HORIZONTAL_TICK_SPACING,AXIS_ORIGIN.y + deltaY +SPACE_BETWEEN_LABELS_AND_AXIS);
+            }else{
+                deltaY =TICK_WIDTH / 2;
+            }
+            context.moveTo(AXIS_ORIGIN.x + j * HORIZONTAL_TICK_SPACING, AXIS_ORIGIN.y - deltaY);
+            context.lineTo(AXIS_ORIGIN.x + j * HORIZONTAL_TICK_SPACING, AXIS_ORIGIN.y + deltaY);
+            context.stroke();
+        }
+        context.restore();
+    }
+    function study_8() {
+        console.log('study_8');
+        drawGrid(context, 'lightgray', 10, 10);
+        context.fillStyle = 'cornflowerblue';
+        context.strokeStyle = 'yellow';
+
+        context.shadowColor = 'rgba(50,50,50,1)';
+        context.shadowOffsetX = '2';
+        context.shadowOffsetY = '2';
+        context.shadowBlur = 4;
+
+        context.lineWidth = 20;
+        context.lineCap = 'round';
+        context.beginPath();
+        context.moveTo(120.5, 130);
+        context.quadraticCurveTo(150.8, 130, 160, 150.5);
+        context.quadraticCurveTo(190, 250.0, 210.5, 160.5);
+        context.quadraticCurveTo(240, 100.5, 290, 70.5);
+        context.stroke();
+        /*
+         三次贝塞尔曲线
+         */
+        var endPoints = [{x: 330, y: 70}, {x: 630, y: 270}],
+                controlPoint = [{x: 330, y: 250}, {x: 650, y: 70}];
+        context.lineWidth = 1;
+
+        context.strokeStyle = 'blue';
+        context.fillStyle = 'red';
+        endPoints.forEach(function (point) {
+            context.beginPath();
+            context.arc(point.x, point.y, 5, 0, Math.PI * 2, false);
+            context.stroke();
+            context.fill();
+        });
+
+        context.strokeStyle = 'yellow';
+        context.fillStyle = 'blue';
+        controlPoint.forEach(function (point) {
+            context.beginPath();
+            context.arc(point.x, point.y, 5, 0, Math.PI * 2, false);
+            context.stroke();
+            context.fill();
+        });
+
+        context.strokeStyle = 'blue';
+        context.beginPath();
+        context.moveTo(endPoints[0].x, endPoints[0].y);
+        context.bezierCurveTo(controlPoint[0].x, controlPoint[0].y, controlPoint[1].x, controlPoint[1].y,
+                endPoints[1].x, endPoints[1].y);
+        context.stroke();
+    }
+    function study_9() {
+
+    }
+    context.canvas.onmousedown = function (e) {
+        clear();
+    };
+    /*
+     清屏
+     */
+    function clear() {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    /*
+     rect可定义画矩形的方向
+     */
+    function rect(x, y, w, h, direction) {
+        if (direction) {
+            context.moveTo(x, y);
+            context.lineTo(x, y + h);
+            context.lineTo(x + w, y + h);
+            context.lineTo(x + w, y);
+            context.closePath();
+        } else {
+            context.moveTo(x, y);
+            context.lineTo(x + w, y);
+            context.lineTo(x + w, y + h);
+            context.lineTo(x, y + h);
+            context.closePath();
+        }
+    }
+    /*
+     绘制网格
+     */
+    function drawGrid(context, color, stepx, stepy) {
+        context.strokeStyle = color;
+        context.lineWidth = 0.5;
+        for (var i = stepx + 0.5; i < context.canvas.width; i += stepx) {
+            context.beginPath();
+            context.moveTo(i, 0);
+            context.lineTo(i, context.canvas.height);
+            context.stroke();
+        }
+        for (var j = stepy + 0.5; j < context.canvas.height; j += stepy) {
+            context.beginPath();
+            context.moveTo(0, j);
+            context.lineTo(context.canvas.width, j);
+            context.stroke();
+        }
+    }
+</script>
+</body>
+</html>
