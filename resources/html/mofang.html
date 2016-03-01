@@ -17,77 +17,150 @@
             text-align: center;
         }
 
-        .stage {
-            transform-style: preserve-3d;
-            -webkit-perspective: 1000px;
+        #outer {
+            /*定义视距*/
+            width: 100%;
+            height: 100%;
+            -webkit-perspective: 1500px;
+            -WebKit-perspective-origin: 50% 50%;
+            -moz-perspective: 1500px;
+            -moz-perspective-origin: 50% 50%;
+            overflow: hidden;
+        }
+
+        #group {
+            width: 400px;
+            height: 400px;
             position: relative;
-            top: 10%;
-            left: 50%;
-            margin-left: -150px;
-            width: 300px;
-            height: 300px;
-            transition: all 2s;
-            transform-origin: 50% 50%;
-            transform: rotate(0deg) translateZ(0);
+            -webkit-transform-style: preserve-3d;
+            -moz-transform-style: preserve-3d;
+            margin: 200px auto;
+            transition: all 1s;
         }
 
-        .index {
-            transform-style: preserve-3d;
+        .page {
+            width: 400px;
+            height: 400px;
             position: absolute;
-            transform-origin: 0 0;
-            top: 0;
-            left: 0;
-            width: 300px;
-            height: 300px;
+            border-radius: 20px;
+            text-align: center;
+            font-weight: bold;
+            opacity: 0.5;
+            overflow: hidden;
+            line-height: 400px;
+            font-size: 150px;
+            word-break: break-all;
+            word-wrap: break-word;
         }
 
-        .index_1 {
-            background: #f00;
-            transition: all .5s;
-            transform: translateZ(100px) rotateY(0deg);
+        #page1 {
+            background-color: #10a6ce;
+            -webkit-transform: translateZ(200px);
+            -moz-transform: translateZ(200px);
         }
 
-        .stage.z {
-
+        #page2 {
+            background-color: #0073b3;
+            -webkit-transform-origin: right;
+            -webkit-transform: translateZ(200px) rotateY(-90deg);
+            -moz-transform-origin: right;
+            -moz-transform:translateZ(200px) rotateY(-90deg) ;
         }
 
-        .rotate {
-            transform: translateZ(0) rotateY(-90deg);
+        #page3 {
+            background-color: #07beea;
+            -webkit-transform-origin: left;
+            -webkit-transform: translateZ(200px) rotateY(90deg);
+            -moz-transform-origin: left;
+            -moz-transform:translateZ(200px) rotateY(90deg);
         }
 
-        .index_2 {
-            background: #0f0;
-            transform-origin: 100% 0;
-            transform: translateZ(100px) rotateY(-90deg);
+        #page4 {
+            background-color: #29B4F0;
+            -webkit-transform-origin: top;
+            -webkit-transform:translateZ(200px) rotateX(-90deg) ;
+            -moz-transform-origin: top;
+            -moz-transform:translateZ(200px) rotateX(-90deg) ;
         }
 
-        #rotate {
-            position: absolute;
-            top: 70%;
-            left: 50%;
-            width: 50px;
-            margin-left: -25px;
-            z-index: 9999;
+        #page5 {
+            background-color: #6699cc;
+            -webkit-transform-origin: bottom;
+            -webkit-transform: translateZ(200px) rotateX(90deg);
+            -moz-transform-origin: bottom;
+            -moz-transform: translateZ(200px) rotateX(90deg) ;
         }
+
+        #page6 {
+            background-color: #10a6ce;
+            -webkit-transform: translateZ(-200px);
+            -moz-transform: translateZ(-200px);
+        }
+
+        @-moz-keyframes scroll {
+
+            0% {
+                -moz-transform: rotateY(0deg) rotateX(0deg);
+            }
+            50% {
+                -moz-transform: rotateY(360deg) rotateX(0deg);
+            }
+            100% {
+                -moz-transform: rotateY(360deg) rotateX(360deg);
+            }
+        }
+
+        @-webkit-keyframes scroll {
+            0% {
+                -webkit-transform: rotateY(0deg) rotateX(0deg);
+            }
+            50% {
+                -webkit-transform: rotateY(360deg) rotateX(0deg);
+            }
+            100% {
+                -webkit-transform: rotateY(360deg) rotateX(360deg);
+            }
+        }
+
+        #group.move {
+            transform: rotateY(45deg) rotateX(45deg);
+        }
+
     </style>
 </head>
 <body>
-<div class="stage">
-    <div class="index index_1"></div>
-    <div class="index index_2"></div>
+<div id="outer">
+    <div id="group">
+        <div id="page1" class="page">one</div>
+        <div id="page2" class="page">two</div>
+        <div id="page3" class="page">three</div>
+        <div id="page4" class="page">four</div>
+        <div id="page5" class="page">five</div>
+        <div id="page6" class="page">six</div>
+    </div>
 </div>
-<button id="rotate">rotate</button>
+
 <script type="text/javascript" src="../js/zepto.js"></script>
 <script type="text/javascript" src="../js/mofang.js"></script>
 <script>
-    $('#rotate').on('tap', function () {
-        var e = $('.stage');
-        if (e.hasClass('rotate')) {
-            e.removeClass('rotate');
-        } else {
-            e.addClass('rotate');
+    var x = 0, y = 0;
+    document.addEventListener('keydown', function (e) {
+        if (e.which == 37) { //左箭头
+            console.log('左箭头');
+            y=y-5;
+        } else if (e.which == 39) {//右箭头
+            console.log('右箭头');
+            y=y+5;
+        } else if (e.which == 38) {//上箭头
+            console.log('上箭头');
+            x=x-5;
+        } else if (e.which == 40) {//下箭头
+            console.log('下箭头');
+            x=x+5;
         }
+        document.getElementById('group').style.transform = 'rotateX('+x+'deg) rotateY('+y+'deg)';
     });
+
 </script>
 </body>
 </html>
