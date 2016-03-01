@@ -37,7 +37,7 @@
     <button id="study_7" onclick="study_7()">坐标系(带标签)</button>
     <button id="study_8" onclick="study_8()">贝塞尔曲线</button>
     <button id="study_9" onclick="study_9()">画多边形</button>
-
+    <button id="study_10" onclick="study_10()">仪表盘</button>
 </div>
 <script>
     var canvas = document.getElementById('canvas'),
@@ -246,7 +246,7 @@
         context.save();
         context.strokeStyle = AXIS_COLOR;
         context.lineWidth = AXIS_LINEWIDTH;
-        context.font= '13px Arial';
+        context.font = '13px Arial';
 
         context.beginPath();
         context.moveTo(AXIS_ORIGIN.x, AXIS_ORIGIN.y);
@@ -261,30 +261,30 @@
         context.lineWidth = TICKS_LINEWIDTH;
         context.strokeStyle = TICKS_COLOR;
         var deltaX, deltaY;
-        context.fillStyle= 'blue';
-        context.textAlign='right';
-        context.textBaseline='middle';
+        context.fillStyle = 'blue';
+        context.textAlign = 'right';
+        context.textBaseline = 'middle';
         for (var i = 1; i < NUM_VARYICAL; ++i) {
             context.beginPath();
-            if(i % 5 === 0){
+            if (i % 5 === 0) {
                 deltaX = TICK_WIDTH;
-                context.fillText(i,AXIS_ORIGIN.x - deltaX-SPACE_BETWEEN_LABELS_AND_AXIS,AXIS_ORIGIN.y - i * VERYICAL_TICK_SPACING);
-            }else{
-                deltaX =TICK_WIDTH / 2;
+                context.fillText(i, AXIS_ORIGIN.x - deltaX - SPACE_BETWEEN_LABELS_AND_AXIS, AXIS_ORIGIN.y - i * VERYICAL_TICK_SPACING);
+            } else {
+                deltaX = TICK_WIDTH / 2;
             }
             context.moveTo(AXIS_ORIGIN.x - deltaX, AXIS_ORIGIN.y - i * VERYICAL_TICK_SPACING);
             context.lineTo(AXIS_ORIGIN.x + deltaX, AXIS_ORIGIN.y - i * VERYICAL_TICK_SPACING);
             context.stroke();
         }
-        context.textAlign='center';
-        context.textBaseline='top';
+        context.textAlign = 'center';
+        context.textBaseline = 'top';
         for (var j = 1; j < NUM_HORIZONTAL; ++j) {
             context.beginPath();
-            if(j % 5 === 0){
+            if (j % 5 === 0) {
                 deltaY = TICK_WIDTH;
-                context.fillText(j,AXIS_ORIGIN.x + j * HORIZONTAL_TICK_SPACING,AXIS_ORIGIN.y + deltaY +SPACE_BETWEEN_LABELS_AND_AXIS);
-            }else{
-                deltaY =TICK_WIDTH / 2;
+                context.fillText(j, AXIS_ORIGIN.x + j * HORIZONTAL_TICK_SPACING, AXIS_ORIGIN.y + deltaY + SPACE_BETWEEN_LABELS_AND_AXIS);
+            } else {
+                deltaY = TICK_WIDTH / 2;
             }
             context.moveTo(AXIS_ORIGIN.x + j * HORIZONTAL_TICK_SPACING, AXIS_ORIGIN.y - deltaY);
             context.lineTo(AXIS_ORIGIN.x + j * HORIZONTAL_TICK_SPACING, AXIS_ORIGIN.y + deltaY);
@@ -346,6 +346,40 @@
     function study_9() {
 
     }
+    function study_10() {
+        var centroid_radius = 10,
+                centroid_stroke_style = 'rgba(0,0,0,.5)',
+                centroid_full_style = 'rgba(80,190,240,.6)';
+        var ring_inner_radius = 35,
+                ring_outer_radius = 55;
+
+        var annotation_full_style = 'rgba(0,0,230,.9)',
+                annotation_text_size = '12';
+
+        var tick_width = 10,
+                tick_long_stroke_style = 'rgba(100,140,230,.9)',
+                tick_short_stroke_style = 'rgba(100,140,230,.7)';
+
+        var tracking_dial_stroke_style = 'rgba(100,140,230,.5)';
+
+        var guidwire_stroke_style = 'goldenrod',
+                guidwire_full_style = 'rgba(250,250,0,.6)';
+
+        var circle = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            radius: 150
+        };
+
+        drawGrid(context,'lightgray',10,10);
+        context.shadowColor = 'rgba(0,0,0,.4)';
+        context.shadowOffsetX = '2';
+        context.shadowOffsetY = '2';
+        context.shadowBlur = 4;
+
+
+    }
+
     context.canvas.onmousedown = function (e) {
         clear();
     };
