@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Canvas图像与视频</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        #operate {
+            margin: 20px auto;
+            width: 800px;
+            border: 1px solid #f10000;
+        }
+
+        canvas {
+        }
+    </style>
+</head>
+<body>
+<div id="operate">
+    <canvas id="canvas" width="800" height="500">
+        canvas not supported
+    </canvas>
+</div>
+<script>
+    var canvas = document.getElementById('canvas'),
+            context = canvas.getContext('2d');
+</script>
+</body>
+</html>
