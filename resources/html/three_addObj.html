@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>加载obj模型</title>
+    <script src="../../bower_components/three.js/three.js"></script>
+    <script src="../js/OrbitControls.js"></script>
+    <script src="../js/OBJLoader.js"></script>
+    <script src="../js/MTLLoader.js"></script>
+
+</head>
+
+<body>
+
+<script>
+    var scene = new THREE.Scene();
+
+    var geometry = new THREE.BoxGeometry(100, 50, 100);
+    var material = new THREE.MeshLambertMaterial({
+        color: 0xf1f100
+    });
+    var mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
+
+    var OBJloader = new THREE.OBJLoader();
+    var OBJMTLloader = new THREE.OBJLoader();
+    OBJloader.load('../../model/jingang/RB-OptimusBoss.obj',function(jingang){
+        jingang.scale.set(.1,.1,.1);
+        jingang.position.x = -30;
+        jingang.position.y = 25;
+        jingang.rotation.x = -.5*Math.PI;
+        jingang.rotation.z = -.25*Math.PI;
+        scene.add(jingang);
+    });
+    OBJMTLloader.load('../../model/jingang/RB-OptimusBoss.obj',function(jingang){
+        jingang.scale.set(.1,.1,.1);
+        jingang.position.x = 30;
+        jingang.position.y = 25;
+        jingang.rotation.x = -.5*Math.PI;
+        jingang.rotation.z = -.25*Math.PI;
+        scene.add(jingang);
+    });
+
+
+
+    var light = new THREE.PointLight(0xffffff);
+    light.position.set(300, 400, 200);
+    scene.add(light);
+
+    scene.add(new THREE.AmbientLight(0xc0c0c0));
+
+    var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, .1, 1000);
+    camera.position.set(200, 200, 200);
+    camera.lookAt(scene.position);
+
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    var controls = new THREE.OrbitControls(camera);
+    controls.addEventListener('change',render);
+
+    function render(){
+        renderer.render(scene, camera);
+    }
+    animate();
+
+    function animate(){
+        requestAnimationFrame(animate);
+        render()
+    }
+</script>
+</body>
+</html>
