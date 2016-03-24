@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>材质－－法向材质</title>
+    <style>
+        body {
+            margin: 0;
+        }
+    </style>
+    <script src="../../bower_components/three.js/three.min.js"></script>
+    <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+    <script>
+        $(function () {
+            var scene = new THREE.Scene();
+            var camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, .1,10000);
+
+            var renderer = new THREE.WebGLRenderer();
+            renderer.setClearColor(new THREE.Color(0x000000, 1.0));
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMapEnabled = true;
+
+            camera.position.set(-20,30,40);
+            camera.lookAt(new THREE.Vector3(10,0,0));
+
+            document.body.appendChild(renderer.domElement);
+
+            var groundGemo = new THREE.PlaneGeometry(100, 100);
+            var groundMesh = new THREE.Mesh(groundGemo, new THREE.MeshBasicMaterial({color: 0x777777}));
+            groundMesh.rotation.x = -Math.PI / 2;
+            groundMesh.position.y = -20;
+            scene.add(groundMesh);
+
+            var cubeGeometry = new THREE.BoxGeometry(16,16,16);
+            var cube = new THREE.Mesh(cubeGeometry,new THREE.MeshNormalMaterial({color:0x7777ff}));
+            scene.add(cube);
+            var ambientLight = new THREE.AmbientLight(0x0c0c0c);
+            scene.add(ambientLight);
+
+            var spotLight = new THREE.SpotLight(0xffffff);
+            spotLight.position.set(-40, 60, -10);
+            spotLight.castShadow = true;
+            scene.add(spotLight);
+
+            function render() {
+                window.requestAnimationFrame(render);
+                cube.rotation.y += 0.01;
+                renderer.render(scene, camera);
+            }
+            render();
+        });
+    </script>
+</head>
+<body>
+
+</body>
+</html>
