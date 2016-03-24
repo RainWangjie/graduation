@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>粒子--Canvas纹理</title>
+    <script src="../../bower_components/three.js/three.js"></script>
+    <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+<script>
+    $(function () {
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, .1, 1000);
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setClearColor(new THREE.Color(0x000000, 1.0));
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        camera.position.set(20, 0, 155);
+        document.body.appendChild(renderer.domElement);
+
+        function getTexture() {
+            var canvas = document.createElement('canvas');
+            canvas.width = 32;
+            canvas.height = 32;
+            var cxt = canvas.getContext('2d');
+            cxt.translate(-81, -84);
+            cxt.fillStyle = 'white';
+            cxt.beginPath();
+            cxt.moveTo(91, 96);
+            cxt.bezierCurveTo(88, 96, 87, 99, 87, 101);
+            cxt.bezierCurveTo(87, 103, 88, 106, 91, 106);
+            cxt.bezierCurveTo(94, 106, 95, 103, 95, 101);
+            cxt.bezierCurveTo(95, 99, 94, 96, 91, 96);
+
+            cxt.moveTo(103, 96);
+            cxt.bezierCurveTo(100, 96, 99, 99, 99, 101);
+            cxt.bezierCurveTo(99, 103, 100, 106, 103, 106);
+            cxt.bezierCurveTo(106, 106, 107, 103, 107, 101);
+            cxt.bezierCurveTo(107, 99, 106, 96, 103, 96);
+
+            cxt.fill();
+
+            var texture = new THREE.Texture(canvas);
+            texture.needsUpdate = true;
+            return texture;
+        }
+        var cloud;
+        creatPiontCloud();
+        function creatPiontCloud() {
+            var geom = new THREE.Geometry();
+            var material = new THREE.PointCloudMaterial({
+                size: 15,
+                opacity: .4,
+                transparent: true,
+                sizeAttenuation: true,
+                color: 0xffffff,
+                map: getTexture()
+            });
+            var range = 500;
+            for (var i = 0; i < 6000; i++) {
+                var particle = new THREE.Vector3(
+                        Math.random() * range - range / 2,
+                        Math.random() * range - range / 2,
+                        Math.random() * range - range / 2
+                );
+                geom.vertices.push(particle);
+            }
+            cloud = new THREE.PointCloud(geom, material);
+            cloud.name = 'PiontCloud';
+            cloud.sortParticles = true;
+            scene.add(cloud);
+        }
+
+        function render() {
+            cloud.rotation.x += .01;
+            cloud.rotation.z += .01;
+            window.requestAnimationFrame(render);
+            renderer.render(scene, camera);
+        }
+
+        render();
+    });
+</script>
+</body>
+</html>

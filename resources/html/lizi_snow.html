@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页－－粒子</title>
+    <script src="../../bower_components/three.js/three.js"></script>
+    <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+<script>
+    $(function () {
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, .1, 1000);
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setClearColor(new THREE.Color(0x000000, 1.0));
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        camera.position.set(20, 0, 155);
+        document.body.appendChild(renderer.domElement);
+
+        createParticles();
+        var cloud;
+
+        function createParticles() {
+            var geom = new THREE.Geometry();
+            var material = new THREE.PointCloudMaterial({
+                size: 5,
+                transparent: true,
+                opacity: .5,
+                vertexColors: true,
+                sizeAttenuation: true,
+                color: 0xffffff
+            });
+
+            var range = 500;
+            for (var i = 0; i < 10000; i++) {
+                var particle = new THREE.Vector3(
+                        Math.random() * range - range / 2,
+                        Math.random() * range - range / 2,
+                        Math.random() * range - range / 2
+                );
+                geom.vertices.push(particle);
+                var color = new THREE.Color(0xff00ff);
+                color.setHSL(color.getHSL().h, color.getHSL().s, Math.random() * color.getHSL().l);
+                geom.colors.push(color);
+            }
+            cloud = new THREE.PointCloud(geom, material);
+            cloud.name = 'particles';
+            scene.add(cloud);
+        }
+
+        function render() {
+            cloud.rotation.x += 0.01;
+            cloud.rotation.z += 0.01;
+
+            window.requestAnimationFrame(render);
+            renderer.render(scene, camera);
+        }
+
+        render();
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+newmtl Tigre1_blinn1SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.64 0.64 0.40
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 1.00 1.00 1.00
+newmtl Tigre1_blinn6SG
+illum 4
+Kd 0.87 0.06 0.29
+Ka 0.21 0.05 0.08
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 0.66 0.66 0.66
+newmtl Tigre1_blinn7SG
+illum 4
+Kd 1.00 0.98 0.92
+Ka 0.38 0.36 0.36
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 0.31 0.31 0.31
+newmtl Tigre1_blinn8SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 0.50 0.50 0.50
+newmtl Tigre1_blinn9SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 0.75 0.75 0.75
+newmtl Tigre1_lambert4SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.10 0.07 0.07
+Tf 1.00 1.00 1.00
+map_Kd -mm 0 0.95 colorBOD.jpg
+Ni 1.00
+newmtl Tigre1_lambert5SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.10 0.07 0.07
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl lambert2SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd head.jpg
+Ni 1.00
