@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>精灵</title>
+    <script src="../../bower_components/three.js/three.js"></script>
+    <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+        }
+    </style>
+    <script>
+        $(function () {
+            var scene = new THREE.Scene();
+            var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, .1, 1000);
+            camera.position.set(20, 0, 155);
+
+            var renderer = new THREE.WebGLRenderer();
+            renderer.setClearColor(new THREE.Color(0x000000, 1.0));
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            var group;
+
+            function createSprites() {
+                group = new THREE.Object3D();
+                var range = 200;
+                for (var i = 0; i < 50; i++) {
+                    group.add(createSprite(10, false, .6, 0xffffff, i % 5, range))
+                }
+                scene.add(group);
+            }
+
+            createSprites();
+
+            function getTexture() {
+                return new THREE.ImageUtils.loadTexture('../images/chicken.png');
+            }
+
+            function createSprite(size, transparent, opacity, color, spriteNumber, range) {
+                var spriteMaterial = new THREE.SpriteMaterial({
+                    opacity: opacity,
+                    color: color,
+                    transparent: transparent,
+                    map: getTexture()
+                });
+
+                spriteMaterial.map.offset = new THREE.Vector2(0.2 * spriteNumber, 0);
+                spriteMaterial.map.repeat = new THREE.Vector2(1 / 5, 1);
+                spriteMaterial.depthTest = false;
+                spriteMaterial.blending = THREE.AdditiveBlending;
+                var sprite = new THREE.Sprite(spriteMaterial);
+                sprite.scale.set(size, size, size);
+                sprite.position.set(
+                        Math.random() * range - range / 2,
+                        Math.random() * range - range / 2,
+                        Math.random() * range - range / 2
+                );
+                sprite.velocityX = 5;
+                return sprite;
+            }
+
+            function render() {
+                group.rotation.x += .01;
+                window.requestAnimationFrame(render);
+                renderer.render(scene, camera);
+            }
+
+            render();
+        })
+    </script>
+</head>
+<body>
+
+</body>
+</html>
