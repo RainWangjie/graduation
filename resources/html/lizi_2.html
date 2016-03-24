@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>粒子--img纹理</title>
+    <script src="../../bower_components/three.js/three.js"></script>
+    <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+        }
+    </style>
+    <script>
+        function main() {
+            var scene = new THREE.Scene();
+            var camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, .1, 1000);
+            var renderer = new THREE.WebGLRenderer();
+            renderer.setClearColor(new THREE.Color(0x000000, 1.0));
+            renderer.setSize(window.innerWidth, window.innerHeight);
+
+            camera.position.set(20, 40, 110);
+            camera.lookAt(new THREE.Vector3(20, 30, 0));
+
+            document.body.appendChild(renderer.domElement);
+
+            var cloud;
+            //mesh
+            creatPiontCloud();
+            function creatPiontCloud() {
+                if(cloud){
+                    scene.remove(cloud);
+                }
+                var texture = new THREE.ImageUtils.loadTexture('../images/yudi.png');
+
+                var geom = new THREE.Geometry();
+                var material = new THREE.PointCloudMaterial({
+                    size: 10,
+                    opacity: .3,
+                    transparent: true,
+                    sizeAttenuation: true,
+                    color: 0xffffff,
+                    map: texture,
+                    blending: THREE.AdditiveBlending
+                });
+
+                var range = 500;
+                for (var i = 0; i < 2000; i++) {
+                    var particle = new THREE.Vector3(
+                            Math.random() * range - range / 2,
+                            Math.random() * range - range / 2,
+                            Math.random() * range - range / 2
+                    );
+                    particle.velocityY = 0.1 + Math.random() / 5;
+                    particle.velocityX = (Math.random() - .5) / 3;
+                    geom.vertices.push(particle);
+                }
+                cloud = new THREE.ParticleSystem(geom, material);
+                cloud.name = 'PiontCloud';
+                cloud.sortParticles = true;
+                scene.add(cloud);
+            }
+
+            var startTime = Date.now();
+            function render() {
+                if(Date.now() - startTime > 80){
+                    creatPiontCloud();
+                    startTime=Date.now();
+                }
+                window.requestAnimationFrame(render);
+                var vertices = cloud.geometry.vertices;
+                vertices.forEach(function (v) {
+                    v.y = v.y - v.velocityY;
+                    v.x = v.x - v.velocityX;
+                    if (v.y <= 0)v.y = 60;
+                    if (v.x <= -20 || v.x >= 20)v.velocityX = v.velocityX - 1;
+                });
+                renderer.render(scene, camera);
+            }
+
+            render();
+        }
+    </script>
+</head>
+<body onload="main()">
+</body>
+</html>
