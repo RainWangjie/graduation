@@ -67,24 +67,33 @@
     function render() {
         cube.rotation.y += .01;
         sphere.rotation.y += .01;
-
         window.requestAnimationFrame(render);
         renderer.render(scene, camera);
     }
     render();
 
     function controlCamera(camera) {
-        camera.position.set(-80, 50, 40);
+        if (window.DeviceOrientationEvent) {
+            window.addEventListener("deviceorientation", function (Event) {
+                document.getElementById("alpha").innerHTML = event.alpha || 0;
+                document.getElementById("beta").innerHTML = event.beta || 0;
+                document.getElementById("gamma").innerHTML = event.gamma || 0;
+                var radius = 40,
+                        x = Math.sin(angleToRadian(event.alpha)) * radius,
+                        y = Math.cos(angleToRadian(event.beta)) * radius,
+                        z = Math.sin(angleToRadian(event.gamma)) * radius;
+                camera.position.set(x, y, z);
+            }, false);
+        } else {
+            alert('您的设备不支持');
+        }
     }
-    if (window.DeviceOrientationEvent) {
-        window.addEventListener("deviceorientation", function (Event) {
-            document.getElementById("alpha").innerHTML = event.alpha || 0;
-            document.getElementById("beta").innerHTML = event.beta || 0;
-            document.getElementById("gamma").innerHTML = event.gamma || 0;
-        }, false);
-    } else {
-        alert('您的设备不支持');
+    function angleToRadian(angle) {
+        var radian = angle / 180;
+        return radian;
     }
+
+
 </script>
 </body>
 </html>
