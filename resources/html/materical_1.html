@@ -7,62 +7,93 @@
         body {
             margin: 0;
         }
+
+        .message {
+            position: absolute;
+            top: 0;
+            right: 10px;
+            color: white;
+        }
     </style>
-    <script src="../../bower_components/three.js/three.min.js"></script>
-    <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
-    <script>
-        $(function () {
-            var scene = new THREE.Scene();
-            var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, .1, 1000);
-            camera.position.set(20, 0, 155);
 
-            var renderer = new THREE.WebGLRenderer();
-            renderer.setClearColor(new THREE.Color(0x000000, 1.0));
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.shadowMapEnabled = true;
-            document.body.appendChild(renderer.domElement);
-
-            var groundGemo = new THREE.PlaneGeometry(100, 100);
-            var groundMesh = new THREE.Mesh(groundGemo, new THREE.MeshBasicMaterial({color: 0x777777}));
-            groundMesh.rotation.x = -Math.PI / 2;
-            groundMesh.position.y = -20;
-            scene.add(groundMesh);
-
-            var sphereGeometry = new THREE.SphereGeometry(14, 20, 20);
-            var cubeGeometry = new THREE.BoxGeometry(5, 5, 5);
-            var meshMaterial = new THREE.MeshBasicMaterial({color: 0x7777ff});
-            var meshMaterial2 = new THREE.MeshBasicMaterial({color: 0x7777ff, wireframe: true});
-            var sphere = new THREE.Mesh(sphereGeometry, meshMaterial2);
-            var cube = new THREE.Mesh(cubeGeometry, meshMaterial);
-
-            sphere.position.set(0, 3, 2);
-            cube.position = sphere.position;
-
-            scene.add(sphere);
-            scene.add(cube);
-
-            camera.position.set(-80, 50, 40);
-            camera.lookAt(new THREE.Vector3(10, 0, 0));
-
-            var ambientLight = new THREE.AmbientLight(0x0c0c0c);
-            scene.add(ambientLight);
-
-            var spotLight = new THREE.SpotLight(0xffffff);
-            spotLight.position.set(-40, 60, -10);
-            spotLight.castShadow = true;
-            scene.add(spotLight);
-            function render() {
-                cube.rotation.y += .01;
-                sphere.rotation.y += .01;
-
-                window.requestAnimationFrame(render);
-                renderer.render(scene, camera);
-            }
-            render();
-        })
-    </script>
 </head>
 <body>
+<div class="message">
+    <div>alpha:<span id="alpha">0</span></div>
+    <div>beta:<span id="beta">0</span></div>
+    <div>gamma:<span id="gamma">0</span></div>
+</div>
+<script src="../../bower_components/three.js/three.min.js"></script>
+<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<script>
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, .1, 1000);
 
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setClearColor(new THREE.Color(0x000000, 1.0));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMapEnabled = true;
+    document.body.appendChild(renderer.domElement);
+
+    var groundGemo = new THREE.PlaneGeometry(100, 100);
+    var groundMesh = new THREE.Mesh(groundGemo, new THREE.MeshBasicMaterial({color: 0x777777}));
+    groundMesh.rotation.x = -Math.PI / 2;
+    groundMesh.position.y = -20;
+    scene.add(groundMesh);
+
+    var sphereGeometry = new THREE.SphereGeometry(14, 20, 20);
+    var cubeGeometry = new THREE.BoxGeometry(5, 5, 5);
+    var meshMaterial = new THREE.MeshBasicMaterial({color: 0x7777ff});
+    var meshMaterial2 = new THREE.MeshBasicMaterial({color: 0x7777ff, wireframe: true});
+    var sphere = new THREE.Mesh(sphereGeometry, meshMaterial2);
+    var cube = new THREE.Mesh(cubeGeometry, meshMaterial);
+
+    sphere.position.set(0, 3, 2);
+    cube.position = sphere.position;
+
+    scene.add(sphere);
+    scene.add(cube);
+
+    camera.position.set(-40, 40, 40);
+    camera.lookAt(new THREE.Vector3(10, 0, 0));
+
+    var ambientLight = new THREE.AmbientLight(0x0c0c0c);
+    scene.add(ambientLight);
+
+    var spotLight = new THREE.SpotLight(0xffffff);
+    spotLight.position.set(-40, 60, -10);
+    spotLight.castShadow = true;
+    scene.add(spotLight);
+    function render() {
+        cube.rotation.y += .01;
+        sphere.rotation.y += .01;
+        window.requestAnimationFrame(render);
+        renderer.render(scene, camera);
+    }
+    render();
+
+    function controlCamera(camera) {
+        if (window.DeviceOrientationEvent) {
+            window.addEventListener("deviceorientation", function (Event) {
+                document.getElementById("alpha").innerHTML = event.alpha || 0;
+                document.getElementById("beta").innerHTML = event.beta || 0;
+                document.getElementById("gamma").innerHTML = event.gamma || 0;
+                var radius = 40,
+                        x = Math.sin(angleToRadian(event.alpha)) * radius,
+                        y = Math.cos(angleToRadian(event.beta)) * radius,
+                        z = Math.sin(angleToRadian(event.gamma)) * radius;
+                camera.position.set(x, y, z);
+            }, false);
+        } else {
+            alert('您的设备不支持');
+        }
+    }
+    function angleToRadian(angle) {
+        var radian = angle / 180;
+        return radian;
+    }
+
+
+</script>
 </body>
 </html>
