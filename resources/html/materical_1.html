@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>材质－－MeshBasicMaterial</title>
     <style>
         body {
@@ -22,10 +23,17 @@
     <div>alpha:<span id="alpha">0</span></div>
     <div>beta:<span id="beta">0</span></div>
     <div>gamma:<span id="gamma">0</span></div>
+    <div>camera坐标:<span id="camera"></span></div>
 </div>
 <script src="../../bower_components/three.js/three.min.js"></script>
 <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
 <script>
+
+    var coordinate = {
+        x: 40,
+        y: 40,
+        z: 40
+    };
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, .1, 1000);
 
@@ -54,7 +62,7 @@
     scene.add(sphere);
     scene.add(cube);
 
-    camera.position.set(-40, 40, 40);
+    camera.position.set(coordinate.x, coordinate.y, coordinate.z);
     camera.lookAt(new THREE.Vector3(10, 0, 0));
 
     var ambientLight = new THREE.AmbientLight(0x0c0c0c);
@@ -68,32 +76,38 @@
         cube.rotation.y += .01;
         sphere.rotation.y += .01;
         window.requestAnimationFrame(render);
+        camera.position.set(coordinate.x, coordinate.y, coordinate.z);
         renderer.render(scene, camera);
     }
     render();
 
-    function controlCamera(camera) {
-        if (window.DeviceOrientationEvent) {
-            window.addEventListener("deviceorientation", function (Event) {
-                document.getElementById("alpha").innerHTML = event.alpha || 0;
-                document.getElementById("beta").innerHTML = event.beta || 0;
-                document.getElementById("gamma").innerHTML = event.gamma || 0;
-                var radius = 40,
-                        x = Math.sin(angleToRadian(event.alpha)) * radius,
-                        y = Math.cos(angleToRadian(event.beta)) * radius,
-                        z = Math.sin(angleToRadian(event.gamma)) * radius;
-                camera.position.set(x, y, z);
-            }, false);
-        } else {
-            alert('您的设备不支持');
-        }
-    }
     function angleToRadian(angle) {
         var radian = angle / 180;
         return radian;
     }
 
+    if (window.DeviceOrientationEvent) {
+        window.addEventListener("deviceorientation", function (event) {
+            var alpha = Math.round(event.alpha),
+                    beta = Math.round(event.beta),
+                    gamma = Math.round(event.gamma);
+            document.getElementById("alpha").innerHTML = alpha || 0;
+            document.getElementById("beta").innerHTML = beta || 0;
+            document.getElementById("gamma").innerHTML = gamma || 0;
+            var radius = 40,
+                    x = Math.sin(angleToRadian(alpha)) * radius,
+                    y = Math.cos(angleToRadian(alpha)) * radius,
+                    z = Math.sin(angleToRadian(90-
+                                    gamma)) * radius;
+            coordinate.x = x.toFixed(2);
+            coordinate.y = y.toFixed(2);
+            coordinate.z = z.toFixed(2);
+            document.getElementById("camera").innerHTML = "(" + coordinate.x + "," + coordinate.y + "," + coordinate.z + ")";
 
+        }, false);
+    } else {
+        alert('您的设备不支持');
+    }
 </script>
 </body>
 </html>
