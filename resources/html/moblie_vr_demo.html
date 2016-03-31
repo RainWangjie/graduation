@@ -20,6 +20,7 @@
 </head>
 <body>
 <div class="message">
+    <!--<div>currneAlpha:<span id="currentAlpha">0</span></div>-->
     <div>alpha:<span id="alpha">0</span></div>
     <div>beta:<span id="beta">0</span></div>
     <div>gamma:<span id="gamma">0</span></div>
@@ -32,11 +33,11 @@
         alpha: 0,
         beta: 0,
         gamma: 90,
-        preAlpha: 0,
-        delayAlpha: 0,
-        currentAlpha: 0,
-        x: this.radius,
-        y: 0,
+//        preAlpha: 0,
+//        delayAlpha: 0,
+//        currentAlpha: 0,
+        x: 0,
+        y: 100,
         z: 0
     };
 
@@ -62,7 +63,7 @@
     cube.position.set(0, 0, 0);
     scene.add(cube);
 
-    camera.position.set(40, 40, 40);
+    camera.position.set(device.x, device.y, device.z);
     camera.lookAt(new THREE.Vector3(0, 0, 0));
 
     var light = new THREE.PointLight(0xffffff);
@@ -82,6 +83,7 @@
     function render() {
         cube.rotation.y += .01;
         move();
+        document.getElementById("camera").innerHTML = '(' + device.x + ',' + device.y + ',' + device.z + ')';
         camera.position.set(device.x, device.y, device.z);
         renderer.render(scene, camera);
         window.requestAnimationFrame(render);
@@ -98,30 +100,35 @@
             device.y = -1 * device.radius * Math.cos(angleToRadian(device.gamma));
         }
         //取alpha增量
-        var tempAlpha = device.alpha - device.preAlpha;
+//        var tempAlpha = device.alpha - device.preAlpha;
         //针对临界值特殊处理
-        if (Math.abs(tempAlpha) > 180) {
-            device.delayAlpha = (tempAlpha > 0) ? (tempAlpha - 360) : (tempAlpha + 360);
-        } else {
-            device.delayAlpha = tempAlpha;
-        }
-        device.currentAlpha += device.delayAlpha;
+//        if (Math.abs(tempAlpha) > 180) {
+//            device.delayAlpha = (tempAlpha > 0) ? (tempAlpha - 360) : (tempAlpha + 360);
+//        } else {
+//            device.delayAlpha = tempAlpha;
+//        }
+//        device.currentAlpha += device.delayAlpha;
+//        if (device.currentAlpha < 0) {
+//            device.currentAlpha = 360 + device.currentAlpha;
+//        }
         //当前alpha值大于360，则取余
-        if (device.currentAlpha >= 360) {
-            device.currentAlpha = device.currentAlpha % 360;
-        }
+//        if (device.currentAlpha >= 360) {
+//            device.currentAlpha = device.currentAlpha % 360;
+//        }
         //球形比例 (R-|y|)/R
         var scale = (device.radius - Math.abs(device.y)) / device.radius;
         /* x = R * cos(alpha) * scale */
-        device.x = device.radius * Math.cos(device.currentAlpha) * scale;
+        device.x = device.radius * Math.cos(angleToRadian(device.alpha)) * scale;
         /* z = -R * sin(alpha) * scale */
-        device.z = -1 * device.radius * Math.sin(device.currentAlpha) * scale;
-        document.getElementById("camera").innerHTML = '(' + device.x + ',' + device.y + ',' + device.z + ')';
-        device.preAlpha = device.alpha;
+        device.z = -1 * device.radius * Math.sin(angleToRadian(device.alpha)) * scale;
+        device.x = Math.round(device.x);
+        device.y = Math.round(device.y);
+        device.z = Math.round(device.z);
+//        device.preAlpha = device.alpha;
     }
 
     function angleToRadian(angle) {
-        var radian = angle / 180;
+        var radian = angle / 180 * Math.PI;
         return radian;
     }
 
@@ -130,6 +137,7 @@
             device.alpha = Math.round(event.alpha);
             device.beta = Math.round(event.beta);
             device.gamma = Math.round(event.gamma);
+//            document.getElementById("currentAlpha").innerHTML = device.currentAlpha;
             document.getElementById("alpha").innerHTML = device.alpha;
             document.getElementById("beta").innerHTML = device.beta;
             document.getElementById("gamma").innerHTML = device.gamma;
