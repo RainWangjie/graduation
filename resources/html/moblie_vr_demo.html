@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>moblie_vr</title>
+    <style>
+        body {
+            margin: 0;
+            background: #000;
+        }
+
+        .message {
+            position: absolute;
+            top: 0;
+            right: 10px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div class="message">
+    <div>alpha:<span id="alpha">0</span></div>
+    <div>beta:<span id="beta">0</span></div>
+    <div>gamma:<span id="gamma">0</span></div>
+    <div>camera坐标:<span id="camera"></span></div>
+</div>
+<script src="../../bower_components/three.js/three.min.js"></script>
+<script>
+    var device = {
+        radius: 100,
+        alpha: 0,
+        beta: 0,
+        gamma: 90,
+        preAlpha: 0,
+        delayAlpha: 0,
+        currentAlpha: 0,
+        x: this.radius,
+        y: 0,
+        z: 0
+    };
+
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, .1, 1000);
+
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setClearColor(new THREE.Color(0x000000, 1.0));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMapEnabled = true;
+    document.body.appendChild(renderer.domElement);
+
+    var cubeMaterialArray = [];
+    cubeMaterialArray.push(new THREE.MeshBasicMaterial({color: 0xff3333}));
+    cubeMaterialArray.push(new THREE.MeshBasicMaterial({color: 0xff8833}));
+    cubeMaterialArray.push(new THREE.MeshBasicMaterial({color: 0xffff33}));
+    cubeMaterialArray.push(new THREE.MeshBasicMaterial({color: 0x33ff33}));
+    cubeMaterialArray.push(new THREE.MeshBasicMaterial({color: 0x3333ff}));
+    cubeMaterialArray.push(new THREE.MeshBasicMaterial({color: 0x8833ff}));
+    var cubeMaterials = new THREE.MeshFaceMaterial(cubeMaterialArray);
+    var cubeGeometry = new THREE.CubeGeometry(15, 15, 15, 1, 1, 1);
+    var cube = new THREE.Mesh(cubeGeometry, cubeMaterials);
+    cube.position.set(0, 0, 0);
+    scene.add(cube);
+
+    camera.position.set(40, 40, 40);
+    camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+    var light = new THREE.PointLight(0xffffff);
+    light.position.set(0, 250, 0);
+    scene.add(light);
+
+    var ambientLight = new THREE.AmbientLight(0x0c0c0c);
+    scene.add(ambientLight);
+
+    var axes = new THREE.AxisHelper(100);
+    scene.add(axes);
+
+    var spotLight = new THREE.SpotLight(0xffffff);
+    spotLight.position.set(-40, 60, -10);
+    spotLight.castShadow = true;
+    scene.add(spotLight);
+    function render() {
+        cube.rotation.y += .01;
+        move();
+        camera.position.set(device.x, device.y, device.z);
+        renderer.render(scene, camera);
+        window.requestAnimationFrame(render);
+    }
+    render();
+
+    function move() {
+        //y轴坐标
+        if (device.gamma < 0) {
+            /* y = R * cos(gamma);gamma转弧度*/
+            device.y = device.radius * Math.cos(angleToRadian(device.gamma));
+        } else {
+            /* y = -R * cos(gamma);gamma转弧度*/
+            device.y = -1 * device.radius * Math.cos(angleToRadian(device.gamma));
+        }
+        //取alpha增量
+        var tempAlpha = device.alpha - device.preAlpha;
+        //针对临界值特殊处理
+        if (Math.abs(tempAlpha) > 180) {
+            device.delayAlpha = (tempAlpha > 0) ? (tempAlpha - 360) : (tempAlpha + 360);
+        } else {
+            device.delayAlpha = tempAlpha;
+        }
+        device.currentAlpha += device.delayAlpha;
+        //当前alpha值大于360，则取余
+        if (device.currentAlpha >= 360) {
+            device.currentAlpha = device.currentAlpha % 360;
+        }
+        //球形比例 (R-|y|)/R
+        var scale = (device.radius - Math.abs(device.y)) / device.radius;
+        /* x = R * cos(alpha) * scale */
+        device.x = device.radius * Math.cos(device.currentAlpha) * scale;
+        /* z = -R * sin(alpha) * scale */
+        device.z = -1 * device.radius * Math.sin(device.currentAlpha) * scale;
+        document.getElementById("camera").innerHTML = '(' + device.x + ',' + device.y + ',' + device.z + ')';
+        device.preAlpha = device.alpha;
+    }
+
+    function angleToRadian(angle) {
+        var radian = angle / 180;
+        return radian;
+    }
+
+    if (window.DeviceOrientationEvent) {
+        window.addEventListener("deviceorientation", function (event) {
+            device.alpha = Math.round(event.alpha);
+            device.beta = Math.round(event.beta);
+            device.gamma = Math.round(event.gamma);
+            document.getElementById("alpha").innerHTML = device.alpha;
+            document.getElementById("beta").innerHTML = device.beta;
+            document.getElementById("gamma").innerHTML = device.gamma;
+        }, false);
+    } else {
+        alert('您的设备不支持');
+    }
+</script>
+</body>
+</html>
