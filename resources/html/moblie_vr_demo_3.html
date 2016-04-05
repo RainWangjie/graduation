@@ -26,6 +26,9 @@
     <div>camera坐标:<span id="camera"></span></div>
 </div>
 <script src="../../bower_components/three.js/three.min.js"></script>
+<script src="../js/DDSLoader.js"></script>
+<script src="../js/OBJLoader.js"></script>
+<script src="../js/MTLLoader.js"></script>
 <script>
     var device = {
         radius: 100,
@@ -46,41 +49,58 @@
     renderer.shadowMapEnabled = true;
     document.body.appendChild(renderer.domElement);
 
-    var cubeMaterialArray = [];
-    cubeMaterialArray.push(new THREE.MeshBasicMaterial({color: 0xff3333}));
-    cubeMaterialArray.push(new THREE.MeshBasicMaterial({color: 0xff8833}));
-    cubeMaterialArray.push(new THREE.MeshBasicMaterial({color: 0xffff33}));
-    cubeMaterialArray.push(new THREE.MeshBasicMaterial({color: 0x33ff33}));
-    cubeMaterialArray.push(new THREE.MeshBasicMaterial({color: 0x3333ff}));
-    cubeMaterialArray.push(new THREE.MeshBasicMaterial({color: 0x8833ff}));
-    var cubeMaterials = new THREE.MeshFaceMaterial(cubeMaterialArray);
-    var cubeGeometry = new THREE.CubeGeometry(15, 15, 15, 1, 1, 1);
-    var cube = new THREE.Mesh(cubeGeometry, cubeMaterials);
-    cube.position.set(0, 0, 0);
-    scene.add(cube);
+    //贴图模型obj＋img
+    var manager_1 = new THREE.LoadingManager();
+
+    var texture_1 = new THREE.Texture();
+
+    var imgLoader_1 = new THREE.ImageLoader(manager_1);
+    imgLoader_1.load('../model/jingang/RB_Optimus_TextSet_Color_NormX.png', function (image) {
+        texture_1.image = image;
+        texture_1.needsUpdate = true;
+    });
+
+    var loader = new THREE.OBJLoader(manager_1);
+    loader.load('../model/jingang/RB-OptimusBoss.obj', function (jingang) {
+        jingang.traverse(function (child) {
+            if (child instanceof THREE.Mesh) {
+                child.material.map = texture_1;
+            }
+        });
+        jingang.scale.set(.07, .07, .07);
+        jingang.position.y = -20;
+        jingang.rotation.x = -.5 * Math.PI;
+        scene.add(jingang);
+    });
+
 
     camera.position.set(device.x, device.y, device.z);
     camera.lookAt(scene.position);
 
+
     var light = new THREE.PointLight(0xffffff);
-    light.position.set(0, 250, 0);
+    light.position.set(-100, 200, -100);
     scene.add(light);
 
-    var ambientLight = new THREE.AmbientLight(0x0c0c0c);
-    scene.add(ambientLight);
+    var directionalLight = new THREE.DirectionalLight(0xffeedd);
+    directionalLight.position.set(0, 0, 1).normalize();
+    scene.add(directionalLight);
+
+    var spotLight = new THREE.SpotLight(0xffffff);
+    spotLight.position.z = 70;
+    spotLight.castShadow = true;
+    scene.add(spotLight);
 
     var axes = new THREE.AxisHelper(100);
     scene.add(axes);
 
-    var spotLight = new THREE.SpotLight(0xffffff);
-    spotLight.position.set(-40, 60, -10);
-    spotLight.castShadow = true;
-    scene.add(spotLight);
     function render() {
 //        cube.rotation.y += .01;
         move();
         document.getElementById("camera").innerHTML = '(' + device.x + ',' + device.y + ',' + device.z + ')';
         camera.position.set(device.x, device.y, device.z);
+//        camera.position.set(100, 0, 0);
+
         camera.lookAt(scene.position);
         renderer.render(scene, camera);
         window.requestAnimationFrame(render);
