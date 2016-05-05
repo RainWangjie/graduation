@@ -42,6 +42,7 @@
     });
 
     var loader = new THREE.OBJLoader(manager_1);
+    loader.crossOrigin = '*';
     loader.load('../model/jingang/RB-OptimusBoss.obj', function (jingang) {
         jingang.traverse(function (child) {
             if (child instanceof THREE.Mesh) {
@@ -59,11 +60,13 @@
     //obj+mtl
     THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader);
     var mtlLorder = new THREE.MTLLoader();
+    mtlLorder.crossOrigin ='*';
     mtlLorder.setBaseUrl('../model/jingang/');
     mtlLorder.setPath('../model/jingang/');
     mtlLorder.load('RB-OptimusBoss.mtl', function (materials) {
         materials.preload();
         var objLoader = new THREE.OBJLoader();
+        objLoader.crossOrigin = '*';
         objLoader.setMaterials(materials);
         objLoader.setPath('../model/jingang/');
         objLoader.load('RB-OptimusBoss.obj', function (jingang) {
