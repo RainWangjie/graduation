@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>科比活动_3</title>
+    <meta name="viewport"
+          content="user-scalable=0,width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <style>
+        body {
+            margin: 0;
+            width: 100%;
+            overflow-x: hidden;
+            background-image: url('https://o5b8263mg.qnssl.com/FqTh6zagG6okwxQNmF5hZ2M9dLZg');
+            background-size: 100%;
+        }
+
+        .share-img {
+            margin: 39px;
+            border: 4px solid #e0b019;
+        }
+
+        .share-img img {
+            width: 100%;
+        }
+
+        .share-friend {
+            margin: 30px 41px;
+            color: #fff;
+            font-size: 14px;
+            line-height: 22px;
+        }
+
+        canvas {
+            margin: 0 auto;
+            background: #fff;
+        }
+
+        footer {
+            margin: 17px auto;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class='share-img'>
+
+</div>
+<div class="share-friend">
+    保存图片分享给朋友，告诉他你要去见科比了！
+</div>
+<footer>
+    <img src="https://o5b8263mg.qnssl.com/Fi5gfyX-dpbALmoBuEzMUUm4zExm" width="35%">
+</footer>
+<canvas id='kobe'>
+
+</canvas>
+
+<img src="../images/11-2.jpg" id="source-img">
+<!--data-src="https://o5b8263mg.qnssl.com/FocgVpACujWQ6z1D2y4UX96GPx7R"-->
+<script>
+    //    var name = localStorage.lastName+' '+localStorage.firstName;
+    var name = 'KOBE BRYENT';
+    var screen_width = window.outerWidth - 86;
+    console.log(screen_width);
+    document.querySelector('.share-img').height = screen_width * (1280 / 1009);
+
+    var canvas = document.getElementById('kobe'),
+            context = canvas.getContext('2d');
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    canvas.width = 1009;
+    canvas.height = 1280;
+
+    context.fillStyle = 'rgba(0,0,0)';
+    context.strokeStyle = 'rgba(200,0,0,.7)';
+    context.font = '24px Lucida Sans';
+    context.textBaseline = 'middle';
+
+    var img = new Image();
+    img.src = '../images/11-2.jpg';
+    img.onload = function () {
+        context.drawImage(img, 0, 0, canvas.width, canvas.height);
+    };
+    //    var image = document.getElementById('source-img');
+    //    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+    context.rotate(Math.PI / 2 * (-20 / 90));
+    context.fillText(name, 100, 100);
+    context.rotate(Math.PI / 2 * (20 / 90));
+    context.fillText(name, 10, 100);
+
+    var dataUrl = canvas.toDataURL();
+    var newImg = document.createElement("img");
+    newImg.src = dataUrl;
+    document.querySelector('.share-img').appendChild(newImg);
+</script>
+</body>
+</html>
