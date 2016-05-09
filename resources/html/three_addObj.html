@@ -24,76 +24,73 @@
 <body>
 <script>
     var scene = new THREE.Scene();
-    var clock = new THREE.Clock();
 
-    //    var geometry = new THREE.BoxGeometry(100, 50, 100);
-    //    var material = new THREE.MeshLambertMaterial({
-    //        color: 0xf1f100
-    //    });
-    //    var mesh = new THREE.Mesh(geometry, material);
-    //    scene.add(mesh);
+    var light = new THREE.PointLight(0xffffff);
 
-    //贴图模型obj＋img
-    //    var manager_1 = new THREE.LoadingManager();
-    //
-    //    var texture_1 = new THREE.Texture();
-    //
-    //    var imgLoader_1 = new THREE.ImageLoader(manager_1);
-    //    imgLoader_1.load('http://7xs7nv.com1.z0.glb.clouddn.com/RB_Optimus_TextSet_Color_NormX.png', function (image) {
-    //        texture_1.image = image;
-    //        texture_1.image.crossOrigin = true;
-    //        texture_1.needsUpdate = true;
-    //    });
-
-    //    var axis = new THREE.AxisHelper(100);
-    //    scene.add(axis);
-
-    //    var loader = new THREE.OBJLoader();
-    //    loader.load('../model/cloth/Hight.obj', function (jingang) {
-    //        jingang.traverse(function (child) {
-    //            if (child instanceof THREE.Mesh) {
-    //                child.material.map = texture_1;
-    //            }
-    //        });
-    //        jingang.scale.set(2, 2, 2);
-    //        jingang.position.x = 10;
-    //        jingang.position.y = -70;
-    //        jingang.position.z = 10;
-    //        jingang.rotation.x = -.5 * Math.PI;
-    //        jingang.rotation.y = .25 * Math.PI;
-    //        jingang.rotation.z = -.25 * Math.PI;
-    //        scene.add(jingang);
-    //    });
-
-    //    obj+mtl
-//    THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader);
+    THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader);
     var mtlLorder = new THREE.MTLLoader();
-    mtlLorder.setBaseUrl('../model/bb/');
-    mtlLorder.setPath('../model/bb/');
+    mtlLorder.setBaseUrl('../model/jingang/');
+    mtlLorder.setPath('../model/jingang/');
     mtlLorder.setMaterialOptions({
-        side:THREE.DoubleSide,
-//        wrap:THREE.MirroredRepeatWrapping,
-        normalizeRGB:true
+        side: THREE.DoubleSide,
+        //        wrap: THREE.MirroredRepeatWrapping,
+        //        normalizeRGB: true
     });
-    mtlLorder.load('bbb.mtl', function (materials) {
+    mtlLorder.load('jingang.mtl', function (materials) {
         materials.preload();
         var objLoader = new THREE.OBJLoader();
         objLoader.setMaterials(materials);
-        objLoader.setPath('../model/bb/');
-        objLoader.load('bbb.obj', function (jingang) {
-            jingang.scale.set(2, 2, 2);
-            jingang.position.y = -300;
+        objLoader.setPath('../model/jingang/');
+        objLoader.load('jingang.obj', function (jingang) {
+            //            jingang.scale.set(.2, .2, .2);
+            //            jingang.position.y = -60;
+            jingang.rotation.set(0, -0.25 * Math.PI, 0);
             jingang.updateMatrix();
-//                jingang.position.x = 30;
-//                jingang.rotation.x = -.5 * Math.PI;
-//                jingang.rotation.z = -.25 * Math.PI;
             scene.add(jingang);
             render();
         })
     });
 
-
-    var light = new THREE.PointLight(0xffffff);
+    //    obj+mtl
+    var mtlLorder = new THREE.MTLLoader();
+    mtlLorder.setBaseUrl('../model/bb/');
+    mtlLorder.setPath('../model/bb/');
+    mtlLorder.setMaterialOptions({
+        side: THREE.DoubleSide,
+        wrap: THREE.MirroredRepeatWrapping,
+        normalizeRGB: true
+    });
+    mtlLorder.load('bbb.mtl', function (materials) {
+        console.log(materials);
+        materials.preload();
+        var objLoader = new THREE.OBJLoader();
+        objLoader.setMaterials(materials);
+        objLoader.setPath('../model/bb/');
+        objLoader.load('bbb.obj', function (jingang) {
+            jingang.scale.set(1, 1, 1);
+            jingang.position.set(0, -150, 60);
+            jingang.rotation.set(0, .25 * Math.PI, 0);
+            jingang.updateMatrix();
+            scene.add(jingang);
+            render();
+        })
+    });
+    var mtlLoader = new THREE.MTLLoader();
+    mtlLoader.setBaseUrl('../model/male02/');
+    mtlLoader.setPath('../model/male02/');
+    mtlLoader.load('male02_dds.mtl', function (materials) {
+        materials.preload();
+        var objLoader = new THREE.OBJLoader();
+        objLoader.setMaterials(materials);
+        objLoader.setPath('../model/male02/');
+        objLoader.load('male02.obj', function (object) {
+            object.scale.set(.7, .7, .7);
+            object.rotation.set(0, 0.4 * Math.PI, 0);
+            object.position.set(0, -60, -60);
+            scene.add(object);
+            render();
+        });
+    });
     light.position.set(-100, 200, -100);
     scene.add(light);
 
@@ -116,7 +113,6 @@
     spotLight_3.position.set(-360, -360, 500);
     spotLight_3.castShadow = true;
     scene.add(spotLight_3);
-
 
     scene.add(new THREE.AmbientLight(0x444444));
 

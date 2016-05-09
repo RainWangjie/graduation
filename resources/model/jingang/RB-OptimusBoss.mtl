@@ -1,9 +1,4 @@
-# 
-# Wavefront material file
-# Converted by the DEEP Exploration  Deep Exploration 6.5 x64 6.5.0.9182
-# Right Hemisphere, LTD
-# http://www.righthemisphere.com/
-# 
+# Material Count: 2
 
 newmtl RB_OptimusBoss_MATINST
 Ka 0 0 0
@@ -12,14 +7,7 @@ Ks 0 0 0
 illum 2
 Ns 10
 map_Kd RB_Optimus_TextSet_Color_NormX.png
-map_bump 
-bump 
-map_opacity 
-map_d 
-refl 
-map_kS 
-map_kA 
-map_Ns 
+
 
 newmtl RB_OptimusHead_MATINST
 Ka 0 0 0
@@ -28,14 +16,7 @@ Ks 0 0 0
 illum 2
 Ns 10
 map_Kd RB_OptimusHead_TEXTSET_Color_NormX.png
-map_bump
-bump
-map_opacity
-map_d
-refl
-map_kS
-map_kA
-map_Ns
+
 
 newmtl Explorer_Default
 Ka 0.117647 0.117647 0.117647
@@ -43,12 +24,3 @@ Kd 0.752941 0.752941 0.752941
 Ks 0.752941 0.752941 0.752941
 illum 2
 Ns 8
-map_Kd 
-map_bump 
-bump 
-map_opacity 
-map_d 
-refl 
-map_kS 
-map_kA 
-map_Ns 
