@@ -24,43 +24,75 @@
 <body>
 <script>
     var scene = new THREE.Scene();
-
     var light = new THREE.PointLight(0xffffff);
-
-    THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader);
-    var mtlLorder = new THREE.MTLLoader();
-    mtlLorder.setBaseUrl('../model/jingang/');
-    mtlLorder.setPath('../model/jingang/');
-    mtlLorder.setMaterialOptions({
-        side: THREE.DoubleSide,
-        //        wrap: THREE.MirroredRepeatWrapping,
-        //        normalizeRGB: true
+    //    THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader);
+    //    var mtlLoader = new THREE.MTLLoader();
+    //    mtlLoader.setBaseUrl('../model/jingang/');
+    //    mtlLoader.setPath('../model/jingang/');
+    //    mtlLoader.setMaterialOptions({
+    //        side: THREE.DoubleSide,
+    //        //        wrap: THREE.MirroredRepeatWrapping,
+    //        //        normalizeRGB: true
+    //    });
+    //    mtlLoader.load('jingang.mtl', function (materials) {
+    //        materials.preload();
+    //        var objLoader = new THREE.OBJLoader();
+    //        objLoader.setMaterials(materials);
+    //        objLoader.setPath('../model/jingang/');
+    //        objLoader.load('jingang.obj', function (jingang) {
+    //            //            jingang.scale.set(.2, .2, .2);
+    //            //            jingang.position.y = -60;
+    //            jingang.rotation.set(0, -0.25 * Math.PI, 0);
+    //            jingang.updateMatrix();
+    //            scene.add(jingang);
+    //            render();
+    //        })
+    //    });
+    var manager = new THREE.LoadingManager();
+    var texture = new THREE.Texture();
+    var loader = new THREE.ImageLoader(manager);
+    loader.load('../model/bb/mk5.jpg', function (image) {
+        texture.image = image;
+        texture.needsUpdate = true;
     });
-    mtlLorder.load('jingang.mtl', function (materials) {
-        materials.preload();
-        var objLoader = new THREE.OBJLoader();
-        objLoader.setMaterials(materials);
-        objLoader.setPath('../model/jingang/');
-        objLoader.load('jingang.obj', function (jingang) {
-            //            jingang.scale.set(.2, .2, .2);
-            //            jingang.position.y = -60;
-            jingang.rotation.set(0, -0.25 * Math.PI, 0);
-            jingang.updateMatrix();
-            scene.add(jingang);
-            render();
-        })
+
+    var manager_1 = new THREE.LoadingManager();
+    var texture_1 = new THREE.Texture();
+    var loader_bump = new THREE.ImageLoader(manager);
+    loader_bump.load('../model/bb/mtl.jpg', function (image) {
+        texture_1.image = image;
+        texture_1.needsUpdate = true;
     });
 
-    //    obj+mtl
-    var mtlLorder = new THREE.MTLLoader();
-    mtlLorder.setBaseUrl('../model/bb/');
-    mtlLorder.setPath('../model/bb/');
-    mtlLorder.setMaterialOptions({
+    var loader_1 = new THREE.OBJLoader(manager);
+    loader_1.load('../model/bb/bbb.obj', function (object) {
+        object.traverse(function (child) {
+            if (child instanceof THREE.Mesh) {
+                child.material.color = new THREE.Color(0xffffff);
+//                child.material.specular = new THREE.Color(0x888888);
+                child.material.map = texture;
+                child.material.bumpMap = texture_1;
+                child.material.side = THREE.DoubleSide;
+                child.material.shading = THREE.SmoothShading;
+            }
+        });
+        object.scale.set(1, 1, 1);
+        object.position.set(0, -100, 0);
+        object.rotation.set(0, .25 * Math.PI, 0);
+        object.updateMatrix();
+        scene.add(object);
+    });
+    //obj+mtl
+    var model;
+    var mtlLoader = new THREE.MTLLoader();
+    mtlLoader.setBaseUrl('../model/bb/');
+    mtlLoader.setPath('../model/bb/');
+    mtlLoader.setMaterialOptions({
         side: THREE.DoubleSide,
         wrap: THREE.MirroredRepeatWrapping,
         normalizeRGB: true
     });
-    mtlLorder.load('bbb.mtl', function (materials) {
+    mtlLoader.load('bbb.mtl', function (materials) {
         console.log(materials);
         materials.preload();
         var objLoader = new THREE.OBJLoader();
@@ -68,29 +100,29 @@
         objLoader.setPath('../model/bb/');
         objLoader.load('bbb.obj', function (jingang) {
             jingang.scale.set(1, 1, 1);
-            jingang.position.set(0, -150, 60);
+            jingang.position.set(0, -180, 0);
             jingang.rotation.set(0, .25 * Math.PI, 0);
             jingang.updateMatrix();
             scene.add(jingang);
             render();
         })
     });
-    var mtlLoader = new THREE.MTLLoader();
-    mtlLoader.setBaseUrl('../model/male02/');
-    mtlLoader.setPath('../model/male02/');
-    mtlLoader.load('male02_dds.mtl', function (materials) {
-        materials.preload();
-        var objLoader = new THREE.OBJLoader();
-        objLoader.setMaterials(materials);
-        objLoader.setPath('../model/male02/');
-        objLoader.load('male02.obj', function (object) {
-            object.scale.set(.7, .7, .7);
-            object.rotation.set(0, 0.4 * Math.PI, 0);
-            object.position.set(0, -60, -60);
-            scene.add(object);
-            render();
-        });
-    });
+    //        var mtlLoader = new THREE.MTLLoader();
+    //        mtlLoader.setBaseUrl('../model/male02/');
+    //        mtlLoader.setPath('../model/male02/');
+    //        mtlLoader.load('male02_dds.mtl', function (materials) {
+    //            materials.preload();
+    //            var objLoader = new THREE.OBJLoader();
+    //            objLoader.setMaterials(materials);
+    //            objLoader.setPath('../model/male02/');
+    //            objLoader.load('male02.obj', function (object) {
+    //                object.scale.set(.7, .7, .7);
+    //                object.rotation.set(0, 0.4 * Math.PI, 0);
+    //                object.position.set(0, -60, -60);
+    //                scene.add(object);
+    //                render();
+    //            });
+    //        });
     light.position.set(-100, 200, -100);
     scene.add(light);
 
@@ -99,16 +131,16 @@
     scene.add(directionalLight);
 
     //3个聚光灯
-    var spotLight_1 = new THREE.SpotLight(0xffffff, 1.75, 2000, Math.PI / 3);
-    spotLight_1.position.set(0, 500, 500);
-    spotLight_1.target.position.set(0, 0, 0);
-    spotLight_1.castShadow = true;
-    scene.add(spotLight_1);
-    var spotLight_2 = new THREE.SpotLight(0xffffff, 1.75, 2000, Math.PI / 3);
-    spotLight_2.position.set(500, 0, 300);
-    spotLight_2.target.position.set(0, 0, 0);
-    spotLight_2.castShadow = true;
-    scene.add(spotLight_2);
+    //    var spotLight_1 = new THREE.SpotLight(0xffffff, 1.75, 2000, Math.PI / 3);
+    //    spotLight_1.position.set(0, 500, 500);
+    //    spotLight_1.target.position.set(0, 0, 0);
+    //    spotLight_1.castShadow = true;
+    //    scene.add(spotLight_1);
+    //    var spotLight_2 = new THREE.SpotLight(0xffffff, 1.75, 2000, Math.PI / 3);
+    //    spotLight_2.position.set(500, 0, 300);
+    //    spotLight_2.target.position.set(0, 0, 0);
+    //    spotLight_2.castShadow = true;
+    //    scene.add(spotLight_2);
     var spotLight_3 = new THREE.SpotLight(0xffffff, 1.75, 2000, Math.PI / 3);
     spotLight_3.position.set(-360, -360, 500);
     spotLight_3.castShadow = true;

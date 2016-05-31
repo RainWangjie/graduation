@@ -30,7 +30,6 @@ d 1.000000
 
 
 newmtl initialShadingGroup
-Kd 0.00 0.00 0.00
 Ka 0.42 0.42 0.42
 Tf 1.00 1.00 1.00
 map_bump m-2.jpg
