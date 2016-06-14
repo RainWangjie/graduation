@@ -25,55 +25,38 @@
 <script>
     var scene = new THREE.Scene();
     var light = new THREE.PointLight(0xffffff);
-    //    THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader);
-    //    var mtlLoader = new THREE.MTLLoader();
-    //    mtlLoader.setBaseUrl('../model/jingang/');
-    //    mtlLoader.setPath('../model/jingang/');
-    //    mtlLoader.setMaterialOptions({
-    //        side: THREE.DoubleSide,
-    //        //        wrap: THREE.MirroredRepeatWrapping,
-    //        //        normalizeRGB: true
-    //    });
-    //    mtlLoader.load('jingang.mtl', function (materials) {
-    //        materials.preload();
-    //        var objLoader = new THREE.OBJLoader();
-    //        objLoader.setMaterials(materials);
-    //        objLoader.setPath('../model/jingang/');
-    //        objLoader.load('jingang.obj', function (jingang) {
-    //            //            jingang.scale.set(.2, .2, .2);
-    //            //            jingang.position.y = -60;
-    //            jingang.rotation.set(0, -0.25 * Math.PI, 0);
-    //            jingang.updateMatrix();
-    //            scene.add(jingang);
-    //            render();
-    //        })
-    //    });
+
     var manager = new THREE.LoadingManager();
     var texture = new THREE.Texture();
     var loader = new THREE.ImageLoader(manager);
-    loader.load('../model/bb/mk5.jpg', function (image) {
+    loader.crossOrigin = '*';
+    loader.load('http://o830wpqbz.bkt.clouddn.com/mk5.jpg', function (image) {
         texture.image = image;
         texture.needsUpdate = true;
     });
-
+    var material_cloth, material_cloth_2, objLoader_2;
     var manager_1 = new THREE.LoadingManager();
     var texture_1 = new THREE.Texture();
     var loader_bump = new THREE.ImageLoader(manager);
-    loader_bump.load('../model/bb/mtl.jpg', function (image) {
+    loader_bump.crossOrigin = '*';
+    loader_bump.load('http://o830wpqbz.bkt.clouddn.com/mtl.jpg', function (image) {
         texture_1.image = image;
         texture_1.needsUpdate = true;
     });
 
     var loader_1 = new THREE.OBJLoader(manager);
-    loader_1.load('../model/bb/bbb.obj', function (object) {
+    loader_1.crossOrigin = '*';
+    loader_1.load('http://o830wpqbz.bkt.clouddn.com/bbb.obj', function (object) {
         object.traverse(function (child) {
             if (child instanceof THREE.Mesh) {
                 child.material.color = new THREE.Color(0xffffff);
 //                child.material.specular = new THREE.Color(0x888888);
+//                child.material.wireframe = true;
                 child.material.map = texture;
                 child.material.bumpMap = texture_1;
                 child.material.side = THREE.DoubleSide;
                 child.material.shading = THREE.SmoothShading;
+                material_cloth = child.material;
             }
         });
         object.scale.set(1, 1, 1);
@@ -85,8 +68,9 @@
     //obj+mtl
     var model;
     var mtlLoader = new THREE.MTLLoader();
-    mtlLoader.setBaseUrl('../model/bb/');
-    mtlLoader.setPath('../model/bb/');
+    mtlLoader.setBaseUrl('http://o830wpqbz.bkt.clouddn.com/');
+    mtlLoader.setPath('http://o830wpqbz.bkt.clouddn.com/');
+    mtlLoader.crossOrigin = '*';
     mtlLoader.setMaterialOptions({
         side: THREE.DoubleSide,
         wrap: THREE.MirroredRepeatWrapping,
@@ -96,33 +80,21 @@
         console.log(materials);
         materials.preload();
         var objLoader = new THREE.OBJLoader();
+        objLoader_2 = objLoader;
         objLoader.setMaterials(materials);
-        objLoader.setPath('../model/bb/');
+        objLoader.setPath('http://o830wpqbz.bkt.clouddn.com/');
+        objLoader.crossOrigin = '*';
         objLoader.load('bbb.obj', function (jingang) {
             jingang.scale.set(1, 1, 1);
             jingang.position.set(0, -180, 0);
             jingang.rotation.set(0, .25 * Math.PI, 0);
             jingang.updateMatrix();
             scene.add(jingang);
+            model=jingang;
             render();
         })
     });
-    //        var mtlLoader = new THREE.MTLLoader();
-    //        mtlLoader.setBaseUrl('../model/male02/');
-    //        mtlLoader.setPath('../model/male02/');
-    //        mtlLoader.load('male02_dds.mtl', function (materials) {
-    //            materials.preload();
-    //            var objLoader = new THREE.OBJLoader();
-    //            objLoader.setMaterials(materials);
-    //            objLoader.setPath('../model/male02/');
-    //            objLoader.load('male02.obj', function (object) {
-    //                object.scale.set(.7, .7, .7);
-    //                object.rotation.set(0, 0.4 * Math.PI, 0);
-    //                object.position.set(0, -60, -60);
-    //                scene.add(object);
-    //                render();
-    //            });
-    //        });
+
     light.position.set(-100, 200, -100);
     scene.add(light);
 
@@ -162,6 +134,14 @@
     function render() {
         renderer.render(scene, camera);
     }
+    document.addEventListener('keydown', function (e) {
+        if (e.which == 90) {
+            console.log('1', material_cloth);
+            console.log('2', model);
+            material_cloth.wireframe = !material_cloth.wireframe;
+        }
+    });
+
 </script>
 </body>
 </html>
