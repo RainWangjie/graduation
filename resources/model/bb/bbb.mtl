@@ -32,7 +32,7 @@ d 1.000000
 newmtl initialShadingGroup
 Ka 0.42 0.42 0.42
 Tf 1.00 1.00 1.00
-map_bump m-2.jpg
+map_bump mtl.jpg
 bump -s 0.5 0.5 1 -bm mult
 Ni 1.00
 illum 4
