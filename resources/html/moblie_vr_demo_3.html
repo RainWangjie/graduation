@@ -51,9 +51,7 @@
 
     //贴图模型obj＋img
     var manager_1 = new THREE.LoadingManager();
-
     var texture_1 = new THREE.Texture();
-
     var imgLoader_1 = new THREE.ImageLoader(manager_1);
     imgLoader_1.load('../model/jingang/RB_Optimus_TextSet_Color_NormX.png', function (image) {
         texture_1.image = image;
@@ -73,10 +71,8 @@
         scene.add(jingang);
     });
 
-
     camera.position.set(device.x, device.y, device.z);
     camera.lookAt(scene.position);
-
 
     var light = new THREE.PointLight(0xffffff);
     light.position.set(-100, 200, -100);

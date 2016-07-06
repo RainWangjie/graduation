@@ -11,14 +11,17 @@
     <script src="../js/MTLLoader.js"></script>
     <script src="../js/OBJMTLLoader.js"></script>
     <style>
-        body{
+        body {
+            background: url("http://7xs7nv.com1.z0.glb.clouddn.com/bg.jpeg");
+            background-size: auto 100%;
+            background-position: center;
+            background-repeat: no-repeat;
             margin: 0;
         }
     </style>
 </head>
 
 <body>
-
 <script>
     var scene = new THREE.Scene();
     var clock = new THREE.Clock();
@@ -31,50 +34,65 @@
     //    scene.add(mesh);
 
     //贴图模型obj＋img
-    var manager_1 = new THREE.LoadingManager();
+    //    var manager_1 = new THREE.LoadingManager();
+    //
+    //    var texture_1 = new THREE.Texture();
+    //
+    //    var imgLoader_1 = new THREE.ImageLoader(manager_1);
+    //    imgLoader_1.load('http://7xs7nv.com1.z0.glb.clouddn.com/RB_Optimus_TextSet_Color_NormX.png', function (image) {
+    //        texture_1.image = image;
+    //        texture_1.image.crossOrigin = true;
+    //        texture_1.needsUpdate = true;
+    //    });
 
-    var texture_1 = new THREE.Texture();
+    //    var axis = new THREE.AxisHelper(100);
+    //    scene.add(axis);
 
-    var imgLoader_1 = new THREE.ImageLoader(manager_1);
-    imgLoader_1.load('../model/jingang/RB_Optimus_TextSet_Color_NormX.png', function (image) {
-        texture_1.image = image;
-        texture_1.needsUpdate = true;
-    });
+    //    var loader = new THREE.OBJLoader();
+    //    loader.load('../model/cloth/Hight.obj', function (jingang) {
+    //        jingang.traverse(function (child) {
+    //            if (child instanceof THREE.Mesh) {
+    //                child.material.map = texture_1;
+    //            }
+    //        });
+    //        jingang.scale.set(2, 2, 2);
+    //        jingang.position.x = 10;
+    //        jingang.position.y = -70;
+    //        jingang.position.z = 10;
+    //        jingang.rotation.x = -.5 * Math.PI;
+    //        jingang.rotation.y = .25 * Math.PI;
+    //        jingang.rotation.z = -.25 * Math.PI;
+    //        scene.add(jingang);
+    //    });
 
-    var loader = new THREE.OBJLoader(manager_1);
-    loader.crossOrigin = '*';
-    loader.load('../model/jingang/RB-OptimusBoss.obj', function (jingang) {
-        jingang.traverse(function (child) {
-            if (child instanceof THREE.Mesh) {
-                child.material.map = texture_1;
-            }
-        });
-        jingang.scale.set(.2, .2, .2);
-        jingang.position.x = -30;
-        jingang.position.y = -50;
-        jingang.rotation.x = -.5 * Math.PI;
-        jingang.rotation.z = -.25 * Math.PI;
-        scene.add(jingang);
-    });
 
-    //obj+mtl
-    THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader);
+    //    obj+mtl
+//    THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader);
     var mtlLorder = new THREE.MTLLoader();
-    mtlLorder.crossOrigin ='*';
-    mtlLorder.setBaseUrl('../model/jingang/');
-    mtlLorder.setPath('../model/jingang/');
-    mtlLorder.load('RB-OptimusBoss.mtl', function (materials) {
+
+    mtlLorder.setBaseUrl('../model/bb/');
+    mtlLorder.setPath('../model/bb/');
+    mtlLorder.setMaterialOptions({
+        side:THREE.DoubleSide,
+//        wrap:THREE.MirroredRepeatWrapping,
+        normalizeRGB:true
+    });
+    mtlLorder.load('bbb.mtl', function (materials) {
+
         materials.preload();
         var objLoader = new THREE.OBJLoader();
         objLoader.crossOrigin = '*';
         objLoader.setMaterials(materials);
-        objLoader.setPath('../model/jingang/');
-        objLoader.load('RB-OptimusBoss.obj', function (jingang) {
-            jingang.scale.set(.1, .1, .1);
-            jingang.position.x = 30;
-            jingang.rotation.x = -.5 * Math.PI;
-            jingang.rotation.z = -.25 * Math.PI;
+        objLoader.setPath('../model/bb/');
+        objLoader.load('bbb.obj', function (jingang) {
+            jingang.scale.set(2, 2, 2);
+            jingang.position.y = -300;
+            jingang.updateMatrix();
+//                jingang.position.x = 30;
+//                jingang.rotation.x = -.5 * Math.PI;
+//                jingang.rotation.z = -.25 * Math.PI;
             scene.add(jingang);
+            render();
         })
     });
 
@@ -87,18 +105,30 @@
     directionalLight.position.set(0, 0, 1).normalize();
     scene.add(directionalLight);
 
-    var spotLight = new THREE.SpotLight(0xffffff);
-    spotLight.position.z = 70;
-    spotLight.castShadow = true;
-    scene.add(spotLight);
+    //3个聚光灯
+    var spotLight_1 = new THREE.SpotLight(0xffffff, 1.75, 2000, Math.PI / 3);
+    spotLight_1.position.set(0, 500, 500);
+    spotLight_1.target.position.set(0, 0, 0);
+    spotLight_1.castShadow = true;
+    scene.add(spotLight_1);
+    var spotLight_2 = new THREE.SpotLight(0xffffff, 1.75, 2000, Math.PI / 3);
+    spotLight_2.position.set(500, 0, 300);
+    spotLight_2.target.position.set(0, 0, 0);
+    spotLight_2.castShadow = true;
+    scene.add(spotLight_2);
+    var spotLight_3 = new THREE.SpotLight(0xffffff, 1.75, 2000, Math.PI / 3);
+    spotLight_3.position.set(-360, -360, 500);
+    spotLight_3.castShadow = true;
+    scene.add(spotLight_3);
 
-    scene.add(new THREE.AmbientLight(0x101030));
+
+    scene.add(new THREE.AmbientLight(0x444444));
 
     var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, .1, 1000);
-    camera.position.set(200, 200, 200);
+    camera.position.set(200, 100, 200);
     camera.lookAt(scene.position);
 
-    var renderer = new THREE.WebGLRenderer({antialiasing: true});
+    var renderer = new THREE.WebGLRenderer({antialiasing: true, alpha: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
@@ -107,14 +137,6 @@
 
     function render() {
         renderer.render(scene, camera);
-    }
-    animate();
-
-    function animate() {
-//        var d = clock.getDelta();
-//        controls.update(d);
-        window.requestAnimationFrame(animate);
-        render()
     }
 </script>
 </body>
