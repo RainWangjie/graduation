@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>全景图</title>
+    <style>
+
+    </style>
+</head>
+<body>
+<div class="container">
+
+</div>
+<script src="../js/three.min.js"></script>
+<script>
+    /*
+     全景图路径
+     */
+    var loadTexture = function (path) {
+        var texture = new THREE.Texture();
+        var loader = new THREE.ImageLoader();
+
+        var onLoad = function (img) {
+            texture.needsUpdate = true;
+            texture.image = img;
+            createScene(texture);
+        };
+
+        loader.load(path, onLoad);
+    };
+
+    var scene, camera, renderer;
+
+    var createScene = function (texture) {
+
+        // The chosen renderer depends on whether WebGL is supported or not
+        renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        scene = new THREE.Scene();
+
+        camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 1, 300);
+        camera.position.set(0, 0, 0);
+        scene.add(camera);
+
+        // Sphere
+        var geometry = new THREE.SphereGeometry(200, 32, 32);
+        var material = new THREE.MeshBasicMaterial({map: texture, overdraw: true});
+        var mesh = new THREE.Mesh(geometry, material);
+        mesh.scale.x = -1;
+        scene.add(mesh);
+
+        // Canvas container
+        var canvas_container = document.createElement('div');
+        canvas_container.style.position = 'absolute';
+        canvas_container.style.zIndex = 0;
+        document.getElementsByClassName('container')[0].appendChild(canvas_container);
+
+        if (user_interactions_allowed) {
+            addEvent(canvas_container, 'mousedown', onMouseDown);
+            addEvent(document, 'mousemove', onMouseMove);
+            addEvent(canvas_container, 'mousemove', showNavbar);
+            addEvent(document, 'mouseup', onMouseUp);
+
+            addEvent(canvas_container, 'touchstart', onTouchStart);
+            addEvent(document, 'touchend', onMouseUp);
+            addEvent(document, 'touchmove', onTouchMove);
+
+            addEvent(canvas_container, 'mousewheel', onMouseWheel);
+            addEvent(canvas_container, 'DOMMouseScroll', onMouseWheel);
+        }
+
+        render();
+    };
+
+    var render = function () {
+        var point = new THREE.Vector3();
+        point.setX(Math.cos(lat) * Math.sin(long));
+        point.setY(Math.sin(lat));
+        point.setZ(Math.cos(lat) * Math.cos(long));
+
+        camera.lookAt(point);
+
+        renderer.render(scene, camera);
+    };
+</script>
+</body>
+</html>

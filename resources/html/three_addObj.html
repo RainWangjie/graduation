@@ -79,6 +79,7 @@
     mtlLoader.load('bbb.mtl', function (materials) {
         console.log(materials);
         materials.preload();
+        materials.shading = THREE.SmoothShading;
         var objLoader = new THREE.OBJLoader();
         objLoader_2 = objLoader;
         objLoader.setMaterials(materials);
@@ -90,7 +91,7 @@
             jingang.rotation.set(0, .25 * Math.PI, 0);
             jingang.updateMatrix();
             scene.add(jingang);
-            model=jingang;
+            model = jingang;
             render();
         })
     });
@@ -136,7 +137,6 @@
     }
     document.addEventListener('keydown', function (e) {
         if (e.which == 90) {
-            console.log('1', material_cloth);
             console.log('2', model);
             material_cloth.wireframe = !material_cloth.wireframe;
         }
