@@ -3,36 +3,474 @@
 <head>
     <meta charset="UTF-8">
     <title>vue_study</title>
+    <style>
+        body {
+            margin: 0;
+            padding-bottom: 50px;
+        }
+
+        div, ul {
+            margin: 10px;
+        }
+
+        /* 必需 */
+        .expand-transition {
+            transition: all .3s ease;
+            height: 30px;
+            padding: 10px;
+            background-color: #eee;
+            overflow: hidden;
+        }
+
+        /* .expand-enter 定义进入的开始状态 */
+        /* .expand-leave 定义离开的结束状态 */
+        .expand-enter, .expand-leave {
+            height: 0;
+            padding: 0 10px;
+            opacity: 0;
+        }
+
+        .bounce-transition {
+            display: inline-block; /* 否则 scale 动画不起作用 */
+        }
+
+        .bounce-enter {
+            animation: bounce-in .5s;
+        }
+
+        .bounce-leave {
+            animation: bounce-out .5s;
+        }
+
+        @keyframes bounce-in {
+            0% {
+                transform: scale(0);
+            }
+            50% {
+                transform: scale(1.5);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes bounce-out {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.5);
+            }
+            100% {
+                transform: scale(0);
+            }
+        }
+
+        .fade-transition {
+            transition: opacity .3s ease;
+        }
+
+        .fade-enter, .fade-leave {
+            opacity: 0;
+        }
+    </style>
     <script src="../js/vue.js"></script>
 </head>
 <body>
 <!-- 这是我们的 View -->
+赋值,计算
+<div id="example">
+    a={{ a }}, b={{ b }}
+</div>
+赋值
 <div id="example-1">
     Hello {{ name }}!
 </div>
+if方法
 <div id="example-2">
     <p v-if="greeting">Hello!</p>
 </div>
+数组遍历
+<ul id="example-3">
+    <li v-for="item in items">
+        {{ item.message }}
+    </li>
+</ul>
+对象遍历
+<ul id="repeat-object" class="demo">
+    <li v-for="value in object">
+        {{ $key }} : {{ value }}
+    </li>
+</ul>
+方法处理
+<div id="example4">
+    <button v-on:click="greet2">Greet</button>
+</div>
+内联语句
+<div id="example5">
+    <button v-on:click="say('hi',$event)">Say Hi</button>
+    <button v-on:click="say('what',$event)">Say What</button>
+</div>
 
+表单控件
+<div id="example6">
+    <span>Message is: {{ message }}</span>
+    <br>
+    <input type="text" v-model="message" placeholder="edit me">
+</div>
+复选框
+<div id="example7">
+    <input type="checkbox" id="checkbox" v-model="checked">
+    <label for="checkbox">{{ checked }}</label>
+</div>
+<div id="example8">
+    <input type="checkbox" id="jack" value="Jack" v-model="checkedNames">
+    <label for="jack">Jack</label>
+    <input type="checkbox" id="john" value="John" v-model="checkedNames">
+    <label for="john">John</label>
+    <input type="checkbox" id="mike" value="Mike" v-model="checkedNames">
+    <label for="mike">Mike</label>
+    <br>
+    <span>Checked names: {{ checkedNames | json }}</span>
+</div>
+单选框
+<div id="example9">
+    <input type="radio" id="one" value="One" v-model="picked">
+    <label for="one">One</label>
+    <br>
+    <input type="radio" id="two" value="Two" v-model="picked">
+    <label for="two">Two</label>
+    <br>
+    <span>Picked: {{ picked }}</span>
+</div>
+<div id="example10">
+    <select v-model="selected">
+        <option selected>A</option>
+        <option>B</option>
+        <option>C</option>
+    </select>
+    <span>Selected: {{ selected}}</span>
+</div>
+select动态渲染
+<div id="example11">
+    <select v-model="selected2">
+        <option v-for="option in options" v-bind:value="option.value">
+            {{ option.text }}
+        </option>
+    </select>
+    <span>Selected: {{ selected2 }}</span>
+</div>
+CSS过渡
+<div id="example12">
+    <div v-if="show" transition="expand"></div>
+    <button v-on:click="togglebtn">toggle</button>
+</div>
+CSS动画
+<div id="example13">
+    <span v-show="show" transition="bounce">Look at me!</span><br>
+    <button v-on:click="togglebtn2">toggle</button>
+</div>
+extend 组件
+<div id="mount-point">
 
+</div>
+props传递数据
+<div id="example14">
+    <child msg="hello!"></child>
+</div>
+动态props
+<div id="example15">
+    <input v-model="parentMsg">
+    <br>
+    <child v-bind:my-message="parentMsg"></child>
+</div>
+父子组件通讯
+<!-- 子组件模板 -->
+<template id="child-template">
+    <input v-model="msg">
+    <button v-on:click="notify">Dispatch Event</button>
+</template>
+
+<!-- 父组件模板 -->
+<div id="events-example">
+    <p>Messages: {{ messages | json }}</p>
+    <child v-on:child-msg="handleIt"></child>
+</div>
+动态组件
+<div id="example16">
+    <input type="radio" value="v-a" id="a" name="view" v-model="view">
+    <label for="a">A</label>
+    <input type="radio" value="v-b" id="b" name="view" v-model="view">
+    <label for="b">B</label>
+    <component
+            :is="view"
+            transition="fade"
+            transition-mode="out-in">
+    </component>
+</div>
+自定义指令
+<div id="example17">
+    <div id="demo" v-demo:hello.a.b="msg"></div>
+</div>
 <script>
-    // 这是我们的 Model
-    var exampleData = {
-        name: 'Vue.js'
-    };
-
-    // 创建一个 Vue 实例或 "ViewModel"
-    // 它连接 View 与 Model
-    var exampleVM = new Vue({
-        el: '#example-1',
-        data: exampleData
+    new Vue({
+        el: '#example',
+        data: {
+            a: 1
+        },
+        computed: {
+            // 一个计算属性的 getter
+            b: function () {
+                // `this` 指向 vm 实例
+                return this.a + 1
+            }
+        }
     });
-
-
-    var exampleVM2 = new Vue({
+    new Vue({
+        el: '#example-1',
+        data: {
+            name: 'Vue.js'
+        }
+    });
+    new Vue({
         el: '#example-2',
         data: {
             greeting: true
+        }
+    });
+    new Vue({
+        el: '#example-3',
+        data: {
+            items: [
+                {message: 'Foo'},
+                {message: 'Bar'}
+            ]
+        }
+    });
+    new Vue({
+        el: '#repeat-object',
+        data: {
+            object: {
+                FirstName: 'John',
+                LastName: 'Doe',
+                Age: 30
+            }
+        }
+    });
+    new Vue({
+        el: '#example4',
+        data: {
+            name: 'Vue.js'
+        },
+        // 在 `methods` 对象中定义方法
+        methods: {
+            greet2: function (event) {
+                // 方法内 `this` 指向 vm
+                alert('Hello ' + this.name + '!')
+                // `event` 是原生 DOM 事件
+                alert(event.target.tagName)
+            }
+        }
+    });
+    new Vue({
+        el: '#example5',
+        methods: {
+            say: function (msg, event) {
+//                alert(msg)
+                event.preventDefault();
+            }
+        }
+    });
+    new Vue({
+        el: '#example6',
+        data: {
+            message: ''
+        }
+    });
+    new Vue({
+        el: '#example7',
+        data: {
+            changed: false
+        }
+    });
+    new Vue({
+        el: '#example8',
+        data: {
+            checkedNames: []
+        }
+    });
+    new Vue({
+        el: '#example9',
+        data: {
+            picked: ''
+        }
+    });
+    new Vue({
+        el: '#example10',
+        data: {
+            selected: ''
+        }
+    });
+    new Vue({
+        el: '#example11',
+        data: {
+            selected2: 'A',
+            options: [
+                {text: 'One', value: 'A'},
+                {text: 'Two', value: 'B'},
+                {text: 'Three', value: 'C'}
+            ]
+        }
+    });
+    new Vue({
+        el: '#example12',
+        data: {
+            show: true,
+            transitionStatus: 'fade'
+        },
+        transitions: {
+            'expand': {
+                beforeEnter: function (el) {
+                    el.textContent = 'beforeEnter'
+                },
+                enter: function (el) {
+                    el.textContent = 'enter'
+                },
+                afterEnter: function (el) {
+                    el.textContent = 'afterEnter'
+                },
+                enterCancelled: function (el) {
+                    // handle cancellation
+                },
+                beforeLeave: function (el) {
+                    el.textContent = 'beforeLeave'
+                },
+                leave: function (el) {
+                    el.textContent = 'leave'
+                },
+                afterLeave: function (el) {
+                    el.textContent = 'afterLeave'
+                },
+                leaveCancelled: function (el) {
+                    // handle cancellation
+                }
+            }
+        },
+        methods: {
+            togglebtn: function () {
+                this.show = !this.show;
+            }
+        }
+    });
+    new Vue({
+        el: '#example13',
+        data: {
+            show: true,
+            transitionStatus: 'fade'
+        },
+        methods: {
+            togglebtn2: function () {
+                this.show = !this.show;
+            }
+        }
+    });
+    // 创建可复用的构造器
+    var Profile = Vue.extend({
+        template: '<p>{{firstName}} {{lastName}} aka {{alias}}</p>'
+    });
+    // 创建一个 Profile 实例
+    var profile = new Profile({
+        data: {
+            firstName: 'Walter',
+            lastName: 'White',
+            alias: 'Heisenberg'
+        }
+    });
+    // 挂载到元素上
+    profile.$mount('#mount-point');
+    new Vue({
+        el: "#example14",
+        components: {
+            child: {
+                props: ['msg'],
+                template: '<span>{{ msg }},my name is Mr.Rain</span>'
+            }
+        }
+    });
+    new Vue({
+        el: "#example15",
+        components: {
+            child: {
+                props: ['myMessage'],
+                template: '<span>{{ myMessage }},my name is Mr.Rain</span>'
+            }
+        }
+    });
+
+    // 注册子组件
+    // 将当前消息派发出去
+    Vue.component('child', {
+        template: '#child-template',
+        data: function () {
+            return {msg: 'hello'}
+        },
+        methods: {
+            notify: function () {
+                if (this.msg.trim()) {
+                    this.$dispatch('child-msg', this.msg);
+                    this.msg = ''
+                }
+            }
+        }
+    });
+    // 初始化父组件
+    // 将收到消息时将事件推入一个数组
+    var parent = new Vue({
+        el: '#events-example',
+        data: {
+            messages: []
+        },
+        // 在创建实例时 `events` 选项简单地调用 `$on`
+        methods: {
+            'handleIt': function (msg) {
+                // 事件回调内的 `this` 自动绑定到注册它的实例上
+                this.messages.push(msg)
+            }
+        }
+    });
+
+    new Vue({
+        el: '#example16',
+        data: {
+            view: 'v-a'
+        },
+        components: {
+            'v-a': {
+                template: '<div>Component A</div>'
+            },
+            'v-b': {
+                template: '<div>Component B</div>'
+            }
+        }
+    });
+
+    Vue.directive('demo', {
+        bind: function () {
+            console.log('demo bound!')
+        },
+        update: function (value) {
+            this.el.innerHTML =
+                    'name - ' + this.name + '<br>' +
+                    'expression - ' + this.expression + '<br>' +
+                    'argument - ' + this.arg + '<br>' +
+                    'modifiers - ' + JSON.stringify(this.modifiers) + '<br>' +
+                    'value - ' + value
+        }
+    })
+    var demo = new Vue({
+        el: '#example17',
+        data: {
+            msg: 'hello!'
         }
     })
 </script>
