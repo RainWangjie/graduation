@@ -5,6 +5,105 @@
     <title>Title</title>
     <meta name="viewport"
           content="user-scalable=0,width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <style>
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        #main {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        .title {
+            width: 100%;
+            padding: 10px;
+            color: #48A5A8;
+            background: white;
+            border-bottom: 1px solid #e6e6e6;
+        }
+
+        .title:after {
+            position: absolute;
+            right: 13px;
+            font-family: 'icon';
+            content: '\e60f';
+            color: #48A5A8;
+        }
+
+        .title-style {
+            background: white;
+            padding: 5px;
+            border-bottom: 1px solid #e6e6e6;
+        }
+
+        .panel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #f0f0f0;
+            overflow-x: hidden;
+            overflow-y: scroll;
+            transition: all .3s;
+            transform: translate(100%, 0);
+            z-index: 999;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .panel.show {
+            transform: translate(0, 0);
+        }
+
+        ul {
+            padding: 0 10px;
+        }
+
+        ul li {
+            margin: 5px 0;
+            background-color: #fff;
+            float: left;
+            width: 49%;
+        }
+
+        li:nth-child(even) {
+            margin-left: 2%;
+        }
+
+        .salesCount {
+            width: 100%;
+            background: rgba(255, 255, 255, .4);
+            color: #000;
+            text-align: center;
+            position: absolute;
+            bottom: 0;
+            padding: 5px;
+        }
+
+        .clear {
+            clear: both;
+        }
+
+        table {
+            background-color: #fff;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        td {
+            border: 1px solid #ddd;
+            line-height: 1.5em;
+            height: 1.5em;
+            text-align: center;
+            font-size: 12px;
+        }
+    </style>
     <script src="../js/vue.js"></script>
 </head>
 <body>
@@ -14,25 +113,86 @@
          v-for="item in resultData">
         {{item.channel}}
     </div>
-    <template-panel>
+    <panel>
 
-    </template-panel>
+    </panel>
 </div>
 <script>
-    var data =
-    console.log(data);
+    var result = [{
+        channel:'光夜猫',
+        linkedGoods:[{
+            goodsSetInfo:[{
+                goodsId:"1ni2",
+                imageUrl:"https://o5b7zwp5f.qnssl.com/f5V1Q2meGqix8Bef6xtf502s-3U=/Fnf1RX_SP4jx916MEC_GcdEMNVGH",
+                salesCount:27
+            },{
+                goodsId:"1ni2",
+                imageUrl:"https://o5b7zwp5f.qnssl.com/f5V1Q2meGqix8Bef6xtf502s-3U=/Fnf1RX_SP4jx916MEC_GcdEMNVGH",
+                salesCount:27,
+                skuInfo:{
+                    color:1,
+                    sex:1,
+                    style:1
+                }
+            },{
+                goodsId:"1ni2",
+                imageUrl:"https://o5b7zwp5f.qnssl.com/f5V1Q2meGqix8Bef6xtf502s-3U=/Fnf1RX_SP4jx916MEC_GcdEMNVGH",
+                salesCount:23,
+                skuInfo:{
+                    color:1,
+                    sex:1,
+                    style:1
+                }
+            },{
+                goodsId:"1ni2",
+                imageUrl:"https://o5b7zwp5f.qnssl.com/f5V1Q2meGqix8Bef6xtf502s-3U=/Fnf1RX_SP4jx916MEC_GcdEMNVGH",
+                salesCount:27,
+                skuInfo:{
+                    color:1,
+                    sex:1,
+                    style:1
+                }
+            }],
+            style:1,
+            total:2
+        },{
+            goodsSetInfo:[{
+                goodsId:"1ni2",
+                imageUrl:"https://o5b7zwp5f.qnssl.com/f5V1Q2meGqix8Bef6xtf502s-3U=/Fnf1RX_SP4jx916MEC_GcdEMNVGH",
+                salesCount:27
+            },{
+                goodsId:"1ni2",
+                imageUrl:"https://o5b7zwp5f.qnssl.com/f5V1Q2meGqix8Bef6xtf502s-3U=/Fnf1RX_SP4jx916MEC_GcdEMNVGH",
+                salesCount:27,
+                skuInfo:{
+                    color:1,
+                    sex:1,
+                    style:1
+                }
+            }],
+            style:1,
+            total:2
+        }],
+        profitPaid:{
+            1:118,
+            3:2,
+            4:99
+        }
+    }];
+   var data={
+       resultData:result,
+       singlePanel: result.length == 1
+   };
+   console.log(data);
     new Vue({
         el: '#main',
-        data: {
-            resultData: data,
-            singlePanel: data.length == 1
-        }
+        data: data
     });
 
-    Vue.component('template-panel', {
+    Vue.component('panel', {
         props: data,
         template: '#template-panel',
-        component: {
+        components: {
             'template-table': {
                 props: {
                     item: Object
