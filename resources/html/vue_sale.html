@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport"
+          content="user-scalable=0,width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <script src="../js/vue.js"></script>
+</head>
+<body>
+<div id="main">
+    <div class="title"
+         v-if="singlePanel"
+         v-for="item in resultData">
+        {{item.channel}}
+    </div>
+    <template-panel>
+
+    </template-panel>
+</div>
+<script>
+    var data =
+    console.log(data);
+    new Vue({
+        el: '#main',
+        data: {
+            resultData: data,
+            singlePanel: data.length == 1
+        }
+    });
+
+    Vue.component('template-panel', {
+        props: data,
+        template: '#template-panel',
+        component: {
+            'template-table': {
+                props: {
+                    item: Object
+                },
+                template: '#template-table'
+            },
+            'template-list': {
+                props: {
+                    linkedGood: Object
+                },
+                template: '#template-list'
+            }
+        }
+    });
+</script>
+<script type="text/x-template" id="template-panel">
+    <div class="panel" transition="expand" v-for="item in data" :item="item">
+        <template-tabel>
+
+        </template-tabel>
+        <template-list v-for="linkedGood in item.linkedGoods" :linkedGood="linkedGood">
+
+        </template-list>
+    </div>
+</script>
+<script type="text/x-template" id="template-table">
+    <table>
+        <tr>
+            <td colspan="4">{{item.channel}}</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td v-for="linkedGood in item.linkedGoods">
+                {{linkedGood.style}}
+            </td>
+        </tr>
+        <tr>
+            <td>总销量</td>
+            <td v-for="linkedGood in item.linkedGoods">
+                {{linkedGood.total}}
+            </td>
+        </tr>
+        <tr>
+            <td>已分润</td>
+            <td v-for="linkedGood in item.linkedGoods">
+                {{item.profitPaid[inkedGood.style]}}
+            </td>
+        </tr>
+
+        <tr>
+            <td>未分润</td>
+            <td v-for="linkedGood in item.linkedGoods">
+                {{linkedGood.total - item.profitPaid[inkedGood.style]}}
+            </td>
+        </tr>
+    </table>
+</script>
+<script type="text/x-template" id="template-list">
+    <div class="clear"></div>
+    <div class="title-style">
+        {{linkedGood.style}&nbsp;&nbsp;&nbsp;销量：{{linkedGood.total}}件
+    </div>
+    <ul class="content">
+        <li v-for="goods in linkedGood.goodsSetInfo">
+            <div class="tee-front">
+                <a href="/h5/profit/sale-orders/{{goods.goodsId}}">
+                    <img src="{{goods.imageUrl}}">
+                </a>
+                <div class="salesCount">销量：<{{goods.salesCount}}</div>
+            </div>
+        </li>
+        <li class="clear"></li>
+    </ul>
+</script>
+</body>
+</html>
