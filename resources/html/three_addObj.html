@@ -20,12 +20,10 @@
         }
     </style>
 </head>
-
 <body>
 <script>
     var scene = new THREE.Scene();
     var light = new THREE.PointLight(0xffffff);
-
     var manager = new THREE.LoadingManager();
     var texture = new THREE.Texture();
     var loader = new THREE.ImageLoader(manager);
@@ -55,26 +53,27 @@
     });
     mtlLorder.load('bbb.mtl', function (materials) {
 
-    var loader_1 = new THREE.OBJLoader(manager);
-    loader_1.crossOrigin = '*';
-    loader_1.load('http://o830wpqbz.bkt.clouddn.com/bbb.obj', function (object) {
-        object.traverse(function (child) {
-            if (child instanceof THREE.Mesh) {
-                child.material.color = new THREE.Color(0xffffff);
+        var loader_1 = new THREE.OBJLoader(manager);
+        loader_1.crossOrigin = '*';
+        loader_1.load('http://o830wpqbz.bkt.clouddn.com/bbb.obj', function (object) {
+            object.traverse(function (child) {
+                if (child instanceof THREE.Mesh) {
+                    child.material.color = new THREE.Color(0xffffff);
 //                child.material.specular = new THREE.Color(0x888888);
 //                child.material.wireframe = true;
-                child.material.map = texture;
-                child.material.bumpMap = texture_1;
-                child.material.side = THREE.DoubleSide;
-                child.material.shading = THREE.SmoothShading;
-                material_cloth = child.material;
-            }
+                    child.material.map = texture;
+                    child.material.bumpMap = texture_1;
+                    child.material.side = THREE.DoubleSide;
+                    child.material.shading = THREE.SmoothShading;
+                    material_cloth = child.material;
+                }
+            });
+            object.scale.set(1, 1, 1);
+            object.position.set(0, -100, 0);
+            object.rotation.set(0, .25 * Math.PI, 0);
+            object.updateMatrix();
+            scene.add(object);
         });
-        object.scale.set(1, 1, 1);
-        object.position.set(0, -100, 0);
-        object.rotation.set(0, .25 * Math.PI, 0);
-        object.updateMatrix();
-        scene.add(object);
     });
     //obj+mtl
     var model;
@@ -140,6 +139,7 @@
             material_cloth.wireframe = !material_cloth.wireframe;
         }
     });
+
 </script>
 </body>
 </html>
