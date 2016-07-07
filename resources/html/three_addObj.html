@@ -24,80 +24,88 @@
 <body>
 <script>
     var scene = new THREE.Scene();
-    var clock = new THREE.Clock();
+    var light = new THREE.PointLight(0xffffff);
 
-    //    var geometry = new THREE.BoxGeometry(100, 50, 100);
-    //    var material = new THREE.MeshLambertMaterial({
-    //        color: 0xf1f100
-    //    });
-    //    var mesh = new THREE.Mesh(geometry, material);
-    //    scene.add(mesh);
-
-    //贴图模型obj＋img
-    //    var manager_1 = new THREE.LoadingManager();
-    //
-    //    var texture_1 = new THREE.Texture();
-    //
-    //    var imgLoader_1 = new THREE.ImageLoader(manager_1);
-    //    imgLoader_1.load('http://7xs7nv.com1.z0.glb.clouddn.com/RB_Optimus_TextSet_Color_NormX.png', function (image) {
-    //        texture_1.image = image;
-    //        texture_1.image.crossOrigin = true;
-    //        texture_1.needsUpdate = true;
-    //    });
-
-    //    var axis = new THREE.AxisHelper(100);
-    //    scene.add(axis);
-
-    //    var loader = new THREE.OBJLoader();
-    //    loader.load('../model/cloth/Hight.obj', function (jingang) {
-    //        jingang.traverse(function (child) {
-    //            if (child instanceof THREE.Mesh) {
-    //                child.material.map = texture_1;
-    //            }
-    //        });
-    //        jingang.scale.set(2, 2, 2);
-    //        jingang.position.x = 10;
-    //        jingang.position.y = -70;
-    //        jingang.position.z = 10;
-    //        jingang.rotation.x = -.5 * Math.PI;
-    //        jingang.rotation.y = .25 * Math.PI;
-    //        jingang.rotation.z = -.25 * Math.PI;
-    //        scene.add(jingang);
-    //    });
-
+    var manager = new THREE.LoadingManager();
+    var texture = new THREE.Texture();
+    var loader = new THREE.ImageLoader(manager);
+    loader.crossOrigin = '*';
+    loader.load('http://o830wpqbz.bkt.clouddn.com/mk5.jpg', function (image) {
+        texture.image = image;
+        texture.needsUpdate = true;
+    });
+    var material_cloth, material_cloth_2, objLoader_2;
+    var manager_1 = new THREE.LoadingManager();
+    var texture_1 = new THREE.Texture();
+    var loader_bump = new THREE.ImageLoader(manager);
+    loader_bump.crossOrigin = '*';
+    loader_bump.load('http://o830wpqbz.bkt.clouddn.com/mtl.jpg', function (image) {
+        texture_1.image = image;
+        texture_1.needsUpdate = true;
+    });
 
     //    obj+mtl
-//    THREE.Loader.Handlers.add(/\.dds$/i, new THREE.DDSLoader);
     var mtlLorder = new THREE.MTLLoader();
-
     mtlLorder.setBaseUrl('../model/bb/');
     mtlLorder.setPath('../model/bb/');
     mtlLorder.setMaterialOptions({
         side:THREE.DoubleSide,
-//        wrap:THREE.MirroredRepeatWrapping,
+        //wrap:THREE.MirroredRepeatWrapping,
         normalizeRGB:true
     });
     mtlLorder.load('bbb.mtl', function (materials) {
 
+    var loader_1 = new THREE.OBJLoader(manager);
+    loader_1.crossOrigin = '*';
+    loader_1.load('http://o830wpqbz.bkt.clouddn.com/bbb.obj', function (object) {
+        object.traverse(function (child) {
+            if (child instanceof THREE.Mesh) {
+                child.material.color = new THREE.Color(0xffffff);
+//                child.material.specular = new THREE.Color(0x888888);
+//                child.material.wireframe = true;
+                child.material.map = texture;
+                child.material.bumpMap = texture_1;
+                child.material.side = THREE.DoubleSide;
+                child.material.shading = THREE.SmoothShading;
+                material_cloth = child.material;
+            }
+        });
+        object.scale.set(1, 1, 1);
+        object.position.set(0, -100, 0);
+        object.rotation.set(0, .25 * Math.PI, 0);
+        object.updateMatrix();
+        scene.add(object);
+    });
+    //obj+mtl
+    var model;
+    var mtlLoader = new THREE.MTLLoader();
+    mtlLoader.setBaseUrl('http://o830wpqbz.bkt.clouddn.com/');
+    mtlLoader.setPath('http://o830wpqbz.bkt.clouddn.com/');
+    mtlLoader.crossOrigin = '*';
+    mtlLoader.setMaterialOptions({
+        side: THREE.DoubleSide,
+        wrap: THREE.MirroredRepeatWrapping,
+        normalizeRGB: true
+    });
+    mtlLoader.load('bbb.mtl', function (materials) {
+        console.log(materials);
         materials.preload();
+        materials.shading = THREE.SmoothShading;
         var objLoader = new THREE.OBJLoader();
-        objLoader.crossOrigin = '*';
         objLoader.setMaterials(materials);
-        objLoader.setPath('../model/bb/');
+        objLoader.setPath('http://o830wpqbz.bkt.clouddn.com/');
+        objLoader.crossOrigin = '*';
         objLoader.load('bbb.obj', function (jingang) {
-            jingang.scale.set(2, 2, 2);
-            jingang.position.y = -300;
+            jingang.scale.set(1, 1, 1);
+            jingang.position.set(0, -180, 0);
+            jingang.rotation.set(0, .25 * Math.PI, 0);
             jingang.updateMatrix();
-//                jingang.position.x = 30;
-//                jingang.rotation.x = -.5 * Math.PI;
-//                jingang.rotation.z = -.25 * Math.PI;
             scene.add(jingang);
+            model = jingang;
             render();
         })
     });
 
-
-    var light = new THREE.PointLight(0xffffff);
     light.position.set(-100, 200, -100);
     scene.add(light);
 
@@ -105,22 +113,10 @@
     directionalLight.position.set(0, 0, 1).normalize();
     scene.add(directionalLight);
 
-    //3个聚光灯
-    var spotLight_1 = new THREE.SpotLight(0xffffff, 1.75, 2000, Math.PI / 3);
-    spotLight_1.position.set(0, 500, 500);
-    spotLight_1.target.position.set(0, 0, 0);
-    spotLight_1.castShadow = true;
-    scene.add(spotLight_1);
-    var spotLight_2 = new THREE.SpotLight(0xffffff, 1.75, 2000, Math.PI / 3);
-    spotLight_2.position.set(500, 0, 300);
-    spotLight_2.target.position.set(0, 0, 0);
-    spotLight_2.castShadow = true;
-    scene.add(spotLight_2);
     var spotLight_3 = new THREE.SpotLight(0xffffff, 1.75, 2000, Math.PI / 3);
     spotLight_3.position.set(-360, -360, 500);
     spotLight_3.castShadow = true;
     scene.add(spotLight_3);
-
 
     scene.add(new THREE.AmbientLight(0x444444));
 
@@ -138,6 +134,12 @@
     function render() {
         renderer.render(scene, camera);
     }
+    document.addEventListener('keydown', function (e) {
+        if (e.which == 90) {
+            console.log('2', model);
+            material_cloth.wireframe = !material_cloth.wireframe;
+        }
+    });
 </script>
 </body>
 </html>
