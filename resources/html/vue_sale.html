@@ -20,6 +20,7 @@
             height: 100%;
             overflow: hidden;
         }
+
         .title {
             width: 100%;
             padding: 10px;
@@ -117,99 +118,8 @@
 
     </panel>
 </div>
-<script>
-    var result = [{
-        channel:'光夜猫',
-        linkedGoods:[{
-            goodsSetInfo:[{
-                goodsId:"1ni2",
-                imageUrl:"https://o5b7zwp5f.qnssl.com/f5V1Q2meGqix8Bef6xtf502s-3U=/Fnf1RX_SP4jx916MEC_GcdEMNVGH",
-                salesCount:27
-            },{
-                goodsId:"1ni2",
-                imageUrl:"https://o5b7zwp5f.qnssl.com/f5V1Q2meGqix8Bef6xtf502s-3U=/Fnf1RX_SP4jx916MEC_GcdEMNVGH",
-                salesCount:27,
-                skuInfo:{
-                    color:1,
-                    sex:1,
-                    style:1
-                }
-            },{
-                goodsId:"1ni2",
-                imageUrl:"https://o5b7zwp5f.qnssl.com/f5V1Q2meGqix8Bef6xtf502s-3U=/Fnf1RX_SP4jx916MEC_GcdEMNVGH",
-                salesCount:23,
-                skuInfo:{
-                    color:1,
-                    sex:1,
-                    style:1
-                }
-            },{
-                goodsId:"1ni2",
-                imageUrl:"https://o5b7zwp5f.qnssl.com/f5V1Q2meGqix8Bef6xtf502s-3U=/Fnf1RX_SP4jx916MEC_GcdEMNVGH",
-                salesCount:27,
-                skuInfo:{
-                    color:1,
-                    sex:1,
-                    style:1
-                }
-            }],
-            style:1,
-            total:2
-        },{
-            goodsSetInfo:[{
-                goodsId:"1ni2",
-                imageUrl:"https://o5b7zwp5f.qnssl.com/f5V1Q2meGqix8Bef6xtf502s-3U=/Fnf1RX_SP4jx916MEC_GcdEMNVGH",
-                salesCount:27
-            },{
-                goodsId:"1ni2",
-                imageUrl:"https://o5b7zwp5f.qnssl.com/f5V1Q2meGqix8Bef6xtf502s-3U=/Fnf1RX_SP4jx916MEC_GcdEMNVGH",
-                salesCount:27,
-                skuInfo:{
-                    color:1,
-                    sex:1,
-                    style:1
-                }
-            }],
-            style:1,
-            total:2
-        }],
-        profitPaid:{
-            1:118,
-            3:2,
-            4:99
-        }
-    }];
-   var data={
-       resultData:result,
-       singlePanel: result.length == 1
-   };
-   console.log(data);
-    new Vue({
-        el: '#main',
-        data: data
-    });
-
-    Vue.component('panel', {
-        props: data,
-        template: '#template-panel',
-        components: {
-            'template-table': {
-                props: {
-                    item: Object
-                },
-                template: '#template-table'
-            },
-            'template-list': {
-                props: {
-                    linkedGood: Object
-                },
-                template: '#template-list'
-            }
-        }
-    });
-</script>
 <script type="text/x-template" id="template-panel">
-    <div class="panel" transition="expand" v-for="item in data" :item="item">
+    <div class="panel" :class="{show:false}" v-for="item in data" :item="item">
         <template-tabel>
 
         </template-tabel>
@@ -253,19 +163,117 @@
 <script type="text/x-template" id="template-list">
     <div class="clear"></div>
     <div class="title-style">
-        {{linkedGood.style}&nbsp;&nbsp;&nbsp;销量：{{linkedGood.total}}件
+        品类：{{linkedGood.style}&nbsp;&nbsp;&nbsp;销量：{{linkedGood.total}}件
     </div>
     <ul class="content">
         <li v-for="goods in linkedGood.goodsSetInfo">
             <div class="tee-front">
                 <a href="/h5/profit/sale-orders/{{goods.goodsId}}">
-                    <img src="{{goods.imageUrl}}">
+                    <img src="{{goods.imageUrl}}" width="100%">
                 </a>
                 <div class="salesCount">销量：<{{goods.salesCount}}</div>
             </div>
         </li>
         <li class="clear"></li>
     </ul>
+</script>
+<script>
+    var result = [{
+        channel: '光夜猫',
+        linkedGoods: [{
+            goodsSetInfo: [{
+                goodsId: "1ni2",
+                imageUrl: "https://o5b7zwp5f.qnssl.com/f5V1Q2meGqix8Bef6xtf502s-3U=/Fnf1RX_SP4jx916MEC_GcdEMNVGH",
+                salesCount: 27
+            }, {
+                goodsId: "1ni2",
+                imageUrl: "https://o5b7zwp5f.qnssl.com/f5V1Q2meGqix8Bef6xtf502s-3U=/Fnf1RX_SP4jx916MEC_GcdEMNVGH",
+                salesCount: 27,
+                skuInfo: {
+                    color: 1,
+                    sex: 1,
+                    style: 1
+                }
+            }, {
+                goodsId: "1ni2",
+                imageUrl: "https://o5b7zwp5f.qnssl.com/f5V1Q2meGqix8Bef6xtf502s-3U=/Fnf1RX_SP4jx916MEC_GcdEMNVGH",
+                salesCount: 23,
+                skuInfo: {
+                    color: 1,
+                    sex: 1,
+                    style: 1
+                }
+            }, {
+                goodsId: "1ni2",
+                imageUrl: "https://o5b7zwp5f.qnssl.com/f5V1Q2meGqix8Bef6xtf502s-3U=/Fnf1RX_SP4jx916MEC_GcdEMNVGH",
+                salesCount: 27,
+                skuInfo: {
+                    color: 1,
+                    sex: 1,
+                    style: 1
+                }
+            }],
+            style: 1,
+            total: 2
+        }, {
+            goodsSetInfo: [{
+                goodsId: "1ni2",
+                imageUrl: "https://o5b7zwp5f.qnssl.com/f5V1Q2meGqix8Bef6xtf502s-3U=/Fnf1RX_SP4jx916MEC_GcdEMNVGH",
+                salesCount: 27
+            }, {
+                goodsId: "1ni2",
+                imageUrl: "https://o5b7zwp5f.qnssl.com/f5V1Q2meGqix8Bef6xtf502s-3U=/Fnf1RX_SP4jx916MEC_GcdEMNVGH",
+                salesCount: 27,
+                skuInfo: {
+                    color: 1,
+                    sex: 1,
+                    style: 1
+                }
+            }],
+            style: 1,
+            total: 2
+        }],
+        profitPaid: {
+            1: 118,
+            3: 2,
+            4: 99
+        }
+    }];
+    var data = {
+        resultData: result,
+        singlePanel: result.length == 1
+    };
+    console.log(data);
+
+    Vue.component('panel', {
+        template: '#template-panel',
+        data:{
+          show:false
+        },
+        props: data,
+        replace: true,
+        components: {
+            'template-table': {
+                template: '#template-table',
+                replace: true,
+                props: {
+                    item: Object
+                }
+            },
+            'template-list': {
+                template: '#template-list',
+
+                props: {
+                    linkedGood: Object
+                }
+            }
+        }
+    });
+
+    new Vue({
+        el: '#main',
+        data: data
+    });
 </script>
 </body>
 </html>
