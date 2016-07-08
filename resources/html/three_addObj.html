@@ -20,12 +20,10 @@
         }
     </style>
 </head>
-
 <body>
 <script>
     var scene = new THREE.Scene();
     var light = new THREE.PointLight(0xffffff);
-
     var manager = new THREE.LoadingManager();
     var texture = new THREE.Texture();
     var loader = new THREE.ImageLoader(manager);
@@ -44,26 +42,38 @@
         texture_1.needsUpdate = true;
     });
 
-    var loader_1 = new THREE.OBJLoader(manager);
-    loader_1.crossOrigin = '*';
-    loader_1.load('http://o830wpqbz.bkt.clouddn.com/bbb.obj', function (object) {
-        object.traverse(function (child) {
-            if (child instanceof THREE.Mesh) {
-                child.material.color = new THREE.Color(0xffffff);
+    //    obj+mtl
+    var mtlLorder = new THREE.MTLLoader();
+    mtlLorder.setBaseUrl('../model/bb/');
+    mtlLorder.setPath('../model/bb/');
+    mtlLorder.setMaterialOptions({
+        side:THREE.DoubleSide,
+        //wrap:THREE.MirroredRepeatWrapping,
+        normalizeRGB:true
+    });
+    mtlLorder.load('bbb.mtl', function (materials) {
+
+        var loader_1 = new THREE.OBJLoader(manager);
+        loader_1.crossOrigin = '*';
+        loader_1.load('http://o830wpqbz.bkt.clouddn.com/bbb.obj', function (object) {
+            object.traverse(function (child) {
+                if (child instanceof THREE.Mesh) {
+                    child.material.color = new THREE.Color(0xffffff);
 //                child.material.specular = new THREE.Color(0x888888);
 //                child.material.wireframe = true;
-                child.material.map = texture;
-                child.material.bumpMap = texture_1;
-                child.material.side = THREE.DoubleSide;
-                child.material.shading = THREE.SmoothShading;
-                material_cloth = child.material;
-            }
+                    child.material.map = texture;
+                    child.material.bumpMap = texture_1;
+                    child.material.side = THREE.DoubleSide;
+                    child.material.shading = THREE.SmoothShading;
+                    material_cloth = child.material;
+                }
+            });
+            object.scale.set(1, 1, 1);
+            object.position.set(0, -100, 0);
+            object.rotation.set(0, .25 * Math.PI, 0);
+            object.updateMatrix();
+            scene.add(object);
         });
-        object.scale.set(1, 1, 1);
-        object.position.set(0, -100, 0);
-        object.rotation.set(0, .25 * Math.PI, 0);
-        object.updateMatrix();
-        scene.add(object);
     });
     //obj+mtl
     var model;
@@ -81,7 +91,6 @@
         materials.preload();
         materials.shading = THREE.SmoothShading;
         var objLoader = new THREE.OBJLoader();
-        objLoader_2 = objLoader;
         objLoader.setMaterials(materials);
         objLoader.setPath('http://o830wpqbz.bkt.clouddn.com/');
         objLoader.crossOrigin = '*';
@@ -103,17 +112,6 @@
     directionalLight.position.set(0, 0, 1).normalize();
     scene.add(directionalLight);
 
-    //3个聚光灯
-    //    var spotLight_1 = new THREE.SpotLight(0xffffff, 1.75, 2000, Math.PI / 3);
-    //    spotLight_1.position.set(0, 500, 500);
-    //    spotLight_1.target.position.set(0, 0, 0);
-    //    spotLight_1.castShadow = true;
-    //    scene.add(spotLight_1);
-    //    var spotLight_2 = new THREE.SpotLight(0xffffff, 1.75, 2000, Math.PI / 3);
-    //    spotLight_2.position.set(500, 0, 300);
-    //    spotLight_2.target.position.set(0, 0, 0);
-    //    spotLight_2.castShadow = true;
-    //    scene.add(spotLight_2);
     var spotLight_3 = new THREE.SpotLight(0xffffff, 1.75, 2000, Math.PI / 3);
     spotLight_3.position.set(-360, -360, 500);
     spotLight_3.castShadow = true;
