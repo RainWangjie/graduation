@@ -2,9 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Vue测试</title>
     <meta name="viewport"
           content="user-scalable=0,width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <link type="text/css" rel="stylesheet" href="../css/component.css">
+    <link type="text/css" rel="stylesheet" href="../css/frozen.css">
     <style>
         html,
         body {
@@ -105,77 +107,70 @@
             font-size: 12px;
         }
     </style>
+    <script src="../js/config.js"></script>
     <script src="../js/vue.js"></script>
 </head>
 <body>
 <div id="main">
+    <template v-for="item in resultData">
+        <panel :item="item" :config="config">
+
+        </panel>
+    </template>
+</div>
+<script type="text/x-template" id="my-panel">
     <div class="title"
          v-if="singlePanel"
-         v-for="item in resultData">
+         v-on:click="translate">
         {{item.channel}}
     </div>
-    <panel >
+    <div class="panel" :class="{'show':isShow}">
+        <table>
+            <tr>
+                <td colspan="4">{{item.channel}}</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td v-for="linkedGood in item.linkedGoods">
+                    {{config.style[linkedGood.style].name}}
+                </td>
+            </tr>
+            <tr>
+                <td>总销量</td>
+                <td v-for="linkedGood in item.linkedGoods">
+                    {{linkedGood.total}}
+                </td>
+            </tr>
+            <tr>
+                <td>已分润</td>
+                <td v-for="linkedGood in item.linkedGoods">
+                    {{item.profitPaid[linkedGood.style]}}
+                </td>
+            </tr>
 
-    </panel>
-</div>
-<script type="text/x-template" id="template-panel">
-    <div class="panel" :class="{show:false}" v-for="item in data" :item="item">
-        <template-tabel>
-
-        </template-tabel>
-        <template-list v-for="linkedGood in item.linkedGoods" :linkedGood="linkedGood">
-
-        </template-list>
-    </div>
-</script>
-<script type="text/x-template" id="template-table">
-    <table>
-        <tr>
-            <td colspan="4">{{item.channel}}</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td v-for="linkedGood in item.linkedGoods">
-                {{linkedGood.style}}
-            </td>
-        </tr>
-        <tr>
-            <td>总销量</td>
-            <td v-for="linkedGood in item.linkedGoods">
-                {{linkedGood.total}}
-            </td>
-        </tr>
-        <tr>
-            <td>已分润</td>
-            <td v-for="linkedGood in item.linkedGoods">
-                {{item.profitPaid[inkedGood.style]}}
-            </td>
-        </tr>
-
-        <tr>
-            <td>未分润</td>
-            <td v-for="linkedGood in item.linkedGoods">
-                {{linkedGood.total - item.profitPaid[inkedGood.style]}}
-            </td>
-        </tr>
-    </table>
-</script>
-<script type="text/x-template" id="template-list">
-    <div class="clear"></div>
-    <div class="title-style">
-        品类：{{linkedGood.style}&nbsp;&nbsp;&nbsp;销量：{{linkedGood.total}}件
-    </div>
-    <ul class="content">
-        <li v-for="goods in linkedGood.goodsSetInfo">
-            <div class="tee-front">
-                <a href="/h5/profit/sale-orders/{{goods.goodsId}}">
-                    <img src="{{goods.imageUrl}}" width="100%">
-                </a>
-                <div class="salesCount">销量：<{{goods.salesCount}}</div>
+            <tr>
+                <td>未分润</td>
+                <td v-for="linkedGood in item.linkedGoods">
+                    {{linkedGood.total - item.profitPaid[linkedGood.style]}}
+                </td>
+            </tr>
+        </table>
+        <template v-for="linkedGood in item.linkedGoods">
+            <div class="clear"></div>
+            <div class="title-style">
+                品类：{{config.style[linkedGood.style].name}}&nbsp;&nbsp;&nbsp;销量：{{linkedGood.total}}件
             </div>
-        </li>
-        <li class="clear"></li>
-    </ul>
+            <ul class="content">
+                <li v-for="goods in linkedGood.goodsSetInfo">
+                    <div class="tee-front {{config.getClass(goods.skuInfo.style,goods.skuInfo.sex,goods.skuInfo.color,1)}}">
+                        <img :src="goods.imageUrl">
+                        <div class="salesCount">销量：{{goods.salesCount}}</div>
+                    </div>
+                </li>
+                <li class="clear"></li>
+            </ul>
+        </template>
+    </div>
 </script>
 <script>
     var result = [{
@@ -184,51 +179,23 @@
             goodsSetInfo: [{
                 goodsId: "1ni2",
                 imageUrl: "https://o5b7zwp5f.qnssl.com/f5V1Q2meGqix8Bef6xtf502s-3U=/Fnf1RX_SP4jx916MEC_GcdEMNVGH",
-                salesCount: 27
+                salesCount: 27,
+                skuInfo: {color: 1, sex: 1, style: 1}
             }, {
                 goodsId: "1ni2",
                 imageUrl: "https://o5b7zwp5f.qnssl.com/f5V1Q2meGqix8Bef6xtf502s-3U=/Fnf1RX_SP4jx916MEC_GcdEMNVGH",
                 salesCount: 27,
-                skuInfo: {
-                    color: 1,
-                    sex: 1,
-                    style: 1
-                }
+                skuInfo: {color: 1, sex: 1, style: 1}
             }, {
                 goodsId: "1ni2",
                 imageUrl: "https://o5b7zwp5f.qnssl.com/f5V1Q2meGqix8Bef6xtf502s-3U=/Fnf1RX_SP4jx916MEC_GcdEMNVGH",
                 salesCount: 23,
-                skuInfo: {
-                    color: 1,
-                    sex: 1,
-                    style: 1
-                }
+                skuInfo: {color: 1, sex: 1, style: 1}
             }, {
                 goodsId: "1ni2",
                 imageUrl: "https://o5b7zwp5f.qnssl.com/f5V1Q2meGqix8Bef6xtf502s-3U=/Fnf1RX_SP4jx916MEC_GcdEMNVGH",
                 salesCount: 27,
-                skuInfo: {
-                    color: 1,
-                    sex: 1,
-                    style: 1
-                }
-            }],
-            style: 1,
-            total: 2
-        }, {
-            goodsSetInfo: [{
-                goodsId: "1ni2",
-                imageUrl: "https://o5b7zwp5f.qnssl.com/f5V1Q2meGqix8Bef6xtf502s-3U=/Fnf1RX_SP4jx916MEC_GcdEMNVGH",
-                salesCount: 27
-            }, {
-                goodsId: "1ni2",
-                imageUrl: "https://o5b7zwp5f.qnssl.com/f5V1Q2meGqix8Bef6xtf502s-3U=/Fnf1RX_SP4jx916MEC_GcdEMNVGH",
-                salesCount: 27,
-                skuInfo: {
-                    color: 1,
-                    sex: 1,
-                    style: 1
-                }
+                skuInfo: {color: 1, sex: 1, style: 1}
             }],
             style: 1,
             total: 2
@@ -239,40 +206,35 @@
             4: 99
         }
     }];
-    var data = {
-        resultData: result,
-        singlePanel: result.length == 1
-    };
-    console.log(data);
 
+    var currentPanel = '';
     Vue.component('panel', {
-        template: '#template-panel',
-        data:{
-          show:false
+        template: '#my-panel',
+        data: function () {
+            return {
+                singlePanel: result.length != 1,
+                isShow: !this.singlePanel
+            };
         },
-        props: data,
-        replace: true,
-        components: {
-            'template-table': {
-                template: '#template-table',
-                replace: true,
-                props: {
-                    item: Object
-                }
-            },
-            'template-list': {
-                template: '#template-list',
-
-                props: {
-                    linkedGood: Object
-                }
+        props: ['item','config'],
+        methods: {
+            translate: function () {
+                currentPanel = this;
+                location.hash = 'haha';
             }
         }
     });
 
     new Vue({
         el: '#main',
-        data: data
+        data: {
+            resultData: result,
+            config: config
+        }
+    });
+
+    window.addEventListener('popstate', function () {
+        currentPanel.isShow = !currentPanel.isShow
     });
 </script>
 </body>
