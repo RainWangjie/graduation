@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>三角函数2</title>
+</head>
+<body>
+<canvas id="canvas" width="500" height="800" style="background:#fff;">
+    your browser not support canvas!
+</canvas>
+<p id="log" style="position: absolute;top:0;left:0"></p>
+<script src="../js/utils_canvas.js"></script>
+<script src="../js/ball.js"></script>
+<script>
+    window.onload = function () {
+        var log = document.getElementById('log');
+        var canvas = document.getElementById("canvas");
+        var context = canvas.getContext("2d");
+        var mouse = utils_canvas.captureMouse(canvas);
+
+        var ball = new Ball(5, '#f10000');
+        ball.x = canvas.width / 2;
+        ball.y = 20;
+
+        var ball_1 = new Ball(5, '#f10000');
+        ball_1.x = canvas.width / 2;
+        ball_1.y = 60;
+
+        var ball_2 = new Ball(5, '#f10000');
+        ball_2.x = canvas.width / 2;
+        ball_2.y = 100;
+
+        var ball_3 = new Ball(5, '#f10000');
+
+        var ball_4 = new Ball(5, '#f10000');
+
+
+        var angle = 0,
+                range = 50,
+                range_2 = 0.5,
+                xspeed = 1,
+                yspeed = 0.05,
+                speed = 0.05,
+                centerScale = 1; //振幅
+        //ball_3
+        var centerX = canvas.width / 2,
+                centerY = 200,
+                radius = 50; // 定义半径
+        //ball_4
+        var centerX_2 = canvas.width / 2,
+                centerY_2 = 300,
+                radiusX_2 = 100, // 定义半径
+                radiusY_2 = 50; // 定义半径
+
+
+        (function drawFram() {
+            window.requestAnimationFrame(drawFram, canvas);
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            ball.x += xspeed; //水平，沿x轴方向水平运动
+
+            if (ball.x > canvas.width + ball.radius) {
+                ball.x = -ball.radius;
+            }
+            //垂直， 由于angle角度没发生变化，所以纵坐标保持不变
+            ball.y = 60 + Math.sin(angle) * range;
+
+            ball_1.x = canvas.width / 2 + Math.sin(angle) * range; //核心
+
+            ball_2.scaleX = ball_2.scaleY = centerScale + Math.sin(angle) * range_2;
+
+            //centerX, centerY 的作用是让球绕画布中心旋转
+            ball_3.x = centerX + Math.sin(angle) * radius;
+            ball_3.y = centerY + Math.cos(angle) * radius;
+
+            //当radius的值相等时为圆周运动
+            //当radius的值不想等是为椭圆运动
+            ball_4.x = centerX_2 + Math.sin(angle) * radiusX_2; //radiusX = 100
+            ball_4.y = centerY_2 + Math.cos(angle) * radiusY_2; //radiusY = 50
+
+            angle += 0.05; //取消注释看看发生了什么？
+
+            //dis
+            var dx = mouse.x;
+            var dy = mouse.y;
+            var dis = Math.sqrt(dx * dx + dy * dy).toFixed(2);
+            log.style.transform = 'translate('+mouse.x + 'px,'+ mouse.y + 'px)';
+            log.innerHTML = dis;
+
+
+            ball.draw(context);
+            ball_1.draw(context);
+            ball_2.draw(context);
+            ball_3.draw(context);
+            ball_4.draw(context);
+        })();
+    }
+</script>
+</body>
+</html>

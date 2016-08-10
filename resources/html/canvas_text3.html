@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户交互</title>
+</head>
+
+<body>
+<canvas id="canvas" width="500" height="500" style="background:#000;"></canvas>
+<script src="../js/utils_canvas.js"></script>
+<script>
+    window.onload = function () {
+        var canvas = document.getElementById('canvas'),
+        //将canvas传入，该方法会返回一个包含属性x和y的对象
+                mouse = utils_canvas.captureMouse(canvas);
+
+        //为canvas绑定mousedown事件，当鼠标按下的时候打印出当前鼠标相对于canvas的坐标值
+        canvas.addEventListener('mousedown', function (event) {
+            console.log("x:" + mouse.x + ",y:" + mouse.y);
+        });
+    }
+</script>
+</body>
+
+</html>
