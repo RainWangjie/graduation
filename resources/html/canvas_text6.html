@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>三角函数2</title>
+</head>
+<body>
+<canvas id="canvas" width="500" height="500" style="background:#000;">
+    your browser not support canvas!
+</canvas>
+<script src="../js/utils_canvas.js"></script>
+<script src="../js/ball.js"></script>
+<script>
+    window.onload = function () {
+        var canvas = document.getElementById('canvas');
+        var context = canvas.getContext('2d');
+
+        var ball = new Ball();
+        ball.x = canvas.width / 4;
+        ball.y = canvas.height / 4;
+        ball.radius = 10;
+
+        var speed = 1,
+                angles = 30;
+        //动画循环中
+        (function drawFrame() {
+            window.requestAnimationFrame(drawFrame, canvas);
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            //将速度分解到X轴和Y轴，注意这里用的是弧度制，要乘上Math.PI/180
+            var vx = Math.cos(angles * Math.PI / 180) * speed;
+            var vy = Math.sin(angles * Math.PI / 180) * speed;
+            if (ball.x > canvas.width + ball.radius) {
+                ball.x = -ball.radius;
+                ball.y = -ball.radius;
+            }
+            ball.x += vx;
+            ball.y += vy;// 在每一帧中都让小球的位置加上速度
+
+            ball.draw(context);
+        }());
+    }
+</script>
+</body>
+</html>

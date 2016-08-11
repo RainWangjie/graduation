@@ -119,3 +119,8 @@ utils_canvas.parseColor = function (color, toNumber) {
         return color;
     }
 };
+//外接矩形判断
+utils_canvas.containsPoint = function (rect, x, y) {
+    return !(x < rect.x || x > rect.x + rect.width ||
+    y < rect.y || y > rect.y + rect.height);
+};

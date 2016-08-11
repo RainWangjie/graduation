@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>边界碰撞</title>
+</head>
+<body>
+<canvas id="canvas" width="1000" height="500" style="background:#000;">
+    your browser not support canvas
+</canvas>
+<script src="../js/utils_canvas.js"></script>
+<script src="../js/ball.js"></script>
+<script type="text/javascript">
+    window.onload = function () {
+        var canvas = document.getElementById("canvas"),
+                context = canvas.getContext("2d");
+
+        var vx = Math.random() * 10 - 5;
+        var vy = Math.random() * 10 - 5;
+
+        var ball = new Ball(20, "#ff0000");
+        ball.x = canvas.width / 2;
+        ball.y = canvas.height / 2;
+
+        //动画循环
+        (function drawFrame() {
+            window.requestAnimationFrame(drawFrame, canvas);
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            ball.x += vx;
+            ball.y += vy;
+
+            //核心部分
+            if (ball.x + ball.radius > canvas.width) {
+                ball.x = canvas.width - ball.radius;
+                vx *= -1;
+            } else if (ball.x - ball.radius < 0) {
+                ball.x = ball.radius;
+                vx *= -1;
+            }
+            if (ball.y + ball.radius > canvas.height) {
+                ball.y = canvas.height - ball.radius;
+                vy *= -1;
+            } else if (ball.y - ball.radius < 0) {
+                ball.y = ball.radius;
+                vy *= -1;
+            }
+
+            ball.draw(context);
+        }())
+    }
+</script>
+</body>
+</html>
