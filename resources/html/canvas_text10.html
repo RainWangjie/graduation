@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>边界</title>
+</head>
+<body>
+<canvas id="canvas" width="1000" height="500" style="background:#000;">
+    your browser not support canvas
+</canvas>
+<script src="../js/utils_canvas.js"></script>
+<script src="../js/ball.js"></script>
+<script type="text/javascript">
+    window.onload = function () {
+        var canvas = document.getElementById("canvas"),
+                context = canvas.getContext("2d");
+
+        var balls = [],
+                numBall = 50;
+
+        //定义10个小球
+        for (var i = 0; i < numBall; i++) {
+            var size = Math.random() * 20 + 5,   //颜色
+                    color = Math.random() * (0xffffff),   //大小
+                    ball = new Ball(size, color);
+
+            ball.id = "ball_" + i;   //给每个小球一个id
+            ball.radius = Math.random() * 30 + 10;
+            ball.x = canvas.width / 2;
+            ball.y = canvas.height;
+            ball.vx = Math.random() * 2 - 1;
+            ball.vy = Math.random() * (-2) - 1;
+
+            balls.push(ball); //push进数组
+        }
+
+        //定义draw函数
+        function draw(ball) {
+            //让小球加上它的速度值
+            ball.x += ball.vx;
+            ball.y += ball.vy;
+
+            //判断是否超出边界，不论超出哪一边
+            if (ball.x - ball.radius > canvas.width ||
+                    ball.radius + ball.x < 0 ||
+                    ball.y - ball.radius > canvas.height ||
+                    ball.y + ball.radius < 0) {
+                //超出了重置速度与坐标
+                ball.x = canvas.width / 2;
+                ball.y = canvas.height;
+                ball.vx = Math.random() * (2) - 1;
+                ball.vy = Math.random() * (-2) - 1;
+            }
+
+            ball.draw(context);
+        }
+
+        //动画循环
+        (function drawFrame() {
+            window.requestAnimationFrame(drawFrame, canvas);
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            balls.forEach(draw);
+        }());
+    }
+</script>
+</body>
+</html>

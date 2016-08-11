@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>太空船</title>
+</head>
+<body>
+<canvas id="canvas" width="1000" height="500" style="background:#000;">
+    your browser not support canvas
+</canvas>
+<script src="../js/utils_canvas.js"></script>
+<script src="../js/spaceShip.js"></script>
+<script>
+    window.onload = function () {
+        var canvas = document.getElementById('canvas'),
+                context = canvas.getContext('2d');
+
+        var spaceShip = new SpaceShip();
+        spaceShip.x = canvas.width / 2;
+        spaceShip.y = canvas.height / 2;
+
+        //初始化
+        var vr = 0,
+                vx = 0,
+                vy = 0,
+                ax = 0,
+                ay = 0,
+                angle = 0,
+                thrust = 0,
+                f = 0.97;
+
+        //通过方向键控制各变量的值
+        window.addEventListener('keydown', function (event) {
+            switch (event.keyCode) {
+                case 37:    //left
+                    vr = -3;
+                    break;
+                case 39:  //right
+                    vr = 3;
+                    break;
+                case 38: //up
+                    spaceShip.showFlame = true;
+                    thrust = 0.5;
+                    break;
+                case 40:
+                    ax = 0;
+                    ay = 0;
+                    vx = 0;
+                    vy = 0;
+                    break;
+            }
+        }, false);
+
+        window.addEventListener('keyup', function (event) {
+            if (event.keyCode == 38) {
+                thrust = 0;
+                spaceShip.showFlame = false;
+            }
+            vr = 0;
+        }, false);
+
+        (function drawFrame() {
+            window.requestAnimationFrame(drawFrame, canvas);
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            //角度
+            spaceShip.rotation += vr * Math.PI / 180;
+
+            angle = spaceShip.rotation;
+            ax = Math.cos(angle) * thrust;
+            ay = Math.sin(angle) * thrust;
+
+            vx += ax;
+            vy += ay;
+
+            //摩擦力
+            vx *= f;
+            vy *= f;
+            (Math.abs(vx) < 0.001) && (vx = 0);
+            (Math.abs(vy) < 0.001) && (vy = 0);
+
+            spaceShip.x += vx;
+            spaceShip.y += vy;
+
+            //核心部分
+            if (spaceShip.x - spaceShip.width / 2 > canvas.width) {
+                spaceShip.x = 0;
+            }
+            if (spaceShip.x < 0) {
+                spaceShip.x = canvas.width;
+            }
+            if (spaceShip.y - spaceShip.height / 2 > canvas.height) {
+                spaceShip.y = 0;
+            }
+            if (spaceShip.y < 0) {
+                spaceShip.y = canvas.height;
+            }
+
+            spaceShip.draw(context);
+
+        }());
+    }
+</script>
+
+</body>
+</html>
