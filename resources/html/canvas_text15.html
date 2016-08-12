@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>绳球运动</title>
+</head>
+<body>
+<canvas id="canvas" width="500" height="500" style="background-color: #000;">
+</canvas>
+<script type="text/javascript" src="../js/utils_canvas.js"></script>
+<script type="text/javascript" src="../js/ball.js"></script>
+<script type="text/javascript">
+    window.onload = function () {
+        var canvas = document.getElementById('canvas'),
+                context = canvas.getContext('2d'),
+                mouse = utils_canvas.captureMouse(canvas),
+                centerBall = new Ball(20, "orange"),
+                spring = 0.03,
+                f = 0.9,
+                balls = [],
+                selectBall = null,
+                iscenter = false;
+
+        for (var i = 0; i < 3; i++) {
+            var ball = new Ball(10);
+            ball.x = Math.random() * canvas.width;
+            ball.y = Math.random() * canvas.height;
+            balls.push(ball);
+        }
+
+        canvas.addEventListener('mousedown', function (event) {
+            balls.forEach(function (ball) {
+                if (utils_canvas.containsPoint(ball.getBounds(), mouse.x, mouse.y)) {
+                    selectBall = ball;
+                }
+            });
+            if (utils_canvas.containsPoint(centerBall.getBounds(), mouse.x, mouse.y)) {
+                selectBall = centerBall;
+                iscenter = true;
+            }
+        }, false);
+        canvas.addEventListener('mouseup', function (event) {
+            if (selectBall) {
+                selectBall = null;
+                iscenter = false;
+            }
+        }, false);
+
+        canvas.addEventListener('mousemove', function (event) {
+            if (selectBall) {
+                selectBall.x = mouse.x;
+                selectBall.y = mouse.y;
+            }
+        }, false);
+
+        function applyHandle(ball) {
+            var dx = ball.x - centerBall.x;
+            var dy = ball.y - centerBall.y;
+
+            centerBall.vx += dx * spring;
+            centerBall.vy += dy * spring;
+        }
+
+        //画操作点到小球的线
+        function drawHandle(ball) {
+            context.beginPath();
+            context.strokeStyle = "white";
+            context.moveTo(centerBall.x, centerBall.y);
+            context.lineTo(ball.x, ball.y);
+            context.stroke();
+            context.closePath();
+            ball.draw(context);
+        }
+
+        (function drawFrame() {
+            window.requestAnimationFrame(drawFrame, canvas);
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            balls.forEach(applyHandle);
+            if (!iscenter) {
+                centerBall.vx *= f;
+                centerBall.vy *= f;
+                centerBall.x += centerBall.vx;
+                centerBall.y += centerBall.vy;
+            }
+            balls.forEach(drawHandle);
+
+            centerBall.draw(context)
+        }())
+    }
+</script>
+</body>
+</html>

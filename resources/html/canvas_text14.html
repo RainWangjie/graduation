@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>弹性运动</title>
+</head>
+<body>
+<canvas id="canvas" width="500" height="500" style="background-color: #000;">
+</canvas>
+<button id="btn">click</button>
+<script type="text/javascript" src="../js/utils_canvas.js"></script>
+<script type="text/javascript" src="../js/ball.js"></script>
+<script type="text/javascript">
+    window.onload = function () {
+        var canvas = document.getElementById('canvas'),
+                context = canvas.getContext('2d'),
+                mouse = utils_canvas.captureMouse(canvas),
+                ball = new Ball(20, "orange"),
+                ball_2 = new Ball(10, 'red'),
+                spring = 0.05;
+
+        function springAnimation(ball, f) {
+            var dx = mouse.x - ball.x,
+                    dy = mouse.y - ball.y,
+                    ax = dx * spring,
+                    ay = dy * spring;
+            if (Math.abs(dx) > 1 || Math.abs(dy) > 1) {
+                ball.vx += ax;
+                ball.vy += ay;
+
+                ball.vx *= f;
+                ball.vy *= f;
+
+                ball.x += ball.vx;
+                ball.y += ball.vy;
+
+            }
+            ball.draw(context);
+        }
+
+        (function drawFrame() {
+            window.requestAnimationFrame(drawFrame, canvas);
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            springAnimation(ball, 0.85);
+            springAnimation(ball_2, 0.9);
+        }());
+    }
+</script>
+</body>
+</html>
