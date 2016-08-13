@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>太阳系</title>
+    <style>
+        canvas {
+            background: #000;
+        }
+    </style>
+</head>
+<body>
+<canvas id="canvas" width="800" height="600"></canvas>
+<script src="../js/utils_canvas.js"></script>
+<script src="../js/ball.js"></script>
+<script>
+    window.onload = function () {
+        var canvas = document.getElementById('canvas'),
+                context = canvas.getContext('2d');
+
+        var sun = new Ball(100, 'orange');
+        sun.x = canvas.width / 2;
+        sun.y = canvas.height / 2;
+        sun.mass = 10000;
+
+        var earth = new Ball(10, 'blue');
+        earth.x = canvas.height / 2;
+        earth.y = 10;
+        earth.vx = 5;
+        earth.mass = 1;
+
+        //引力函数
+        function gravitate(partA, partB) {
+            var dx = partB.x - partA.x;
+            var dy = partB.y - partA.y;
+            var distQ = dx * dx + dy * dy;           //计算物体建的距离
+            var dist = Math.sqrt(distQ);           //距离的平方
+            var F = (partA.mass * partB.mass) / distQ;  //万有引力公式
+
+            var ax = F * dx / dist;        //作用力作用于加速度
+            var ay = F * dy / dist;
+
+            partA.vx += ax / partA.mass;    //加速度作用于速度
+            partA.vy += ay / partA.mass;
+            partB.vx -= ax / partB.mass;
+            partB.vy -= ay / partB.mass;
+        }
+
+        (function drawFrame() {
+            window.requestAnimationFrame(drawFrame, canvas);
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            gravitate(sun, earth);
+
+            sun.x += sun.vx;
+            sun.y += sun.vy;
+
+            earth.x += earth.vx;
+            earth.y += earth.vy;
+
+            sun.draw(context);
+            earth.draw(context);
+        })()
+    }
+</script>
+</body>
+</html>

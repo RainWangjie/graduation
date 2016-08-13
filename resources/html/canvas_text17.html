@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>水平碰撞小球</title>
+</head>
+<body>
+<canvas id="canvas" width="500" height="500" style="background:#000;"></canvas>
+<script src="../js/utils_canvas.js"></script>
+<script src="../js/ball.js"></script>
+<script>
+    window.onload = function () {
+        var canvas = document.getElementById('canvas'),
+                context = canvas.getContext('2d');
+        var ball_1 = new Ball(20, 'red');
+        ball_1.x = ball_1.radius;
+        ball_1.y = canvas.height / 2;
+
+        var ball_2 = new Ball(20, 'green');
+        ball_2.x = canvas.width - ball_2.radius;
+        ball_2.y = canvas.height / 2;
+
+        ball_1.vx = 2;
+        ball_2.vx = -2;
+
+        function dist(a, b) {
+            var dx = b.x - a.x,
+                    dy = b.y - a.y,
+                    dist = Math.sqrt(dx * dx + dy * dy);
+            dist <= (a.radius + b.radius) && (function () {
+                a.vx *= -1;
+                b.vx *= -1;
+            })()
+        }
+
+        function bianjie(ball) {
+            if (ball.x + ball.radius >= canvas.width ||
+                    ball.x - ball.radius <= 0 ||
+                    ball.y + ball.radius >= canvas.height ||
+                    ball.y - ball.radius <= 0) {
+                ball.vx *= -1;
+            }
+        }
+
+        (function drawFrame() {
+            window.requestAnimationFrame(drawFrame, canvas);
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            ball_1.x += ball_1.vx;
+            ball_2.x += ball_2.vx;
+
+            dist(ball_1, ball_2);
+            bianjie(ball_1);
+            bianjie(ball_2);
+
+            ball_1.draw(context);
+            ball_2.draw(context);
+        })();
+    }
+</script>
+</body>
+</html>
