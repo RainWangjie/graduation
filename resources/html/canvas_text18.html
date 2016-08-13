@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>多物体碰撞检测</title>
+</head>
+<body>
+<canvas id="canvas" width="500" height="500" style="background:#000;"></canvas>
+<script src="../js/utils_canvas.js"></script>
+<script src="../js/ball.js"></script>
+<script>
+    window.onload = function () {
+        var canvas = document.getElementById('canvas'),
+                context = canvas.getContext('2d');
+
+        var balls = [], bounce = -1;
+
+        for (var i = 0; i < 10; i++) {
+            var ball = new Ball(Math.random() * 20 + 10, Math.random() * 0xffffff);
+            ball.x = Math.random() * canvas.width;
+            ball.y = Math.random() * canvas.height;
+            ball.vx = Math.random() * 6 - 3;
+            ball.vy = Math.random() * 6 - 3;
+            balls.push(ball);
+        }
+        //碰撞检测
+        function checkCollision(ballA, i) {
+            for (var j = i + 1; j < balls.length; j++) {
+                var ballB = balls[j];
+                var dx = ballB.x - ballA.x;
+                var dy = ballB.y - ballA.y;
+                var dist = Math.sqrt(dx * dx + dy * dy);
+                var min_dist = ballA.radius + ballB.radius;
+                if (dist < min_dist) {
+                    ballA.vx *= bounce;
+                    ballA.vy *= bounce;
+                    ballB.vx *= bounce;
+                    ballB.vy *= bounce;
+                }
+            }
+        }
+
+        //边界检测
+        function move(ball) {
+            ball.x += ball.vx;
+            ball.y += ball.vy;
+
+            if (ball.x + ball.radius > canvas.width) {
+                ball.x = canvas.width - ball.radius;
+                ball.vx *= bounce;
+            }
+            if (ball.y + ball.radius > canvas.height) {
+                ball.y = canvas.height - ball.radius;
+                ball.vy *= bounce;
+            }
+            if (ball.x - ball.radius < 0) {
+                ball.x = ball.radius;
+                ball.vx *= bounce;
+            }
+            if (ball.y - ball.radius < 0) {
+                ball.y = ball.radius;
+                ball.vy *= bounce;
+            }
+        }
+
+        function draw(ball) {
+            ball.draw(context);
+        }
+
+        (function drawFrame() {
+            window.requestAnimationFrame(drawFrame, canvas);
+            context.clearRect(0, 0, canvas.width, canvas.height);
+
+            balls.forEach(checkCollision);
+            balls.forEach(move);
+            balls.forEach(draw);
+        })()
+    }
+</script>
+</body>
+</html>

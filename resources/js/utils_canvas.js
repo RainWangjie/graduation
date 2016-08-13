@@ -119,8 +119,38 @@ utils_canvas.parseColor = function (color, toNumber) {
         return color;
     }
 };
+//将16进制颜色转换成rgb
+utils_canvas.colorToRGB = function (color, alpha) {
+    //如果是字符串格式，转换为数字
+    if (typeof color === "string" && color[0] === "#") {
+
+        //parseInt(('#ffffff').slice(1),16) 为 16777215
+        color = window.parseInt(color.slice(1), 16);
+
+    }
+    alpha = (alpha === undefined) ? 1 : alpha;
+
+    //将color转换成r,g,b值，>>右移  <<左移
+    var r = color >> 16 & 0xff; //例如：16777215 >> 16 变成 255， 255 & 0xff为255
+    var g = color >> 8 & 0xff;
+    var b = color & 0xff;
+    a = (alpha < 0) ? 0 : ((alpha > 1) ? 1 : alpha);
+
+    if (a === 1) {
+        return "rgb(" + r + "," + g + "," + b + ")";
+    } else {
+        return "rgb(" + r + "," + g + "," + b + "," + a + ")";
+    }
+};
 //外接矩形判断
 utils_canvas.containsPoint = function (rect, x, y) {
     return !(x < rect.x || x > rect.x + rect.width ||
     y < rect.y || y > rect.y + rect.height);
+};
+// 判断物体碰撞
+utils_canvas.intersects = function (rectA, rectB) {
+    return !(rectA.x + rectA.width < rectB.x ||
+    rectB.x + rectB.width < rectA.x ||
+    rectA.y + rectA.height < rectB.y ||
+    rectB.y + rectB.height < rectA.y);
 };
