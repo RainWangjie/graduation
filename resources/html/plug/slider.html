@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>slider</title>
+    <meta name="viewport"
+          content="user-scalable=0,width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        ul{
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+        }
+        .slider {
+            position:relative;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        .slider-content {
+            display: flex;
+            width: 500%;
+            text-align: center;
+            -webkit-transition: all .3s ease-in-out;
+            transition: all .3s ease-in-out;
+            -webkit-transform: translate3d(0, 0, 0);
+            transform: translate3d(0, 0, 0);
+        }
+
+        .slider-content li {
+            font-size: 40px;
+            flex: 1;
+            height: 300px;
+            line-height: 300px;
+        }
+        .slider-indicators {
+            position: absolute;
+            display: -webkit-box;
+            -webkit-box-pack: center;
+            width: 100%;
+            bottom: 10px;
+            font-size: 0; }
+
+        .slider-indicators li {
+            display: block;
+            text-indent: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            font-size: 0;
+            width: 12px;
+            height: 12px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 50%;
+            margin-right: 6px;
+            -webkit-box-sizing: border-box;
+            background-clip: padding-box;
+            position: relative; }
+
+        .slider-indicators li.current:before {
+            content: '';
+            position: absolute;
+            background-color: #fff;
+            left: 1px;
+            top: 1px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            -webkit-box-sizing: border-box;
+            background-clip: padding-box; }
+
+        .slider-indicators-center {
+            -webkit-box-pack: center;
+            right: 0; }
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="slider">
+        <ul class="slider-content">
+            <li style="background: #f44336">
+                slider1
+            </li>
+            <li style="background: #00bcd4">
+                slider2
+            </li>
+            <li style="background: #FFC107">
+                slider3
+            </li>
+            <li style="background: #FF9800">
+                slider4
+            </li>
+            <li style="background: #2196f3">
+                slider5
+            </li>
+        </ul>
+    </div>
+</div>
+<script src="../../js/zepto.js"></script>
+<script src="../../js/plug/myPlug.js"></script>
+<script type="text/javascript">
+    var tab = new wj_plug('#app', {
+        role: 'slider'
+    })
+</script>
+</body>
+</html>
