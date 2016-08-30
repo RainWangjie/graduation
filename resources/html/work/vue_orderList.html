@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vue版订单列表</title>
+    <meta name="viewport"
+          content="user-scalable=0,width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <link type="text/css" rel="stylesheet" href="../../css/component.css">
+    <link type="text/css" rel="stylesheet" href="../../css/frozen.css">
+    <link type="text/css" rel="stylesheet" href="../../css/vue.orderlist.css">
+</head>
+<body>
+<div id="app">
+    <ul class="tab-nav">
+        <li>全部</li>
+        <li>
+            待支付
+            <div class="brdge-wrap" v-show='waitPay'>{{waitPay}}</div>
+        </li>
+        <li>
+            待发货
+            <div class="brdge-wrap" v-show='waitExpress'>{{waitExpress}}</div>
+        </li>
+        <li>已完成</li>
+    </ul>
+    <ul class="tab-content">
+        <template v-for="orderPart in orderData">
+            <li v-if="orderPart">
+                <template v-for="order in orderPart">
+                    <ul class="ui-list ui-list-pure order-item">
+                        <li href="/h5/order/{{order.orderId}}" style="padding-bottom: 0">
+                            <div class="orderId-detail">
+                                <div>订单号：{{order.orderId}}</div>
+                                <div class="status-{{order.orderId}}"
+                                     :style="{color:config.status[order.status].val}">
+                                    {{config.status[order.status]['name']}}
+                                </div>
+                            </div>
+                            <span class="ui-txt-info ui-txt-tips"
+                                  style="color: #969696">{{order.createdTime}}</span>
+                        </li>
+                        <li href="/h5/order/{{order.orderId}}" style="width: 100%">
+                            <dl class="ui-row-flex" style="overflow:scroll">
+                                <template v-if="order.orderItems.length==1" v-for="orderItem in order.orderItems">
+                                    <dd class="tee-front tee-front-s {{config.getClass(orderItem.style,orderItem.sex,orderItem.color,orderItem.size)}} product">
+                                        <img :src="orderItem.imageUrl" alt=""/></dd>
+                                    <dd style="padding-left: 10px;-webkit-box-flex: 1">
+                                        <ul>
+                                            <li style="color:#646464; font-size: 14px">
+                                                {{config.style[orderItem.style]['name']}}
+                                                {{config.sex[orderItem.sex]['name']}}
+                                                {{config.size[orderItem.size]['name']}}
+                                                {{config.color[orderItem.color]['name']}}
+                                            </li>
+                                            <li class="ui-row-flex" style="padding-top: 20px;">
+                                                <div style="-webkit-box-flex: 1">
+                                                    <template v-if="orderItem.isPromotion">
+                                                        <span class="priceOriginal through">¥{{(orderItem.price*1).toFixed(2)}}</span><br>
+                                                        <span class="pricePresent">¥{{(orderItem.promotionPrice*1).toFixed(2)}}</span>
+                                                    </template>
+                                                    <template v-else="orderItem.isPromotion">
+                                                        <span class="priceOriginal">&nbsp;</span><br>
+                                                        <span class="pricePresent">¥{{(orderItem.price*1).toFixed(2)}}</span>
+                                                    </template>
+                                                </div>
+                                                <div style="width: 75px;padding-top:25px;color: #969696;font-size: 12px;text-align: right">
+                                                    数量：{{orderItem.count}}
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </dd>
+                                </template>
+
+
+                                <template v-if="order.orderItems.length!==1" v-for="orderItem in order.orderItems">
+                                    <dd class="tee-front tee-front-s {{config.getClass(orderItem.style,orderItem.sex,orderItem.color,orderItem.size)}} product"
+                                        style="margin-left: 5px;">
+                                        <img :src="orderItem.imageUrl" alt=""/>
+                                    </dd>
+                                </template>
+                            </dl>
+                        </li>
+                        <li style="display: flex">
+                            <div class="txt-coupons">运费：</div>
+                            <div class="txt-coupons-content">
+                                {{order.expressInfo.expressAmount==0?"包邮":"¥"+(order.expressInfo.expressAmount/100).toFixed(2)+"(补差价)"}}
+                            </div>
+                        </li>
+                        <li style="display: flex" v-if="order.isPromotion">
+                            <div class="txt-coupons">优惠券</div>
+                            <div class="txt-coupons-content">{{order.PromotionName}}</div>
+                        </li>
+                        <li class="ui-row-flex ui-row-flex-ver ui-whitespace-right">
+                        <span style="color: #323232;font-size: 14px">共 {{order.totalCount}} 件 实付 {{order.totalPrice}} 元
+                        </span>
+
+                            <div class="pull-right">
+                                <a v-if="order.status==6" data-id="{{order.orderId}}"
+                                   class="ui-btn ui-btn-s btn-cancel"> 取消订单</a>
+                                <a href="http://m.kuaidi100.com/index_all.html?type=<%=orderList[i].expressInfo.shipExpressCompany%>&postid=<%=orderList[i].expressInfo.shipExpressNo%>&callbackurl=javascript:history.go(-1)"
+                                   class="ui-btn ui-btn-s btn-express"
+                                   v-if="order.status==9"> 物流查询</a>
+                                <a v-if="order.status==1" class="ui-btn ui-btn-s btn-close" data-id="{{order.orderId}}">
+                                    关闭订单</a>
+                                <a v-if="order.status==1" class="ui-btn ui-btn-s btn-pay" data-id="{{order.orderId}}">
+                                    继续支付</a>
+                            </div>
+                        </li>
+                    </ul>
+                </template>
+            </li>
+            <li v-else="orderPart" class="null-list"></li>
+        </template>
+    </ul>
+</div>
+
+<script src="../../js/zepto.js"></script>
+<script src="../../js/config.js"></script>
+<script src="../../js/vue.js"></script>
+<script src="../../js/plug/myPlug.js"></script>
+<script type="text/javascript">
+    var tab = new wj_plug('#app', {
+        role: 'tab'
+    });
+
+    var testData = {
+        createdTime: "2016-08-26 12:07:59",
+        expiredTime: "2016-08-26 12:37:59",
+        expressInfo: {
+            expressAmount: 700,
+            shipExpressCompany: "SF",
+            shipExpressNo: "",
+            shipToAddress: "浙江省杭州市西湖区北山街道黄龙雅苑3-1-601",
+            shipToName: "葛王杰",
+            shipToPhone: "15757115750"
+        },
+        isPromotion: false,
+        orderId: "20160826844795602",
+        orderItems: [{
+            color: 1,
+            count: 1,
+            imageUrl: "https://o5b7zwp5f.qnssl.com/FpuFYg3bl8B1l_1lkZ45k4ttpDeP",
+            isPromotion: false,
+            name: "200g高支棉男款",
+            price: "89.00",
+            promotionPrice: 0,
+            sex: 1,
+            size: 2,
+            skuId: 5,
+            style: 1
+        }],
+        payTime: "2016-08-26 12:08:10",
+        reward: "0.00",
+        rewardMsg: "",
+        status: 1,
+        title: "个人商品",
+        totalCount: 1,
+        totalPrice: "89.00"
+    };
+
+
+    var testData_2 = {
+        createdTime: "2016-08-26 12:07:59",
+        expiredTime: "2016-08-26 12:37:59",
+        expressInfo: {
+            expressAmount: 700,
+            shipExpressCompany: "SF",
+            shipExpressNo: "",
+            shipToAddress: "浙江省杭州市西湖区北山街道黄龙雅苑3-1-601",
+            shipToName: "葛王杰",
+            shipToPhone: "15757115750"
+        },
+        isPromotion: false,
+        orderId: "20160826844795602",
+        orderItems: [{
+            color: 1,
+            count: 1,
+            imageUrl: "https://o5b7zwp5f.qnssl.com/FpuFYg3bl8B1l_1lkZ45k4ttpDeP",
+            isPromotion: false,
+            name: "200g高支棉男款",
+            price: "89.00",
+            promotionPrice: 0,
+            sex: 1,
+            size: 2,
+            skuId: 5,
+            style: 1
+        },
+            {
+                color: 1,
+                count: 1,
+                imageUrl: "https://o5b7zwp5f.qnssl.com/FpuFYg3bl8B1l_1lkZ45k4ttpDeP",
+                isPromotion: false,
+                name: "200g高支棉男款",
+                price: "89.00",
+                promotionPrice: 0,
+                sex: 1,
+                size: 2,
+                skuId: 5,
+                style: 1
+            }],
+        payTime: "2016-08-26 12:08:10",
+        reward: "0.00",
+        rewardMsg: "",
+        status: 9,
+        title: "个人商品",
+        totalCount: 1,
+        totalPrice: "89.00"
+    };
+    var app = new Vue({
+        el: '#app',
+        data: {
+            waitPay: 0,
+            waitExpress: 1,
+            config: config,
+            orderData: {
+                0: [testData, testData_2],
+                1: '',
+                2: '',
+                3: ''
+            }
+        }
+    });
+</script>
+</body>
+</html>

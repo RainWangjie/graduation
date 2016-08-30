@@ -1,0 +1,135 @@
+body {
+    margin: 0;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.tab-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+    display: flex;
+    background: #fff;
+    text-align: center;
+}
+
+.tab-nav li {
+    position: relative;
+    line-height: 40px;
+    flex: 1;
+    height: 40px;
+}
+
+.brdge-wrap {
+    position: absolute;
+    top: 0;
+    right: 5px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    border-radius: 50%;
+    text-align: center;
+    background: #f74c31;
+    color: #fff;
+    font-size: 11px;
+}
+
+.tab-nav li.current {
+    color: #48a5a8;;
+    border: 0;
+}
+
+.tab-nav li.current:after {
+    content: '';
+    position: relative;
+    display: block;
+    top: -3px;
+    height: 3px;
+    width: 65%;
+    margin: 0 auto;
+    background: #48a5a8;
+}
+
+.tab-content {
+    margin-top: 40px;
+    width: 400%;
+    display: flex;
+    -webkit-transition: all .3s ease-in-out;
+    transition: all .3s ease-in-out;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+}
+
+.tab-content li {
+    flex: 1;
+}
+
+/*空列表*/
+.null-list {
+    text-align: center;
+    padding-top: 100%;
+    background-image: url('https://o5b8263mg.qnssl.com/FptphG8iKm11s44SH3_EQ2nGvjb5');
+    background-position: center;
+    background-size: 35%;
+    background-repeat: no-repeat;
+}
+
+/*原样式*/
+.ui-list {
+    margin: 10px 0;
+}
+
+.ui-list > .ui-small-item {
+    line-height: 24px;
+    padding: 0 10px;
+}
+
+.ui-btn-s {
+    width: 70px;
+    height: 25px;
+    border-radius: 3px;
+    font-size: 13px;
+    text-align: center;
+    line-height: 25px;
+    border: 1px solid #979797;
+}
+
+.pull-right {
+    float: right;
+}
+
+.money {
+    color: #2BC549;
+    display: inline-block;
+    margin: 0 2px;
+}
+
+.ui-list > li > a {
+    width: 100%;
+    height: 100%;
+}
+
+.ui-badge-corner {
+    display: none;
+    padding: 0;
+    top: 0;
+    right: 5px;
+    border: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.btn-pay {
+    background: #48A5A8;
+    color: #fff;
+    border: 0;
+}
