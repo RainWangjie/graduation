@@ -68,8 +68,14 @@ ul {
     transform: translate3d(0, 0, 0);
 }
 
-.tab-content li {
+.tab-content>li {
+    width:100%;
     flex: 1;
+    height: 0;
+    overflow: hidden;
+}
+.tab-content>li.current{
+    height: auto;
 }
 
 /*空列表*/
@@ -132,4 +138,37 @@ ul {
     background: #48A5A8;
     color: #fff;
     border: 0;
+}
+.orderId-detail{
+    display: -webkit-box;
+}
+.orderId-detail div:nth-child(odd) {
+    font-size: 14px;
+    color: #323232;
+    -webkit-box-flex: 1;
+}
+.orderId-detail div:nth-child(even) {
+    text-align: right;
+    font-size: 14px;
+    width: 70px;
+}
+.txt-coupons {
+    display: inline-block;
+    -webkit-box-flex: 1;
+    flex: 1;
+    padding-left: 0;
+    font-size: 14px;
+    color: #969696;
+    text-align: left;
+}
+.txt-coupons-content {
+    display: inline-block;
+    -webkit-box-flex: 3;
+    flex: 3;
+    text-align: right;
+    font-size: 14px;
+    color: #323232;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
