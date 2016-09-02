@@ -6,10 +6,12 @@ function wj_plug(el, options) {
     t.wrapper = typeof el == 'string' ? document.querySelector(el) : el;
     t.options = {};
     t.prePage = 0;
-    t.currentPage = 0;
+    t.currentPage = options.currentPage || 0;
     t.currentPosition = 0;
     t.totalPage = 0;
     t.screenWidth = window.innerWidth;
+
+    console.log(t.currentPage);
 
     t.options = {
         indicator: true,
@@ -24,6 +26,7 @@ function wj_plug(el, options) {
     if (t.options.role == 'tab') {
         t.totalPage = document.querySelectorAll('.tab-nav li').length;
         t.nav = document.querySelectorAll('.tab-nav li');
+        t.content = document.querySelectorAll('.tab-content>li');
 
         t.chooseNav = function () {
             t.nav.forEach(function (el) {
@@ -38,6 +41,10 @@ function wj_plug(el, options) {
             var translateX = 'translate3d(' + t.currentPage * -t.screenWidth + 'px,0,0)';
             content.style.transform = translateX;
             content.style.webkitTransform = translateX;
+            t.content.forEach(function (el) {
+                el.classList.remove('current');
+            });
+            t.content[t.currentPage].classList.add('current');
         };
 
         //click nav
@@ -130,7 +137,6 @@ function wj_plug(el, options) {
     function transform(el, translate) {
         el.style.webkitTransform = "translate3d(" + translate + "px,0,0)";
         t.currentPosition = translate;
-
     }
 
     function bindTouchEvent(ele, callback) {

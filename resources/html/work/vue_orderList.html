@@ -109,7 +109,9 @@
                     </ul>
                 </template>
             </li>
-            <li v-else="orderPart" class="null-list"></li>
+            <li v-else="orderPart">
+                <div class="null-list"></div>
+            </li>
         </template>
     </ul>
 </div>
@@ -119,93 +121,148 @@
 <script src="../../js/vue.js"></script>
 <script src="../../js/plug/myPlug.js"></script>
 <script type="text/javascript">
-    var tab = new wj_plug('#app', {
-        role: 'tab'
-    });
-
     var testData = {
-        createdTime: "2016-08-26 12:07:59",
-        expiredTime: "2016-08-26 12:37:59",
-        expressInfo: {
-            expressAmount: 700,
-            shipExpressCompany: "SF",
-            shipExpressNo: "",
-            shipToAddress: "浙江省杭州市西湖区北山街道黄龙雅苑3-1-601",
-            shipToName: "葛王杰",
-            shipToPhone: "15757115750"
-        },
-        isPromotion: false,
-        orderId: "20160826844795602",
-        orderItems: [{
-            color: 1,
-            count: 1,
-            imageUrl: "https://o5b7zwp5f.qnssl.com/FpuFYg3bl8B1l_1lkZ45k4ttpDeP",
-            isPromotion: false,
-            name: "200g高支棉男款",
-            price: "89.00",
-            promotionPrice: 0,
-            sex: 1,
-            size: 2,
-            skuId: 5,
-            style: 1
-        }],
-        payTime: "2016-08-26 12:08:10",
-        reward: "0.00",
-        rewardMsg: "",
-        status: 1,
-        title: "个人商品",
-        totalCount: 1,
-        totalPrice: "89.00"
-    };
-
-
-    var testData_2 = {
-        createdTime: "2016-08-26 12:07:59",
-        expiredTime: "2016-08-26 12:37:59",
-        expressInfo: {
-            expressAmount: 700,
-            shipExpressCompany: "SF",
-            shipExpressNo: "",
-            shipToAddress: "浙江省杭州市西湖区北山街道黄龙雅苑3-1-601",
-            shipToName: "葛王杰",
-            shipToPhone: "15757115750"
-        },
-        isPromotion: false,
-        orderId: "20160826844795602",
-        orderItems: [{
-            color: 1,
-            count: 1,
-            imageUrl: "https://o5b7zwp5f.qnssl.com/FpuFYg3bl8B1l_1lkZ45k4ttpDeP",
-            isPromotion: false,
-            name: "200g高支棉男款",
-            price: "89.00",
-            promotionPrice: 0,
-            sex: 1,
-            size: 2,
-            skuId: 5,
-            style: 1
-        },
-            {
-                color: 1,
-                count: 1,
-                imageUrl: "https://o5b7zwp5f.qnssl.com/FpuFYg3bl8B1l_1lkZ45k4ttpDeP",
+                createdTime: "2016-08-26 12:07:59",
+                expiredTime: "2016-08-26 12:37:59",
+                expressInfo: {
+                    expressAmount: 700,
+                    shipExpressCompany: "SF",
+                    shipExpressNo: "",
+                    shipToAddress: "浙江省杭州市西湖区北山街道黄龙雅苑3-1-601",
+                    shipToName: "葛王杰",
+                    shipToPhone: "15757115750"
+                },
                 isPromotion: false,
-                name: "200g高支棉男款",
-                price: "89.00",
-                promotionPrice: 0,
-                sex: 1,
-                size: 2,
-                skuId: 5,
-                style: 1
-            }],
-        payTime: "2016-08-26 12:08:10",
-        reward: "0.00",
-        rewardMsg: "",
-        status: 9,
-        title: "个人商品",
-        totalCount: 1,
-        totalPrice: "89.00"
-    };
+                orderId: "20160826844795602",
+                orderItems: [{
+                    color: 1,
+                    count: 1,
+                    imageUrl: "https://o5b7zwp5f.qnssl.com/FpuFYg3bl8B1l_1lkZ45k4ttpDeP",
+                    isPromotion: false,
+                    name: "200g高支棉男款",
+                    price: "89.00",
+                    promotionPrice: 0,
+                    sex: 1,
+                    size: 2,
+                    skuId: 5,
+                    style: 1
+                }],
+                payTime: "2016-08-26 12:08:10",
+                reward: "0.00",
+                rewardMsg: "",
+                status: 1,
+                title: "个人商品",
+                totalCount: 1,
+                totalPrice: "89.00"
+            },
+            testData_2 = {
+                createdTime: "2016-08-26 12:07:59",
+                expiredTime: "2016-08-26 12:37:59",
+                expressInfo: {
+                    expressAmount: 700,
+                    shipExpressCompany: "SF",
+                    shipExpressNo: "",
+                    shipToAddress: "浙江省杭州市西湖区北山街道黄龙雅苑3-1-601",
+                    shipToName: "葛王杰",
+                    shipToPhone: "15757115750"
+                },
+                isPromotion: false,
+                orderId: "20160826844795602",
+                orderItems: [{
+                    color: 1,
+                    count: 1,
+                    imageUrl: "https://o5b7zwp5f.qnssl.com/FpuFYg3bl8B1l_1lkZ45k4ttpDeP",
+                    isPromotion: false,
+                    name: "200g高支棉男款",
+                    price: "89.00",
+                    promotionPrice: 0,
+                    sex: 1,
+                    size: 2,
+                    skuId: 5,
+                    style: 1
+                },
+                    {
+                        color: 1,
+                        count: 1,
+                        imageUrl: "https://o5b7zwp5f.qnssl.com/FpuFYg3bl8B1l_1lkZ45k4ttpDeP",
+                        isPromotion: false,
+                        name: "200g高支棉男款",
+                        price: "89.00",
+                        promotionPrice: 0,
+                        sex: 1,
+                        size: 2,
+                        skuId: 5,
+                        style: 1
+                    }],
+                payTime: "2016-08-26 12:08:10",
+                reward: "0.00",
+                rewardMsg: "",
+                status: 9,
+                title: "个人商品",
+                totalCount: 1,
+                totalPrice: "89.00"
+            },
+            testData_3 = {
+                PromotionName: "内部员工T恤定制券25元",
+                createdTime: "2016-06-30 18:27:17",
+                expiredTime: "2016-06-30 18:57:17",
+                expressInfo: {
+                    expressAmount: 0,
+                    shipExpressCompany: "YUNDA",
+                    shipExpressNo: "",
+                    shipToAddress: "浙江省杭州市西湖区北山街道黄龙雅苑3-1-601",
+                    shipToName: "葛王杰",
+                    shipToPhone: "15757115750"
+                },
+                isPromotion: true,
+                orderId: "20160630824374178",
+                orderItems: [{
+                    color: 1,
+                    count: 1,
+                    imageUrl: "https://o5b7zwp5f.qnssl.com/FrLMKvIdpcxnyUnPTW2K8AyvoXMK",
+                    isPromotion: false,
+                    name: "200g高支棉方枕(带芯)",
+                    price: "79.00",
+                    promotionPrice: 0,
+                    sex: 4,
+                    size: 9,
+                    skuId: 24,
+                    style: 3
+                },
+                    {
+                        color: 1,
+                        count: 1,
+                        imageUrl: "https://o5b7zwp5f.qnssl.com/Fkd-ESC9khBqjBd_VUB4RJku-1Ob_image",
+                        isPromotion: false,
+                        name: "200g高支棉女款",
+                        price: "89.00",
+                        promotionPrice: 0,
+                        sex: 2,
+                        size: 1,
+                        skuId: 2,
+                        style: 1
+                    },
+                    {
+                        color: 1,
+                        count: 1,
+                        imageUrl: "https://o5b7zwp5f.qnssl.com/FmKt1wybGVcsBofqs9nMzQmc_Snp",
+                        isPromotion: false,
+                        name: "200g高支棉帆布包",
+                        price: "89.00",
+                        promotionPrice: 0,
+                        sex: 8,
+                        size: 14,
+                        skuId: 44,
+                        style: 4
+                    }],
+                payTime: "0000-00-00 00:00:00",
+                reward: "0.00",
+                rewardMsg: "",
+                status: 2,
+                title: "个人商品",
+                totalCount: 3,
+                totalPrice: "232.00"
+            };
     var app = new Vue({
         el: '#app',
         data: {
@@ -213,13 +270,19 @@
             waitExpress: 1,
             config: config,
             orderData: {
-                0: [testData, testData_2],
+                0: [testData, testData_2,testData_3],
                 1: '',
-                2: '',
-                3: ''
+                2:  [testData,testData_3],
+                3: [testData_2]
             }
         }
     });
+
+    var tab = new wj_plug('#app', {
+        role: 'tab',
+//        currentPage:0
+    });
+    console.log(app,app.waitExpress)
 </script>
 </body>
 </html>
