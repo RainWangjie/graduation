@@ -1,0 +1,336 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: #fafafa;
+}
+
+ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.design-panel {
+    position: relative;
+    margin: 20px auto;
+    width: 1200px;
+}
+
+.design-panel > div {
+    box-sizing: content-box;
+    float: left;
+}
+
+.panel-left {
+    width: 300px;
+    margin-right: 20px;
+}
+
+.panel-left > div, .panel-center > div, .panel-right > div, .publish-product > div {
+    border: 1px solid #f0f0f0;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 3px;
+    background: #fff;
+}
+
+.panel-center {
+    width: 560px;
+    margin-right: 20px;
+}
+
+.panel-right {
+    width: 300px;
+}
+
+.panel-title {
+    font-size: 16px;
+    color: #464646;
+    font-weight: bolder;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+/*left*/
+.person-message {
+    padding-bottom: 20px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.person-message span {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.person-avatar {
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+    border-radius: 50%;
+    background: #d8d8d8;
+}
+
+#add-photo {
+    background: #323232;
+    margin: 17px 0 16px 0;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    border-radius: 3px;
+    color: #fff;
+    font-size: 20px;
+}
+
+.choose-photo {
+    text-align: center;
+}
+
+.choose-photo li {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    display: inline-block;
+    background: #d8d8d8;
+}
+
+.photo-delete {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    overflow: hidden;
+    top: 5px;
+    right: 5px;
+    background: rgba(0, 0, 0, .4);
+    opacity: 1;
+    transition: all .3s;
+}
+
+.photo-delete:before, .photo-delete:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 43%;
+    left: 24%;
+    width: 10px;
+    height: 2px;
+    background: #fff;
+    transform-origin: 50% 50%;
+    transform: rotate(45deg);
+}
+
+.photo-delete:after {
+    transform: rotate(-45deg);
+}
+
+.photo-delete:hover {
+    opacity: 1;
+}
+
+.change-page {
+    padding: 4px 9px;
+    color: #323232;
+    background: #f0f0f0;
+    border-radius: 3px;
+}
+
+/*center*/
+.opreate-photo {
+    height: 560px;
+}
+
+.choose-bg {
+
+}
+
+.choose-bg li {
+    display: inline-block;
+    width: 160px;
+    height: 160px;
+    background: #d8d8d8;
+}
+
+/*right*/
+.style-btn-list {
+    padding-top: 20px;
+}
+
+.style-btn-list span {
+    display: inline-block;
+    margin-right: 30px;
+    text-align: center;
+    width: 60px;
+    height: 60px;
+    overflow: hidden;
+    border-radius: 50%;
+    background: #d8d8d8;
+}
+
+.style-btn-list span:last-child {
+    margin: 0;
+}
+
+.choose-sex {
+    display: flex;
+    padding: 0 0 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.choose-sex li {
+    flex: 1;
+    height: 34px;
+    line-height: 34px;
+    margin-right: 10px;
+    text-align: center;
+    color: #969696;
+    font-size: 14px;
+    border: 1px solid #dcdcdc;
+    border-radius: 3px;
+}
+
+.choose-sex li:last-child {
+    margin: 0;
+}
+
+.choose-color {
+    margin: 16px 0 0 0;
+}
+
+.choose-color li {
+    margin-left: 10px;
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+    display: inline-block;
+}
+
+.choose-color li:before {
+    content: '';
+    position: relative;
+    top: -5px;
+    left: -5px;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    padding: 4px;
+    border-radius: 3px;
+    border: 1px solid #dcdcdc;
+}
+
+#design-next {
+    width: 196px;
+    font-size: 20px;
+    text-align: center;
+    margin: 0 auto;
+    border: 1px solid #323232;
+    border-radius: 3px;
+}
+
+/*发布面板*/
+.publish-product {
+    background: #fafafa;
+    position: absolute;
+    width: 300px;
+    top: 0;
+    right: 0;
+    transition: all .3s;
+    transform: translateY(-110%);
+}
+
+.publish-product.show {
+    transform: translateY(0);
+}
+
+.publish-product-opreate {
+    padding: 0 !important;
+}
+
+.publish-product-opreate > button {
+    display: inline-block;
+    text-align: center;
+    line-height: 50px;
+    background: #fff;
+    font-size: 20px;
+}
+
+.publish-product-back {
+    box-sizing: border-box;
+    width: 80px;
+    border: 1px solid #b4b4b4;
+    border-radius: 3px;
+    background: #fff;
+    color: #969696;
+}
+
+#publish-product {
+    box-sizing: border-box;
+    width: 196px;
+    margin: 0 auto;
+    border: 1px solid #323232;
+    border-radius: 3px;
+    color: #464646;
+}
+
+/*商品展示*/
+.product-show-shadow {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(250, 250, 250, .8);
+    transition: all .3s;
+    overflow: hidden;
+}
+
+.product-show-shadow.show {
+    width: 100%;
+    height: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.product-show {
+    margin: 20px auto;
+    width: 925px;
+}
+
+.product-show > div {
+    display: inline-block;
+}
+
+.product-detail {
+    width: 600px;
+}
+
+.product-detail > div {
+    box-sizing: border-box;
+    padding: 19px 21px;
+    margin-bottom: 20px;
+    background: #fff;
+    border-radius: 3px;
+}
+
+.product-detail > div:first-child {
+    padding: 0;
+}
+
+.product-image {
+    width: 600px;
+    height: 600px;
+}
+
+.product-show .person-center {
+    box-sizing: border-box;
+    margin-left: 20px;
+    width: 300px;
+    padding: 20px;
+    background: #fff;
+    vertical-align: top;
+}
+
+.product-title {
+
+}
