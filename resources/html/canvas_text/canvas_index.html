@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>canvas系列</title>
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            overflow-x: hidden;
+            background: #f1f1f1;
+        }
+
+        a {
+            width: 100%;
+            height: 50px;
+            margin: 10px 0;
+            text-decoration: none;
+            display: block;
+            font-size: 20px;
+            text-align: center;
+            line-height: 50px;
+            box-sizing: border-box;
+            border-bottom: 1px solid #646464;
+        }
+        ul{
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <ul id="list">
+
+    </ul>
+<script>
+    var ul =document.getElementById('list');
+    for(var i = 1;i<33;i++){
+        var li = document.createElement('li');
+        li.innerHTML = '<a href="canvas_text'+i+'.html">canvas_'+i+'</a>';
+        ul.appendChild(li);
+    }
+</script>
+</body>
+</html>
