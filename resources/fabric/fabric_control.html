@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>fabric.js定制按钮</title>
+    <style>
+        body {
+            margin: 0;
+            text-align: center;
+        }
+
+        .main {
+            margin: 0 auto;
+            position: relative;
+        }
+
+        canvas {
+            border: 1px solid #323232;
+        }
+
+        #opreate {
+            margin: 10px;
+        }
+
+        .canvas-container {
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+<div class="main">
+    <canvas id="fabric_canvas"></canvas>
+    <div id="opreate" class="show">
+        <label>
+            添加图片:
+            <button class="choose-photo" data-id="bear" value="../images/bear.jpg">bear</button>
+            <button class="choose-photo" data-id="cow" value="../images/cow.png">cow</button>
+            <button class="choose-photo" data-id="chicken" value="../images/chicken.png">chicken</button>
+            <button class="choose-photo" data-id="cat" value="../images/cat.jpg">cat</button>
+
+        </label>
+        <div class="screen_photo_name">
+
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/jquery.js"></script>
+<script type="text/javascript" src="fabric.min.js"></script>
+<script type="text/javascript" src="customiseControls.min.js"></script>
+<script>
+    var w = window.screen.availWidth,
+            h = window.screen.availHeight;
+    w = w > 600 ? 600 : w;
+    h = h > 600 ? 600 : h;
+
+    document.getElementById('fabric_canvas').width = w - 2;
+    document.getElementById('fabric_canvas').height = h - 102;
+
+
+    var canvas = new fabric.Canvas('fabric_canvas');
+
+    //    绘画模式
+    //    canvas.isDrawingMode = true;
+
+    fabric.Canvas.prototype.customiseControls({
+        tl: {
+            action: 'rotate',
+            cursor: 'pointer'
+        },
+        tr: {
+            action: 'scale'
+        },
+        bl: {
+            action: 'remove',
+            cursor: 'pointer'
+        },
+        br: {
+            action: 'moveUp',
+            cursor: 'pointer'
+        },
+        mb: {
+            action: 'moveDown',
+            cursor: 'pointer'
+        },
+        mr: {
+            action: function (e, target) {
+                target.set({
+                    left: w / 2,
+                    top: h / 2
+                });
+                canvas.renderAll();
+            },
+            cursor: 'pointer'
+        },
+        mt: {
+            action: {
+                'rotateByDegrees': 45
+            },
+            cursor: 'pointer'
+        }
+    });
+    // basic settings
+    fabric.Object.prototype.customiseCornerIcons({
+        settings: {
+            borderColor: '#0094dd',
+            cornerSize: 25,
+            cornerShape: 'rect',
+            cornerBackgroundColor: 'black'
+        },
+        tl: {
+            icon: '../images/icons/rotate.svg'
+        },
+        tr: {
+            icon: '../images/icons/resize.svg'
+        },
+        bl: {
+            icon: '../images/icons/remove.svg'
+        },
+        br: {
+            icon: '../images/icons/up.svg'
+        },
+        mb: {
+            icon: '../images/icons/down.svg'
+        },
+        ml: {
+            icon: '../images/icons/diagonal-resize.svg'
+        },
+        mr: {
+            icon: '../images/icons/diagonal-resize.svg'
+        }
+    });
+
+    addImg('../images/cat.jpg', 'cat');
+
+    function addImg(url, id) {
+        fabric.Image.fromURL(url, function (img) {
+            img.set({
+                id: id,
+                left: Math.round(w * Math.random()),
+                top: Math.round(h * Math.random()),
+//                scaleX: 0.2,
+//                scaleY: 0.2,
+                originX: 'center',
+                originY: 'center',
+                hasRotatingPoint: false
+            });
+
+            // overwrite the prototype object based
+            img.customiseCornerIcons({
+                settings: {
+                    borderColor: 'red',
+                    cornerSize: 25,
+                    cornerShape: 'circle',
+                    cornerBackgroundColor: 'black',
+                    cornerPadding: 10
+                },
+                mt: {
+                    icon: '../images/icons/acute.svg'
+                },
+                mr: {
+                    icon: '../images/icons/repair-tools-cross.svg'
+                }
+            }, function () {
+                canvas.renderAll();
+            });
+
+            canvas.add(img);
+            canvas.setActiveObject(img);
+        });
+    }
+
+    $('.choose-photo').click(function () {
+        addImg($(this).val(), $(this).data('id'));
+    });
+    //    画方格
+    //    var lineGroup = [];
+    //    drawLineGroup(10, 10);
+    function drawLineGroup(stepx, stepy) {
+        for (var i = stepx + 0.5; i < h; i += stepx) {
+            var line = new fabric.Line([0, i, w, i], {
+                fill: 'lightgray',
+                stroke: 'lightgray',
+                strokeWidth: .5,
+                hasControls: false,
+                hasRotatingPoint: false,
+            });
+            lineGroup.push(line);
+        }
+        for (var j = stepy + 0.5; j < w; j += stepy) {
+            var line = new fabric.Line([j, 0, j, h], {
+                fill: 'lightgray',
+                stroke: 'lightgray',
+                strokeWidth: .5,
+                hasControls: false,
+                hasRotatingPoint: false,
+            });
+            lineGroup.push(line);
+        }
+        var group = new fabric.Group(lineGroup);
+        canvas.add(group);
+    }
+
+</script>
+</body>
+</html>
