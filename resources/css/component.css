@@ -1,313 +1,379 @@
 .tee-front {
-width: 100%;
-position: relative;
-background-size: 100% 100%;
-background-color: #f1f1f1;
--webkit-transition: all 0.4s;
-        transition: all 0.4s; }
+    width: 100%;
+    position: relative;
+    background-size: 100% 100%;
+    background-color: #f1f1f1;
+    -webkit-transition: all 0.4s;
+    transition: all 0.4s;
+}
 
 .tee-front img {
-display: none; }
+    display: none;
+}
 
 [class*='Tee-'] {
-background-color: transparent; }
+    background-color: transparent;
+}
 
 [class*='Tee-'] img {
-display: block; }
+    display: block;
+}
 
 .tee-front-s {
-width: 75px; }
+    width: 75px;
+}
 
 .tee-front:after {
-content: '';
-display: block;
-padding-top: 100%; }
+    content: '';
+    display: block;
+    padding-top: 100%;
+}
 
 [class*='Tee-tee-man-white-'] {
-background-image: url("https://www.teegether.cn/images/bgImages/tshirtShort_round_male_white_front.jpg"); }
+    background-image: url("https://www.teegether.cn/images/bgImages/tshirtShort_round_male_white_front.jpg");
+}
 
 [class*='Tee-tee-woman-white-'] {
-background-image: url("https://www.teegether.cn/images/bgImages/tshirtShort_round_female_white_front.jpg"); }
+    background-image: url("https://www.teegether.cn/images/bgImages/tshirtShort_round_female_white_front.jpg");
+}
 
 [class*='Tee-tee-children-white-'] {
-background-image: url("https://www.teegether.cn/images/bgImages/tshirtShort_round_child_white_front.jpg"); }
+    background-image: url("https://www.teegether.cn/images/bgImages/tshirtShort_round_child_white_front.jpg");
+}
 
 [class*='Tee-tee-man-black-'] {
-background-image: url("https://www.teegether.cn/images/bgImages/tshirtShort_round_male_black_front.jpg"); }
+    background-image: url("https://www.teegether.cn/images/bgImages/tshirtShort_round_male_black_front.jpg");
+}
 
 [class*='Tee-tee-woman-black-'] {
-background-image: url("https://www.teegether.cn/images/bgImages/tshirtShort_round_female_black_front.jpg"); }
+    background-image: url("https://www.teegether.cn/images/bgImages/tshirtShort_round_female_black_front.jpg");
+}
 
 [class*='Tee-tee-children-black-'] {
-background-image: url("https://www.teegether.cn/images/bgImages/tshirtShort_round_child_black_front.jpg"); }
+    background-image: url("https://www.teegether.cn/images/bgImages/tshirtShort_round_child_black_front.jpg");
+}
 
 [class*='Tee-longT-man-black-'] {
-background-image: url("https://www.teegether.cn/images/bgImages/tshirtLong_round_male_black_front.jpg"); }
+    background-image: url("https://www.teegether.cn/images/bgImages/tshirtLong_round_male_black_front.jpg");
+}
 
 [class*='Tee-longT-woman-black-'] {
-background-image: url("https://www.teegether.cn/images/bgImages/tshirtLong_round_female_black_front.jpg"); }
+    background-image: url("https://www.teegether.cn/images/bgImages/tshirtLong_round_female_black_front.jpg");
+}
 
 [class*='Tee-longT-children-black-'] {
-background-image: url("https://www.teegether.cn/images/bgImages/tshirtLong_round_child_black_front.jpg"); }
+    background-image: url("https://www.teegether.cn/images/bgImages/tshirtLong_round_child_black_front.jpg");
+}
 
 [class*='Tee-longT-man-white-'] {
-background-image: url("https://www.teegether.cn/images/bgImages/tshirtLong_round_male_white_front.jpg"); }
+    background-image: url("https://www.teegether.cn/images/bgImages/tshirtLong_round_male_white_front.jpg");
+}
 
 [class*='Tee-longT-woman-white-'] {
-background-image: url("https://www.teegether.cn/images/bgImages/tshirtLong_round_female_white_front.jpg"); }
+    background-image: url("https://www.teegether.cn/images/bgImages/tshirtLong_round_female_white_front.jpg");
+}
 
 [class*='Tee-longT-children-white-'] {
-background-image: url("https://www.teegether.cn/images/bgImages/tshirtLong_round_child_white_front.jpg"); }
+    background-image: url("https://www.teegether.cn/images/bgImages/tshirtLong_round_child_white_front.jpg");
+}
 
 [class*='Tee-longT-man-'] img {
-position: absolute;
-top: 20.10%;
-left: 29.48%;
-width: 43.49%;
-height: 54.74%; }
+    position: absolute;
+    top: 20.10%;
+    left: 29.48%;
+    width: 43.49%;
+    height: 54.74%;
+}
 
 [class*='Tee-longT-man-'].product {
-background-size: auto 100%;
-background-position: 56.51% 0; }
+    background-size: auto 100%;
+    background-position: 56.51% 0;
+}
 
 [class*='Tee-longT-man-'].product:after {
-padding-top: 125%; }
+    padding-top: 125%;
+}
 
 [class*='Tee-longT-man-'].product img {
-position: absolute;
-top: 20.10%;
-left: 22.72%;
-width: 54.36%;
-height: 54.74%; }
+    position: absolute;
+    top: 20.10%;
+    left: 22.72%;
+    width: 54.36%;
+    height: 54.74%;
+}
 
 [class*='Tee-longT-woman-'] img {
-position: absolute;
-top: 24.32%;
-left: 30.63%;
-width: 42.24%;
-height: 53.18%; }
+    position: absolute;
+    top: 24.32%;
+    left: 30.63%;
+    width: 42.24%;
+    height: 53.18%;
+}
 
 [class*='Tee-longT-woman-'].product {
-background-size: auto 100%;
-background-position: 56.51% 0; }
+    background-size: auto 100%;
+    background-position: 56.51% 0;
+}
 
 [class*='Tee-longT-woman-'].product:after {
-padding-top: 125%; }
+    padding-top: 125%;
+}
 
 [class*='Tee-longT-woman-'].product img {
-position: absolute;
-top: 24.32%;
-left: 24.15%;
-width: 52.80%;
-height: 53.18%; }
+    position: absolute;
+    top: 24.32%;
+    left: 24.15%;
+    width: 52.80%;
+    height: 53.18%;
+}
 
 [class*='Tee-longT-children-'] img {
-position: absolute;
-top: 24.11%;
-left: 30.21%;
-width: 41.82%;
-height: 52.60%; }
+    position: absolute;
+    top: 24.11%;
+    left: 30.21%;
+    width: 41.82%;
+    height: 52.60%;
+}
 
 [class*='Tee-longT-children-'].product {
-background-size: auto 100%;
-background-position: 61.2% 0; }
+    background-size: auto 100%;
+    background-position: 61.2% 0;
+}
 
 [class*='Tee-longT-children-'].product:after {
-padding-top: 125%; }
+    padding-top: 125%;
+}
 
 [class*='Tee-longT-children-'].product img {
-position: absolute;
-top: 24.11%;
-left: 22.46%;
-width: 52.28%;
-height: 52.60%; }
+    position: absolute;
+    top: 24.11%;
+    left: 22.46%;
+    width: 52.28%;
+    height: 52.60%;
+}
 
 [class*='Tee-sweater-man-gray'] {
-background-image: url("https://www.teegether.cn/images/bgImages/hoodie_universal_male_gray_front.jpg"); }
+    background-image: url("https://www.teegether.cn/images/bgImages/hoodie_universal_male_gray_front.jpg");
+}
 
 [class*='Tee-sweater-man-white'] {
-background-image: url("https://www.teegether.cn/images/bgImages/hoodie_universal_male_white_front.jpg"); }
+    background-image: url("https://www.teegether.cn/images/bgImages/hoodie_universal_male_white_front.jpg");
+}
 
 [class*='Tee-sweater-man-black'] {
-background-image: url("https://www.teegether.cn/images/bgImages/hoodie_universal_male_black_front.jpg"); }
+    background-image: url("https://www.teegether.cn/images/bgImages/hoodie_universal_male_black_front.jpg");
+}
 
 [class*='Tee-sweater-woman-'] {
-background-image: url("https://www.teegether.cn/images/bgImages/hoodie_universal_female_gray_front.jpg"); }
+    background-image: url("https://www.teegether.cn/images/bgImages/hoodie_universal_female_gray_front.jpg");
+}
 
 [class*='Tee-sweater-woman-white'] {
-background-image: url("https://www.teegether.cn/images/bgImages/hoodie_universal_female_white_front.jpg"); }
+    background-image: url("https://www.teegether.cn/images/bgImages/hoodie_universal_female_white_front.jpg");
+}
 
 [class*='Tee-sweater-woman-black'] {
-background-image: url("https://www.teegether.cn/images/bgImages/hoodie_universal_female_black_front.jpg"); }
+    background-image: url("https://www.teegether.cn/images/bgImages/hoodie_universal_female_black_front.jpg");
+}
 
 [class*="Tee-sweater-man-"] img {
-position: absolute;
-top: 21.98%;
-left: 29.32%;
-width: 42.08%;
-height: 53.02%; }
+    position: absolute;
+    top: 21.98%;
+    left: 29.32%;
+    width: 42.08%;
+    height: 53.02%;
+}
 
 [class*="Tee-sweater-"].product {
-background-size: auto 100%;
-background-position: 49.22% 0; }
+    background-size: auto 100%;
+    background-position: 49.22% 0;
+}
 
 [class*="Tee-sweater-"].product:after {
-padding-top: 125%; }
+    padding-top: 125%;
+}
 
 [class*="Tee-sweater-man-"].product img {
-position: absolute;
-top: 21.98%;
-left: 24.35%;
-width: 52.60%;
-height: 53.02%; }
+    position: absolute;
+    top: 21.98%;
+    left: 24.35%;
+    width: 52.60%;
+    height: 53.02%;
+}
 
 [class*="Tee-sweater-woman-"] img {
-position: absolute;
-top: 25.00%;
-left: 29.11%;
-width: 42.08%;
-height: 53.02%; }
+    position: absolute;
+    top: 25.00%;
+    left: 29.11%;
+    width: 42.08%;
+    height: 53.02%;
+}
 
 [class*="Tee-sweater-woman-"].product img {
-position: absolute;
-top: 25.00%;
-left: 24.09%;
-width: 52.60%;
-height: 53.02%; }
+    position: absolute;
+    top: 25.00%;
+    left: 24.09%;
+    width: 52.60%;
+    height: 53.02%;
+}
 
 [class*='Tee-pillow-square-white-'] {
-background-image: url("https://www.teegether.cn/images/bgImages/pillow_square_white_front.jpg");
-background-size: auto 108.6%;
-background-position: 50% 50%; }
+    background-image: url("https://www.teegether.cn/images/bgImages/pillow_square_white_front.jpg");
+    background-size: auto 108.6%;
+    background-position: 50% 50%;
+}
 
 [class*="Tee-pillow-square-"].product {
-background-size: auto 100%;
-background-position: 49.74% 0; }
+    background-size: auto 100%;
+    background-position: 49.74% 0;
+}
 
 [class*="Tee-pillow-square-"].product:after {
-content: '';
-display: block;
-padding-top: 125%; }
+    content: '';
+    display: block;
+    padding-top: 125%;
+}
 
 [class*="Tee-pillow-square-"] img {
-position: absolute;
-top: 18.33%;
-left: 17.02%;
-width: 63.86%;
-height: 63.86%; }
+    position: absolute;
+    top: 18.33%;
+    left: 17.02%;
+    width: 63.86%;
+    height: 63.86%;
+}
 
 [class*="Tee-pillow-square-"].product img {
-position: absolute;
-top: 20.83%;
-left: 12.10%;
-width: 73.5%;
-height: 58.8%; }
+    position: absolute;
+    top: 20.83%;
+    left: 12.10%;
+    width: 73.5%;
+    height: 58.8%;
+}
 
 [class*="Tee-bag-"] {
-background-image: url("https://www.teegether.cn/images/bgImages/handbag_canvas_white_front.jpg"); }
+    background-image: url("https://www.teegether.cn/images/bgImages/handbag_canvas_white_front.jpg");
+}
 
 [class*="Tee-bag-"].product {
-background-size: auto 100%;
-background-position: 51.82% 0; }
+    background-size: auto 100%;
+    background-position: 51.82% 0;
+}
 
 [class*="Tee-bag-"].product:after {
-content: '';
-display: block;
-padding-top: 125%; }
+    content: '';
+    display: block;
+    padding-top: 125%;
+}
 
 .Tee-bag-canvas-white-M img {
-position: absolute;
-top: 48.07%;
-left: 32.5%;
-width: 34.69%;
-height: 34.69%; }
+    position: absolute;
+    top: 48.07%;
+    left: 32.5%;
+    width: 34.69%;
+    height: 34.69%;
+}
 
 .Tee-bag-canvasUp-white-M img {
-position: absolute;
-top: 44.11%;
-left: 32.66%;
-width: 34.58%;
-height: 43.49%; }
+    position: absolute;
+    top: 44.11%;
+    left: 32.66%;
+    width: 34.58%;
+    height: 43.49%;
+}
 
 .Tee-bag-canvas-white-M.product img {
-position: absolute;
-top: 48.07%;
-left: 27.67%;
-width: 43.36%;
-height: 34.69%; }
+    position: absolute;
+    top: 48.07%;
+    left: 27.67%;
+    width: 43.36%;
+    height: 34.69%;
+}
 
 .Tee-bag-canvasUp-white-M.product img {
-position: absolute;
-top: 44.11%;
-left: 27.86%;
-width: 43.23%;
-height: 43.49%; }
+    position: absolute;
+    top: 44.11%;
+    left: 27.86%;
+    width: 43.23%;
+    height: 43.49%;
+}
 
 [class*="Tee-tee-man-"] img, [class*="Tee-tee-man-"] .preview {
-position: absolute;
-top: 24.43%;
-left: 28.39%;
-width: 43.54%;
-height: 54.74%; }
+    position: absolute;
+    top: 24.43%;
+    left: 28.39%;
+    width: 43.54%;
+    height: 54.74%;
+}
 
 [class*="Tee-tee-man-"].product {
-background-size: auto 100%;
-background-position: 56.5% 0; }
+    background-size: auto 100%;
+    background-position: 56.5% 0;
+}
 
 [class*="Tee-tee-man-"].product:after {
-content: '';
-display: block;
-padding-top: 125%; }
+    content: '';
+    display: block;
+    padding-top: 125%;
+}
 
 [class*="Tee-tee-man-"].product img {
-position: absolute;
-top: 24.43%;
-left: 21.35%;
-width: 54.43%;
-height: 54.74%; }
+    position: absolute;
+    top: 24.43%;
+    left: 21.35%;
+    width: 54.43%;
+    height: 54.74%;
+}
 
 [class*="Tee-tee-woman-"] img {
-position: absolute;
-top: 25.00%;
-left: 29.11%;
-width: 41.98%;
-height: 52.76%; }
+    position: absolute;
+    top: 25.00%;
+    left: 29.11%;
+    width: 41.98%;
+    height: 52.76%;
+}
 
 [class*="Tee-tee-woman-"].product {
-background-size: auto 100%;
-background-position: 49.64% 0; }
+    background-size: auto 100%;
+    background-position: 49.64% 0;
+}
 
 [class*="Tee-tee-woman-"].product:after {
-content: '';
-display: block;
-padding-top: 125%; }
+    content: '';
+    display: block;
+    padding-top: 125%;
+}
 
 [class*="Tee-tee-woman-"].product img {
-position: absolute;
-top: 25.00%;
-left: 23.31%;
-width: 52.47%;
-height: 52.76%; }
+    position: absolute;
+    top: 25.00%;
+    left: 23.31%;
+    width: 52.47%;
+    height: 52.76%;
+}
 
 [class*="Tee-tee-children-"] img {
-position: absolute;
-top: 26.35%;
-left: 30.52%;
-width: 39.79%;
-height: 50.05%; }
+    position: absolute;
+    top: 26.35%;
+    left: 30.52%;
+    width: 39.79%;
+    height: 50.05%;
+}
 
 [class*="Tee-tee-children-"].product {
-background-size: auto 100%;
-background-position: 45.05% 0; }
+    background-size: auto 100%;
+    background-position: 45.05% 0;
+}
 
 [class*="Tee-tee-children-"].product:after {
-content: '';
-display: block;
-padding-top: 125%; }
+    content: '';
+    display: block;
+    padding-top: 125%;
+}
 
 [class*="Tee-tee-children-"].product img {
-position: absolute;
-top: 26.35%;
-left: 26.89%;
-width: 49.74%;
-height: 50.05%; }
+    position: absolute;
+    top: 26.35%;
+    left: 26.89%;
+    width: 49.74%;
+    height: 50.05%;
+}
