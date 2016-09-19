@@ -15,8 +15,32 @@
             position: relative;
         }
 
-        canvas {
+        .design-area {
+            margin: 0 auto;
+            position: relative;
+            background-image: url('https://www.teegether.cn/images/bgImages/tshirtShort_round_male_white_front.jpg');
+            background-size: 100% 100%;
+        }
+
+        #fabric_canvas {
             border: 1px solid #323232;
+        }
+
+        .print-area {
+            position: absolute;
+            top: 24.43%;
+            left: 28.39%;
+            width: 43.54%;
+            height: 54.74%;
+            border: 1px dashed #323232;
+        }
+
+        .print-area:after {
+            content: '打印区域';
+            position: absolute;
+            left: 0;
+            bottom: -20px;
+            font-size: 10px;
         }
 
         #opreate {
@@ -30,7 +54,12 @@
 </head>
 <body>
 <div class="main">
-    <canvas id="fabric_canvas"></canvas>
+    <div class="design-area">
+        <div class="print-area">
+
+        </div>
+        <canvas id="fabric_canvas"></canvas>
+    </div>
     <div id="opreate" class="show">
         <label>
             添加图片:
@@ -38,9 +67,9 @@
             <button class="choose-photo" data-id="cow" value="../images/cow.png">cow</button>
             <button class="choose-photo" data-id="chicken" value="../images/chicken.png">chicken</button>
             <button class="choose-photo" data-id="cat" value="../images/cat.jpg">cat</button>
-
         </label>
-        <div class="screen_photo_name">
+        <button class="getActiveObject">获取选中对象</button>
+        <div id="info">
 
         </div>
     </div>
@@ -54,15 +83,39 @@
     w = w > 600 ? 600 : w;
     h = h > 600 ? 600 : h;
 
+    var horizontalCenterLine, verticalCenterLine;
+
+    $('.design-area').css({
+        width: w,
+        height: w
+    });
     document.getElementById('fabric_canvas').width = w - 2;
-    document.getElementById('fabric_canvas').height = h - 102;
+    document.getElementById('fabric_canvas').height = w - 2;
 
 
-    var canvas = new fabric.Canvas('fabric_canvas');
+    var canvas = new fabric.Canvas('fabric_canvas', {
+                moveCursoe: 'move'
+            }),
+            ctx = canvas.getContext('2d');
 
+    var canvas_w = canvas.width,
+            canvas_h = canvas.height;
     //    绘画模式
     //    canvas.isDrawingMode = true;
 
+    var print = {
+        x: canvas_w * 0.2839,
+        y: canvas_h * 0.2443,
+        w: canvas_w * 0.4354,
+        h: canvas_h * 0.5474,
+    };
+
+    print.center = {
+        x: print.x + print.w / 2,
+        y: print.y + print.h / 2
+    };
+
+    console.log(print);
     fabric.Canvas.prototype.customiseControls({
         tl: {
             action: 'rotate',
@@ -135,21 +188,63 @@
 
     function addImg(url, id) {
         fabric.Image.fromURL(url, function (img) {
+            var changeImg = Math.random() * 0.5 + 0.5;
+
+            var scale = print.w / img.getWidth() * .8;
+
             img.set({
                 id: id,
-                left: Math.round(w * Math.random()),
-                top: Math.round(h * Math.random()),
-//                scaleX: 0.2,
-//                scaleY: 0.2,
+                left: canvas_w / 2,
+                top: canvas_h / 2,
+                scaleX: scale,
+                scaleY: scale,
                 originX: 'center',
                 originY: 'center',
+                centeredScaling: true,
                 hasRotatingPoint: false
+            });
+
+            img.setControlsVisibility({
+//                mb: false,
+                ml: false,
+                mr: false,
+                mt: false
+            });
+
+            img.on('rotating', function () {
+                autoAngle(this);
+                drawRotationCircle(this);
+            });
+
+            img.on('moving', function () {
+                var centerPiont = this.getCenterPoint(),
+                        differ_x = centerPiont.x - print.center.x,
+                        differ_y = centerPiont.y - print.center.y;
+                console.log(centerPiont, print.center, differ_x, differ_y);
+
+                if (Math.abs(differ_y) < 5) {
+                    horizontalCenterLine || drawHorizontalCenterLine();
+                } else {
+                    removeHorizontalCenterLine();
+                }
+                if (Math.abs(differ_x) < 5) {
+                    verticalCenterLine || drawVerticalCenterLine();
+                } else {
+                    removeVerticalCenterLine();
+                }
+
+            });
+
+            img.on('mouseup', function () {
+                removeRotationCircle();
+                removeHorizontalCenterLine();
+                removeVerticalCenterLine();
             });
 
             // overwrite the prototype object based
             img.customiseCornerIcons({
                 settings: {
-                    borderColor: 'red',
+                    borderColor: 'black',
                     cornerSize: 25,
                     cornerShape: 'circle',
                     cornerBackgroundColor: 'black',
@@ -162,23 +257,29 @@
                     icon: '../images/icons/repair-tools-cross.svg'
                 }
             }, function () {
+                canvas.clipTo = function () {
+                    ctx.rect(print.x, print.y, print.w, print.h);
+                };
                 canvas.renderAll();
             });
-
-            canvas.add(img);
-            canvas.setActiveObject(img);
+            canvas.add(img).setActiveObject(img);
         });
     }
 
     $('.choose-photo').click(function () {
-        addImg($(this).val(), $(this).data('id'));
+        addImg($(this).val(), $(this).attr('data-id'));
     });
+
+    $('.getActiveObject').click(function () {
+        console.log('选中' + canvas.getActiveObject().id);
+    });
+
     //    画方格
     //    var lineGroup = [];
     //    drawLineGroup(10, 10);
     function drawLineGroup(stepx, stepy) {
-        for (var i = stepx + 0.5; i < h; i += stepx) {
-            var line = new fabric.Line([0, i, w, i], {
+        for (var i = stepx + 0.5; i < canvas_h; i += stepx) {
+            var line = new fabric.Line([0, i, canvas_w, i], {
                 fill: 'lightgray',
                 stroke: 'lightgray',
                 strokeWidth: .5,
@@ -187,8 +288,8 @@
             });
             lineGroup.push(line);
         }
-        for (var j = stepy + 0.5; j < w; j += stepy) {
-            var line = new fabric.Line([j, 0, j, h], {
+        for (var j = stepy + 0.5; j < canvas_w; j += stepy) {
+            var line = new fabric.Line([j, 0, j, canvas_h], {
                 fill: 'lightgray',
                 stroke: 'lightgray',
                 strokeWidth: .5,
@@ -200,6 +301,120 @@
         var group = new fabric.Group(lineGroup);
         canvas.add(group);
     }
+
+    //辅助圆drawRotationCircle
+    var assistWord, assistCircle;
+    function drawRotationCircle(t) {
+        //t:fabric.object
+        var angle = Math.round(t.getAngle()),
+                i = angle % 45 == 0;
+        if (assistWord) {
+            assistWord.set({
+                text: angle + "º",
+                fill: i ? "#fff" : "#00B2A5",
+                backgroundColor: i ? "#00B2A5" : "transparent"
+            })
+        } else {
+            var centerPoint = t.getCenterPoint(),
+                    radius = Math.sqrt(Math.pow(t.getWidth() / 2, 2) + Math.pow(t.getHeight() / 2, 2));
+            //角度文字
+            assistWord = new fabric.Text(angle + "º", {
+                left: centerPoint.x,
+                top: centerPoint.y - radius - 10,
+                selectable: !1,
+                originX: "center",
+                originY: "center",
+                textAlign: "center",
+                fontSize: 12,
+                lineHeight: 1.3,
+                fill: i ? "#fff" : "#00B2A5",
+                backgroundColor: i ? "#00B2A5" : "transparent"
+            });
+            //辅助圆
+            assistCircle = new fabric.Circle({
+                fill: "transparent",
+                stroke: "#00B2A5",
+                strokeWidth: 1,
+                selectable: !1,
+                left: centerPoint.x,
+                top: centerPoint.y,
+                radius: radius,
+                originX: "center",
+                originY: "center"
+            });
+            canvas.add(assistWord).add(assistCircle)
+        }
+    }
+    function removeRotationCircle() {
+        canvas.remove(assistWord).remove(assistCircle);
+        assistWord = '';
+        assistCircle = '';
+    }
+    function autoAngle(t) {
+        var angle = Math.round(t.getAngle()),
+                n = angle % 45;
+        n < 5 && t.setAngle(angle - n);
+//        n > 40 && t.setAngle(angle + n)
+    }
+    //辅助线
+    function drawHorizontalCenterLine() {
+        horizontalCenterLine = new fabric.Line([0, print.center.y, canvas_w, print.center.y], {
+            stroke: "#00B2A5",
+            strokeWidth: 1,
+            selectable: !1,
+            width: 0,
+            height: 0
+        });
+        canvas.add(horizontalCenterLine)
+    }
+    function drawVerticalCenterLine() {
+        verticalCenterLine = new fabric.Line([print.center.x, 0, print.center.x, canvas_h], {
+            stroke: "#00B2A5",
+            strokeWidth: 1,
+            selectable: !1,
+            width: 0,
+            height: 0
+        });
+        canvas.add(verticalCenterLine)
+    }
+    function removeHorizontalCenterLine() {
+        canvas.remove(horizontalCenterLine);
+        horizontalCenterLine = '';
+    }
+    function removeVerticalCenterLine() {
+        canvas.remove(verticalCenterLine);
+        verticalCenterLine = '';
+    }
+    //手势
+    var info = document.getElementById('info');
+
+    canvas.on({
+        'touch:gesture': function () {
+            var text = document.createTextNode(' Gesture ');
+            console.log(text);
+            info.insertBefore(text, info.firstChild);
+        },
+        'touch:drag': function () {
+            var text = document.createTextNode(' Dragging ');
+            console.log(text);
+            info.insertBefore(text, info.firstChild);
+        },
+        'touch:orientation': function () {
+            var text = document.createTextNode(' Orientation ');
+            console.log(text);
+            info.insertBefore(text, info.firstChild);
+        },
+        'touch:shake': function () {
+            var text = document.createTextNode(' Shaking ');
+            console.log(text);
+            info.insertBefore(text, info.firstChild);
+        },
+        'touch:longpress': function () {
+            var text = document.createTextNode(' Longpress ');
+            console.log(text);
+            info.insertBefore(text, info.firstChild);
+        }
+    });
 
 </script>
 </body>
