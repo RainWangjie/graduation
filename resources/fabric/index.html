@@ -106,6 +106,34 @@
         textAlign: 'right'
     });
     canvas.add(text);
+
+    //    画方格
+    var lineGroup = [];
+    drawLineGroup(10, 10);
+    function drawLineGroup(stepx, stepy) {
+        for (var i = stepx + 0.5; i < canvas_h; i += stepx) {
+            var line = new fabric.Line([0, i, canvas_w, i], {
+                fill: 'lightgray',
+                stroke: 'lightgray',
+                strokeWidth: .5,
+                hasControls: false,
+                hasRotatingPoint: false,
+            });
+            lineGroup.push(line);
+        }
+        for (var j = stepy + 0.5; j < canvas_w; j += stepy) {
+            var line = new fabric.Line([j, 0, j, canvas_h], {
+                fill: 'lightgray',
+                stroke: 'lightgray',
+                strokeWidth: .5,
+                hasControls: false,
+                hasRotatingPoint: false,
+            });
+            lineGroup.push(line);
+        }
+        var group = new fabric.Group(lineGroup);
+        canvas.add(group);
+    }
 </script>
 </body>
 </html>
