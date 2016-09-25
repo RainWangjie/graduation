@@ -6,6 +6,22 @@
           content="user-scalable=0,width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1">
     <title>fabric.js定制按钮</title>
     <style>
+        @font-face {
+            font-family: 'zoolsBlack';
+            src: url('../fonts/Zcool-Black.woff');
+        }
+        @font-face {
+            font-family: 'zoolsHappy';
+            src: url('../fonts/Zcool-Happy.woff');
+        }
+        @font-face {
+            font-family: 'zoolsItalic01';
+            src: url('../fonts/Italic01.ttf');
+        }
+        @font-face {
+            font-family: 'zoolsItalic02';
+            src: url('../fonts/Italic02.ttf');
+        }
         body {
             margin: 0;
             text-align: center;
@@ -53,7 +69,12 @@
         #opreate {
             position: fixed;
             bottom: 0;
+            /*background: #fff;*/
             width: 100%;
+        }
+
+        #word{
+            width: 40px;
         }
 
         .canvas-container {
@@ -62,6 +83,7 @@
 
         button {
             padding: 5px;
+            border:0;
             border-radius: 5px;
             margin: 10px;
         }
@@ -79,9 +101,23 @@
         <label>
             添加图片:
             <button class="choose-photo" data-id="bear" value="../images/bear.jpg">bear</button>
-            <button class="choose-photo" data-id="cow" value="../images/cow.png">cow</button>
+            <button class="choose-photo" data-id="kobe" value="../images/11-2.jpg">kobe</button>
             <button class="choose-photo" data-id="chicken" value="../images/chicken.png">chicken</button>
             <button class="choose-photo" data-id="cat" value="../images/cat.jpg">cat</button>
+        </label>
+        <br>
+        <label>
+            添加文字：
+            <input type="text" id="word">
+            <input type="color" id="color">
+            <select id="font_family">
+                <option value="">选择字体</option>
+                <option value="zoolsBlack">站酷黑体</option>
+                <option value="zoolsHappy">站酷Happy</option>
+                <option value="zoolsItalic01">zoolsItalic01</option>
+                <option value="zoolsItalic02">zoolsItalic02</option>
+            </select>
+            <button id="addWord">+</button>
         </label>
         <br>
         <button onclick="window.location.reload()">reload</button>
@@ -208,106 +244,107 @@
 
     function addImg(url, id) {
         fabric.Image.fromURL(url, function (img) {
-            var changeImg = Math.random() * 0.5 + 0.5;
-
             var scale = print.w / img.getWidth() * .8;
-
-            img.set({
-                id: id,
-                left: canvas_w / 2,
-                top: canvas_h / 2,
-                scaleX: scale,
-                scaleY: scale,
-                originX: 'center',
-                originY: 'center',
-                centeredScaling: true,
-                hasRotatingPoint: false
+            setObject(img, function () {
+                img.set({
+                    id: id,
+                    left: canvas_w / 2,
+                    top: canvas_h / 2,
+                    scaleX: scale,
+                    scaleY: scale,
+                    originX: 'center',
+                    originY: 'center',
+                    centeredScaling: true,
+                    hasRotatingPoint: false
+                });
             });
-
-            img.setControlsVisibility({
-                ml: false,
-                mr: false,
-                mt: false
-            });
-
-            img.on('rotating', function () {
-                autoAngle(this);
-                drawRotationCircle(this);
-            });
-
-            img.on('moving', function () {
-                var centerPiont = this.getCenterPoint(),
-                        differ_x = centerPiont.x - print.center.x,
-                        differ_y = centerPiont.y - print.center.y;
-                //自动吸合辅助线
-                if (Math.abs(differ_y) < 5) {
-                    this.setTop(centerPiont.y - differ_y);
-                    horizontalCenterLine || drawHorizontalCenterLine();
-                } else {
-                    removeHorizontalCenterLine();
-                }
-                if (Math.abs(differ_x) < 5) {
-                    this.setLeft(centerPiont.x - differ_x);
-                    verticalCenterLine || drawVerticalCenterLine();
-                } else {
-                    removeVerticalCenterLine();
-                }
-
-            });
-
-            img.on('mouseup', function () {
-                removeRotationCircle();
-                removeHorizontalCenterLine();
-                removeVerticalCenterLine();
-            });
-
-            img.on('selected', function () {
-                var w = this.width,
-                        h = this.height;
-
-                img.clipTo = function () {
-                    ctx.rect(-w / 2, -h / 2, w, h);
-                };
-            });
-            // modified 实时，性能
-            // deselected 取消寻中执行
-            img.on('modified', function () {
-                img.clipTo = function () {
-                    this.setCoords();
-                    ctx.save();
-                    ctx.translate(-this.width / 2, -this.height / 2);
-                    ctx.rotate(-1 * this.angle * (Math.PI / 180));
-                    ctx.scale(1 / this.scaleX, 1 / this.scaleY);
-                    ctx.beginPath();
-                    ctx.rect(print.x - this.oCoords.tl.x, print.y - this.oCoords.tl.y, print.w, print.h);
-                    ctx.closePath();
-                    ctx.restore();
-                };
-            });
-            // overwrite the prototype object based
-            img.customiseCornerIcons({
-                settings: {
-                    borderColor: 'black',
-                    cornerSize: 20,
-                    cornerShape: 'circle',
-                    cornerBackgroundColor: 'black',
-                    cornerPadding: 10
-                },
-                mt: {
-                    icon: '../images/icons/acute.svg'
-                },
-                mr: {
-                    icon: '../images/icons/repair-tools-cross.svg'
-                }
-            }, function () {
-                canvas.renderAll();
-            });
-            canvas.add(img).setActiveObject(img);
         });
     }
 
+    function setObject(object, setFun) {
+        setFun && setFun();
+        object.setControlsVisibility({
+            ml: false,
+            mr: false,
+            mt: false
+        });
+        object.on('rotating', function () {
+            autoAngle(this);
+            drawRotationCircle(this);
+        });
+        object.on('moving', function () {
+            var centerPiont = this.getCenterPoint(),
+                    differ_x = centerPiont.x - print.center.x,
+                    differ_y = centerPiont.y - print.center.y;
+            //自动吸合辅助线
+            if (Math.abs(differ_y) < 5) {
+                this.setTop(centerPiont.y - differ_y);
+                horizontalCenterLine || drawHorizontalCenterLine();
+            } else {
+                removeHorizontalCenterLine();
+            }
+            if (Math.abs(differ_x) < 5) {
+                this.setLeft(centerPiont.x - differ_x);
+                verticalCenterLine || drawVerticalCenterLine();
+            } else {
+                removeVerticalCenterLine();
+            }
+
+        });
+        object.on('mouseup', function () {
+            removeRotationCircle();
+            removeHorizontalCenterLine();
+            removeVerticalCenterLine();
+        });
+        object.on('selected', function () {
+            var w = this.width,
+                    h = this.height;
+
+            object.clipTo = function () {
+                ctx.rect(-w / 2, -h / 2, w, h);
+            };
+        });
+        // modified 实时，性能
+        // deselected 取消寻中执行
+        object.on('modified', function () {
+            this.clipTo = function () {
+                this.setCoords();
+                ctx.save();
+                ctx.translate(-this.width / 2, -this.height / 2);
+                ctx.rotate(-1 * this.angle * (Math.PI / 180));
+                ctx.scale(1 / this.scaleX, 1 / this.scaleY);
+                ctx.beginPath();
+                ctx.rect(print.x - this.oCoords.tl.x, print.y - this.oCoords.tl.y, print.w, print.h);
+                ctx.closePath();
+                ctx.restore();
+            };
+        });
+        // overwrite the prototype object based
+        object.customiseCornerIcons({
+            settings: {
+                borderColor: 'black',
+                cornerSize: 20,
+                cornerShape: 'circle',
+                cornerBackgroundColor: 'black',
+                cornerPadding: 10
+            },
+            mt: {
+                icon: '../images/icons/acute.svg'
+            },
+            mr: {
+                icon: '../images/icons/repair-tools-cross.svg'
+            }
+        }, function () {
+            canvas.renderAll();
+        });
+        canvas.add(object).setActiveObject(object);
+    }
 
     //    按钮
+    $('#word').focus(function () {
+       $(this).val('') ;
+    });
+
     $('.choose-photo').click(function () {
         addImg($(this).val(), $(this).attr('data-id'));
     });
@@ -320,6 +357,27 @@
         $('.design-area').toggleClass('bigger');
     });
 
+    $('#addWord').click(function () {
+        addWord($('#word').val())
+    });
+
+    //添加文字
+    function addWord(text) {
+        var word = new fabric.Text(text, {
+            left: canvas_w / 2,
+            top: canvas_h / 2,
+            originX: "center",
+            originY: "center",
+            textAlign: "center",
+            fontFamily:$('#font_family').val(),
+            fontSize: 30,
+            lineHeight: 1.3,
+            fill: $('#color').val(),
+            backgroundColor: "transparent",
+            hasRotatingPoint: false
+        });
+        setObject(word)
+    }
     //辅助圆drawRotationCircle
     var assistWord, assistCircle;
     function drawRotationCircle(t) {
@@ -377,8 +435,9 @@
     function autoAngle(t) {
         var angle = Math.round(t.getAngle()),
                 n = angle % 45;
+    //5度内吸合
         n < 5 && t.setAngle(angle - n);
-//        n > 40 && t.setAngle(angle + n)
+        n > 40 && t.setAngle(angle + 45 - n);
     }
     //辅助线
     function drawHorizontalCenterLine() {
@@ -409,37 +468,6 @@
         canvas.remove(verticalCenterLine);
         verticalCenterLine = '';
     }
-
-    //手势
-//    var info = document.getElementById('info');
-
-//    canvas.on({
-//        'touch:gesture': function () {
-//            var text = document.createTextNode(' Gesture ');
-//            console.log(text);
-//            info.insertBefore(text, info.firstChild);
-//        },
-//        'touch:drag': function () {
-//            var text = document.createTextNode(' Dragging ');
-//            console.log(text);
-//            info.insertBefore(text, info.firstChild);
-//        },
-//        'touch:orientation': function () {
-//            var text = document.createTextNode(' Orientation ');
-//            console.log(text);
-//            info.insertBefore(text, info.firstChild);
-//        },
-//        'touch:shake': function () {
-//            var text = document.createTextNode(' Shaking ');
-//            console.log(text);
-//            info.insertBefore(text, info.firstChild);
-//        },
-//        'touch:longpress': function () {
-//            var text = document.createTextNode(' Longpress ');
-//            console.log(text);
-//            info.insertBefore(text, info.firstChild);
-//        }
-//    });
 
 </script>
 </body>
