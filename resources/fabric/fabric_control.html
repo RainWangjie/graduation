@@ -92,6 +92,10 @@
             border-radius: 5px;
             margin: 10px;
         }
+
+        .selecctedImg {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -141,6 +145,7 @@
 </div>
 <script type="text/javascript" src="../js/jquery.js"></script>
 <script type="text/javascript" src="fabric.min.js"></script>
+<script type="text/javascript" src="mask.js"></script>
 <script type="text/javascript" src="customiseControls.min.js"></script>
 <script>
     var imageList = {
@@ -149,8 +154,7 @@
         'chicken': 'http://o830wpqbz.bkt.clouddn.com/chicken.png',
         'cat': 'http://o830wpqbz.bkt.clouddn.com/cat.jpg',
     };
-    var canvas_json;
-    var maskCanvas, maskCtx, maskUrl, maskData;
+    var maskImg, readyMask = false;
 
     var moban = {
         1: {
@@ -290,8 +294,9 @@
                     originX: 'center',
                     originY: 'center',
                     centeredScaling: true,
-                    hasRotatingPoint: false
+                    hasRotatingPoint: false,
                 });
+                $('body').append('<img class="selecctedImg" id="' + id + '" src="' + url + '">')
             });
         });
     }
@@ -350,6 +355,9 @@
                 ctx.closePath();
                 ctx.restore();
             };
+            readyMask && useMask(this);
+        });
+        object.on('deselected', function () {
             //mask
         });
         // overwrite the prototype object based
@@ -420,61 +428,32 @@
                 width: print.w,
                 height: print.h
             });
-            maskUrl = moban[id].mask;
-//            maskUrl && initMask(maskUrl);
+            //mask
+            readyMask = false;
+            new fabric.Image.fromURL(moban[id].mask, function (img) {
+                maskImg = img;
+                useMask(canvas.getActiveObject());
+                readyMask = true;
+            });
         } else {
             canvas.overlayImage.opacity = 0;
-            maskUrl = '';
-            maskData = {};
+            readyMask = false;
             canvas.renderAll();
         }
     });
-    function useMask(object) {
-        canvas.overlayImage.opacity = 0;
-        clearOther();
-//        canvas.deactivateAll();
-        canvas.renderAll();
-        var imageDate = ctx.getImageData(print.x, print.y, print.w, print.h),
-                imagePix = imageDate.data;
-//        var imageDataLength = 0;
-//        this.errorImageDataIndexes.length = 0;
-        for (var i = 0; i < maskData.pix.length; i += 4) {
-            if (maskData.pix[i + 3] === 0) {
-                imagePix[i + 3] = 0;
-            }
-        }
-        maskCtx.putImageData(imageDate, 0, 0);
-
-        canvas.overlayImage.opacity = 1;
-//        hideOrShow(0);
-//        ctx.putImageData(imageDate, 0, 0);
-//        canvas.setActiveObject(object);
-        canvas.renderAll();
-    }
-    function initMask(maskUrl) {
-        if (!maskCanvas) {
-            maskCanvas = document.createElement('canvas');
-            maskCanvas.style.background = '#f1f1f1';
+    var maskCanvas, maskCtx;
+    function initMask() {
+        maskCanvas = document.createElement('canvas');
+        maskCanvas.style.float = 'right';
+        maskCanvas.style.background = '#f1f1f1';
 //            maskCanvas.width = print.w;
 //            maskCanvas.height = print.h;
-            maskCanvas.width = canvas_w;
-            maskCanvas.height = canvas_h;
-            maskCtx = maskCanvas.getContext('2d');
-            $('body').append(maskCanvas);
-        }
-        var maskImage = new Image;
-        maskImage.crossOrigin = '*';
-        maskImage.onload = function () {
-            maskCtx.clearRect(0, 0, canvas_w, canvas_h);
-            maskCtx.drawImage(maskImage, print.x, print.y, print.w, print.h);
-            maskData = {
-                ctx: maskCtx,
-                imageData: maskCtx.getImageData(print.x, print.y, print.w, print.h),
-            };
-            maskData.pix = maskData.imageData.data;
-        };
-        maskImage.src = maskUrl;
+        maskCanvas.width = print.w;
+        maskCanvas.height = print.h;
+        $('body').append(maskCanvas);
+        maskCtx = maskCanvas.getContext('2d');
     }
+    initMask();
     //添加文字
     function addWord(text) {
         var word = new fabric.Text(text, {
@@ -582,14 +561,6 @@
         canvas.remove(verticalCenterLine);
         verticalCenterLine = '';
     }
-    //隐藏object
-    function hideOrShow(opacity) {
-        var objectList = canvas.getObjects();
-        objectList.forEach(function (item) {
-            item.opacity = opacity;
-        });
-        canvas.renderAll();
-    }
     //清除辅助
     function clearOther() {
         removeRotationCircle();
@@ -597,6 +568,15 @@
         removeVerticalCenterLine();
     }
 
+    //mask操作
+    function useMask(object) {
+        object.filters.push(new fabric.Image.filters.MaskUp({
+            'mask': maskImg,
+        }));
+        object.applyFilters(function () {
+            canvas.renderAll();
+        });
+    }
     //http://o830wpqbz.bkt.clouddn.com/tshirtShort_round_male_white_front.jpg
 
 
