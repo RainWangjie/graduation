@@ -294,9 +294,9 @@
                     originX: 'center',
                     originY: 'center',
                     centeredScaling: true,
-                    hasRotatingPoint: false,
+                    hasRotatingPoint: false
                 });
-                $('body').append('<img class="selecctedImg" id="' + id + '" src="' + url + '">')
+//                $('body').append('<img class="selecctedImg" id="' + id + '" src="' + url + '">')
             });
         });
     }
@@ -344,6 +344,8 @@
         // modified 实时，性能
         // deselected 取消寻中执行
         object.on('modified', function () {
+            readyMask && useMask(this);
+
             this.clipTo = function (ctx) {
                 this.setCoords();
                 ctx.save();
@@ -355,7 +357,6 @@
                 ctx.closePath();
                 ctx.restore();
             };
-            readyMask && useMask(this);
         });
         object.on('deselected', function () {
             //mask
@@ -442,18 +443,19 @@
         }
     });
     var maskCanvas, maskCtx;
-    function initMask() {
-        maskCanvas = document.createElement('canvas');
-        maskCanvas.style.float = 'right';
-        maskCanvas.style.background = '#f1f1f1';
-//            maskCanvas.width = print.w;
-//            maskCanvas.height = print.h;
-        maskCanvas.width = print.w;
-        maskCanvas.height = print.h;
-        $('body').append(maskCanvas);
-        maskCtx = maskCanvas.getContext('2d');
-    }
-    initMask();
+
+//    辅助画布
+//    function initMask() {
+//        maskCanvas = document.createElement('canvas');
+//        maskCanvas.style.float = 'right';
+//        maskCanvas.style.background = '#f1f1f1';
+//        maskCanvas.style.border= '1px solid #000';
+//        maskCanvas.width = print.w;
+//        maskCanvas.height = print.h;
+//        $('body').append(maskCanvas);
+//        maskCtx = maskCanvas.getContext('2d');
+//    }
+//    initMask();
     //添加文字
     function addWord(text) {
         var word = new fabric.Text(text, {
@@ -570,8 +572,8 @@
 
     //mask操作
     function useMask(object) {
-        object.filters.push(new fabric.Image.filters.MaskUp({
-            'mask': maskImg,
+        object.filters[0] = (new fabric.Image.filters.MaskUp({
+            'mask': maskImg
         }));
         object.applyFilters(function () {
             canvas.renderAll();

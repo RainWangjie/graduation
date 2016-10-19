@@ -42,48 +42,43 @@
             if (!this.mask) {
                 return;
             }
+
             var context = canvasEl.getContext('2d'),
+                imageData = context.getImageData(0, 0, canvasEl.width, canvasEl.height),
+                data = imageData.data,
                 maskEl = this.mask.getElement(),
-                imgCanvasEl = fabric.util.createCanvasElement(),
-                imgCtx = imgCanvasEl.getContext('2d'),
                 maskCanvasEl = fabric.util.createCanvasElement(),
                 maskImgCtx = maskCanvasEl.getContext('2d'),
                 i;
-            imgCanvasEl.width = print.w;
-            imgCanvasEl.height = print.h;
-            maskCanvasEl.width = print.w;
-            maskCanvasEl.height = print.h;
 
-            //清空画布
-            imgCtx.clearRect(0, 0, print.w, print.h);
-            maskImgCtx.clearRect(0, 0, print.w, print.h);
-            maskCtx.clearRect(0, 0, print.w, print.h);
-            maskCtx.save();
-            var img = canvas.getActiveObject(),
-                imgEl = document.getElementById(img.id),
-                options = {
-                    top: img.getTop(),
-                    left: img.getLeft(),
-                    scale: img.getScaleX(),
-                    rotate: img.getAngle()
-                };
-            console.log(options);
-            var img_w = img.width * options.scale,
-                img_h = img.height * options.scale;
-            imgCtx.translate(print.w / 2, print.h / 2);
-            imgCtx.rotate(options.rotate * Math.PI / 180);
-            imgCtx.drawImage(imgEl, options.left - print.x, options.top - print.y, img_w, img_h);
+            var imgObject = canvas.getActiveObject();
 
-            maskCtx.translate(print.w / 2, print.h / 2);
-            maskCtx.rotate(options.rotate * Math.PI / 180);
-            maskCtx.drawImage(imgEl, options.left - print.x, options.top - print.y, img_w, img_h);
-            maskCtx.restore();
+            //console.log(imgObject);
 
-            var imageData = imgCtx.getImageData(0, 0, print.w, print.h),
-                data = imageData.data;
+            maskCanvasEl.width = canvasEl.width;
+            maskCanvasEl.height = canvasEl.height;
+            //maskCanvas.width = canvasEl.width;
+            //maskCanvas.height = canvasEl.height;
 
-            maskImgCtx.drawImage(maskEl, 0, 0, print.w, print.h);
-            var maskImageData = maskImgCtx.getImageData(0, 0, print.w, print.h),
+            var x = print.x - imgObject.left,
+                y = print.y - imgObject.top;
+
+            maskImgCtx.translate(canvasEl.width / 2, canvasEl.height / 2);
+            maskImgCtx.rotate(-1 * imgObject.angle * (Math.PI / 180));
+            maskImgCtx.scale(1 / imgObject.scaleX, 1 / imgObject.scaleY);
+            maskImgCtx.drawImage(maskEl, x, y, print.w, print.h);
+            //
+            //maskCtx.translate(canvasEl.width / 2, canvasEl.height / 2);
+            //maskCtx.rotate(-1 * imgObject.angle * (Math.PI / 180));
+            //maskCtx.scale(1 / imgObject.scaleX, 1 / imgObject.scaleY);
+            //maskCtx.drawImage(maskEl, x, y, print.w, print.h);
+            //
+            //maskCtx.beginPath();
+            //maskCtx.rect(x, y, print.w, print.h);
+            //maskCtx.closePath();
+            //maskCtx.strokeStyle = '#f00';
+            //maskCtx.stroke();
+            var maskImageData = maskImgCtx.getImageData(0, 0, maskCanvasEl.width, maskCanvasEl.height),
                 maskData = maskImageData.data;
 
             for (i = 0; i < maskData.length; i += 4) {
