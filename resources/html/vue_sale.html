@@ -108,7 +108,7 @@
         }
     </style>
     <script src="../js/config.js"></script>
-    <script src="../js/vue.js"></script>
+    <script src="../js/vue2.0.js"></script>
 </head>
 <body>
 <div id="main">
@@ -119,57 +119,59 @@
     </template>
 </div>
 <script type="text/x-template" id="my-panel">
-    <div class="title"
-         v-if="singlePanel"
-         v-on:click="translate">
-        {{item.channel}}
-    </div>
-    <div class="panel" :class="{'show':isShow}">
-        <table>
-            <tr>
-                <td colspan="4">{{item.channel}}</td>
-            </tr>
-            <tr>
-                <td></td>
-                <td v-for="linkedGood in item.linkedGoods">
-                    {{config.style[linkedGood.style].name}}
-                </td>
-            </tr>
-            <tr>
-                <td>总销量</td>
-                <td v-for="linkedGood in item.linkedGoods">
-                    {{linkedGood.total}}
-                </td>
-            </tr>
-            <tr>
-                <td>已分润</td>
-                <td v-for="linkedGood in item.linkedGoods">
-                    {{item.profitPaid[linkedGood.style]}}
-                </td>
-            </tr>
+    <div>
+        <div class="title"
+             v-if="singlePanel"
+             @:click="translate">
+            ${item.channel}
+        </div>
+        <div class="panel" :class="{'show':isShow}">
+            <table>
+                <tr>
+                    <td colspan="4">${item.channel}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td v-for="linkedGood in item.linkedGoods">
+                        ${config.style[linkedGood.style].name}
+                    </td>
+                </tr>
+                <tr>
+                    <td>总销量</td>
+                    <td v-for="linkedGood in item.linkedGoods">
+                        ${linkedGood.total}
+                    </td>
+                </tr>
+                <tr>
+                    <td>已分润</td>
+                    <td v-for="linkedGood in item.linkedGoods">
+                        ${item.profitPaid[linkedGood.style]}
+                    </td>
+                </tr>
 
-            <tr>
-                <td>未分润</td>
-                <td v-for="linkedGood in item.linkedGoods">
-                    {{linkedGood.total - item.profitPaid[linkedGood.style]}}
-                </td>
-            </tr>
-        </table>
-        <template v-for="linkedGood in item.linkedGoods">
-            <div class="clear"></div>
-            <div class="title-style">
-                品类：{{config.style[linkedGood.style].name}}&nbsp;&nbsp;&nbsp;销量：{{linkedGood.total}}件
-            </div>
-            <ul class="content">
-                <li v-for="goods in linkedGood.goodsSetInfo">
-                    <div class="tee-front {{config.getClass(goods.skuInfo.style,goods.skuInfo.sex,goods.skuInfo.color,1)}}">
-                        <img :src="goods.imageUrl">
-                        <div class="salesCount">销量：{{goods.salesCount}}</div>
-                    </div>
-                </li>
-                <li class="clear"></li>
-            </ul>
-        </template>
+                <tr>
+                    <td>未分润</td>
+                    <td v-for="linkedGood in item.linkedGoods">
+                        ${linkedGood.total - item.profitPaid[linkedGood.style]}
+                    </td>
+                </tr>
+            </table>
+            <template v-for="linkedGood in item.linkedGoods">
+                <div class="clear"></div>
+                <div class="title-style">
+                    品类：${config.style[linkedGood.style].name}&nbsp;&nbsp;&nbsp;销量：${linkedGood.total}件
+                </div>
+                <ul class="content">
+                    <li v-for="goods in linkedGood.goodsSetInfo">
+                        <div class="tee-front" :class="config.getClass(goods.skuInfo.style,goods.skuInfo.sex,goods.skuInfo.color,1)">
+                            <img :src="goods.imageUrl">
+                            <div class="salesCount">销量：${goods.salesCount}</div>
+                        </div>
+                    </li>
+                    <li class="clear"></li>
+                </ul>
+            </template>
+        </div>
     </div>
 </script>
 <script>
@@ -209,6 +211,8 @@
 
     var currentPanel = '';
     Vue.component('panel', {
+        delimiters: ['${', '}'],
+        // 分隔符变成了 ES6 模板字符串的风格
         template: '#my-panel',
         data: function () {
             return {
@@ -216,7 +220,7 @@
                 isShow: !this.singlePanel
             };
         },
-        props: ['item','config'],
+        props: ['item', 'config'],
         methods: {
             translate: function () {
                 currentPanel = this;
@@ -226,6 +230,8 @@
     });
 
     new Vue({
+        delimiters: ['${', '}'],
+        // 分隔符变成了 ES6 模板字符串的风格
         el: '#main',
         data: {
             resultData: result,

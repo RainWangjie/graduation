@@ -134,6 +134,8 @@
             <button class="moban" data-moban="1">模版1</button>
             <button class="moban" data-moban="2">模版2</button>
             <button class="moban" data-moban="3">模版3</button>
+            <button class="moban" data-moban="4">模版4</button>
+            <button class="moban" data-moban="5">模版5</button>
             <button class="moban" data-moban="0">取消</button>
         </label>
         <br>
@@ -158,23 +160,32 @@
 
     var moban = {
         1: {
-            'frame': 'https://o5b8263mg.qnssl.com/FlN20Fq7e_yoiLU6TaAu8FiABbzU?imageView2/0/w/500',
+            'frame': 'http://o830wpqbz.bkt.clouddn.com/FlN20Fq7e_yoiLU6TaAu8FiABbzU',
             'mask': 'http://o830wpqbz.bkt.clouddn.com/FvYmZw36u8kBAApgnwtGIZMQ7PS_'
         },
         2: {
-            'frame': 'https://o5b8263mg.qnssl.com/FuzvbT6HgSK2ht_8EUyWG-RDO48m?imageView2/0/w/500',
+            'frame': 'https://o5b8263mg.qnssl.com/FuzvbT6HgSK2ht_8EUyWG-RDO48m',
             'mask': 'https://o5b8263mg.qnssl.com/FmN3FNZpSykUUDavFKj1Enq_-odw'
         },
         3: {
-            'frame': 'https://o5b8263mg.qnssl.com/FmwDI6woIEPe3gJ4UxnMwz4G6Doi?imageView2/0/w/500',
+            'frame': 'https://o5b8263mg.qnssl.com/FmwDI6woIEPe3gJ4UxnMwz4G6Doi',
             'mask': 'https://o5b8263mg.qnssl.com/FsjIbRdmUywJVYyxCQryOR-xA8xD'
+        },
+        4: {
+            'frame': 'https://o5b8263mg.qnssl.com/FtYXMR4MMh40oxiD4QmE7Fn5u8yM',
+            'mask': 'https://o5b8263mg.qnssl.com/Fm8Sl0tSNNO6JXgaZI6FUWC51s-k'
+        },
+        5: {
+            'frame': 'https://o5b8263mg.qnssl.com/FiFIry6RZ9NkxkYZxBXVzkicTJHM',
+            'mask': 'https://o5b8263mg.qnssl.com/Fi9-iXzqSSv1hjw82TKBuX__Evf8'
         }
     };
 
     var w = window.screen.availWidth,
             h = window.screen.availHeight;
-    w = w > 600 ? 600 : w;
-    h = h > 600 ? 600 : h;
+    var standard = 900;
+    w = w > standard ? standard : w;
+    h = h > standard ? standard : h;
 
     var horizontalCenterLine, verticalCenterLine;
 
@@ -203,14 +214,13 @@
         x: Math.round(canvas_w * 0.2839),
         y: Math.round(canvas_h * 0.2443),
         w: Math.round(canvas_w * 0.4354),
-        h: Math.round(canvas_h * 0.5474),
+        h: Math.round(canvas_h * 0.5474)
     };
 
     print.center = {
-        x: print.x + print.w / 2,
-        y: print.y + print.h / 2
+        x: Math.round(print.x + print.w / 2),
+        y: Math.round(print.y + print.h / 2)
     };
-
     fabric.Canvas.prototype.customiseControls({
         tl: {
             action: 'rotate',
@@ -282,7 +292,6 @@
 
     function addImg(url, id) {
         fabric.Image.fromURL(url, function (img) {
-            img.crossOrigin = '*';
             var scale = print.w / img.getWidth() * .8;
             setObject(img, function () {
                 img.set({
@@ -296,8 +305,9 @@
                     centeredScaling: true,
                     hasRotatingPoint: false
                 });
-//                $('body').append('<img class="selecctedImg" id="' + id + '" src="' + url + '">')
             });
+        }, {
+            crossOrigin: 'anonymous'
         });
     }
 
@@ -345,7 +355,6 @@
         // deselected 取消寻中执行
         object.on('modified', function () {
             readyMask && useMask(this);
-
             this.clipTo = function (ctx) {
                 this.setCoords();
                 ctx.save();
@@ -422,12 +431,13 @@
         if (id !== '0') {
             //边框前景色 frame
             canvas.setOverlayImage(moban[id].frame, canvas.renderAll.bind(canvas), {
-                left: canvas_w / 2,
-                top: canvas_h / 2,
+                left: print.center.x,
+                top: print.center.y,
                 originX: "center",
                 originY: "center",
                 width: print.w,
-                height: print.h
+                height: print.h,
+                crossOrigin: 'anonymous'
             });
             //mask
             readyMask = false;
@@ -435,6 +445,8 @@
                 maskImg = img;
                 useMask(canvas.getActiveObject());
                 readyMask = true;
+            }, {
+                crossOrigin: 'anonymous'
             });
         } else {
             canvas.overlayImage.opacity = 0;
@@ -444,18 +456,18 @@
     });
     var maskCanvas, maskCtx;
 
-//    辅助画布
-//    function initMask() {
-//        maskCanvas = document.createElement('canvas');
-//        maskCanvas.style.float = 'right';
-//        maskCanvas.style.background = '#f1f1f1';
-//        maskCanvas.style.border= '1px solid #000';
-//        maskCanvas.width = print.w;
-//        maskCanvas.height = print.h;
-//        $('body').append(maskCanvas);
-//        maskCtx = maskCanvas.getContext('2d');
-//    }
-//    initMask();
+    //    辅助画布
+    //    function initMask() {
+    //        maskCanvas = document.createElement('canvas');
+    //        maskCanvas.style.float = 'right';
+    //        maskCanvas.style.background = '#f1f1f1';
+    //        maskCanvas.style.border= '1px solid #000';
+    //        maskCanvas.width = print.w;
+    //        maskCanvas.height = print.h;
+    //        $('body').append(maskCanvas);
+    //        maskCtx = maskCanvas.getContext('2d');
+    //    }
+    //    initMask();
     //添加文字
     function addWord(text) {
         var word = new fabric.Text(text, {
@@ -579,8 +591,6 @@
             canvas.renderAll();
         });
     }
-    //http://o830wpqbz.bkt.clouddn.com/tshirtShort_round_male_white_front.jpg
-
 
     /*
      JSON序列化

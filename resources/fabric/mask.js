@@ -63,11 +63,14 @@
             var x = print.x - imgObject.left,
                 y = print.y - imgObject.top;
 
-            maskImgCtx.translate(canvasEl.width / 2, canvasEl.height / 2);
+            maskImgCtx.translate(maskCanvasEl.width / 2, maskCanvasEl.height / 2);
             maskImgCtx.rotate(-1 * imgObject.angle * (Math.PI / 180));
             maskImgCtx.scale(1 / imgObject.scaleX, 1 / imgObject.scaleY);
             maskImgCtx.drawImage(maskEl, x, y, print.w, print.h);
-            //
+
+            /*
+             辅助画布
+             */
             //maskCtx.translate(canvasEl.width / 2, canvasEl.height / 2);
             //maskCtx.rotate(-1 * imgObject.angle * (Math.PI / 180));
             //maskCtx.scale(1 / imgObject.scaleX, 1 / imgObject.scaleY);
@@ -107,10 +110,10 @@
      * @param {Object} object Object to create an instance from
      * @param {Function} [callback] Callback to invoke when a mask filter instance is created
      */
-    fabric.Image.filters.Mask.fromObject = function (object, callback) {
+    fabric.Image.filters.MaskUp.fromObject = function (object, callback) {
         fabric.util.loadImage(object.mask.src, function (img) {
             object.mask = new fabric.Image(img, object.mask);
-            callback && callback(new fabric.Image.filters.Mask(object));
+            callback && callback(new fabric.Image.filters.MaskUp(object));
         });
     };
 
@@ -120,6 +123,6 @@
      * @type Boolean
      * @default
      */
-    fabric.Image.filters.Mask.async = true;
+    fabric.Image.filters.MaskUp.async = true;
 
 })(typeof exports !== 'undefined' ? exports : this);
