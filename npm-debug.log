@@ -1,24 +1,138 @@
 0 info it worked if it ends with ok
-1 verbose cli [ '/usr/local/bin/node', '/usr/local/bin/npm', 'start' ]
+1 verbose cli [ '/usr/local/bin/node', '/usr/local/bin/npm', 'i', '-g', 'bower' ]
 2 info using npm@3.7.3
 3 info using node@v6.2.2
-4 verbose stack Error: missing script: start
-4 verbose stack     at run (/usr/local/lib/node_modules/npm/lib/run-script.js:147:19)
-4 verbose stack     at /usr/local/lib/node_modules/npm/lib/run-script.js:57:5
-4 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/read-package-json/read-json.js:345:5
-4 verbose stack     at checkBinReferences_ (/usr/local/lib/node_modules/npm/node_modules/read-package-json/read-json.js:309:45)
-4 verbose stack     at final (/usr/local/lib/node_modules/npm/node_modules/read-package-json/read-json.js:343:3)
-4 verbose stack     at then (/usr/local/lib/node_modules/npm/node_modules/read-package-json/read-json.js:113:5)
-4 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/read-package-json/read-json.js:300:12
-4 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/graceful-fs/graceful-fs.js:78:16
-4 verbose stack     at tryToString (fs.js:449:3)
-4 verbose stack     at FSReqWrap.readFileAfterClose [as oncomplete] (fs.js:436:12)
-5 verbose cwd /Users/gewangjie/Rain/work/graduation
-6 error Darwin 16.0.0
-7 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "start"
-8 error node v6.2.2
-9 error npm  v3.7.3
-10 error missing script: start
-11 error If you need help, you may report this error at:
-11 error     <https://github.com/npm/npm/issues>
-12 verbose exit [ 1, true ]
+4 silly loadCurrentTree Starting
+5 silly install loadCurrentTree
+6 silly install readGlobalPackageData
+7 silly fetchPackageMetaData bower
+8 silly fetchNamedPackageData bower
+9 silly mapToRegistry name bower
+10 silly mapToRegistry using default registry
+11 silly mapToRegistry registry https://registry.npmjs.org/
+12 silly mapToRegistry uri https://registry.npmjs.org/bower
+13 verbose request uri https://registry.npmjs.org/bower
+14 verbose request no auth needed
+15 info attempt registry request try #1 at 17:15:40
+16 verbose request id b5bdbfb0517c3d19
+17 verbose etag W/"582966c1-2ab4e"
+18 verbose lastModified Mon, 14 Nov 2016 07:24:49 GMT
+19 http request GET https://registry.npmjs.org/bower
+20 http 304 https://registry.npmjs.org/bower
+21 verbose headers { date: 'Fri, 18 Nov 2016 09:15:42 GMT',
+21 verbose headers   via: '1.1 varnish',
+21 verbose headers   'cache-control': 'max-age=300',
+21 verbose headers   etag: 'W/"582966c1-2ab4e"',
+21 verbose headers   age: '147',
+21 verbose headers   connection: 'keep-alive',
+21 verbose headers   'x-served-by': 'cache-lcy1135-LCY',
+21 verbose headers   'x-cache': 'HIT',
+21 verbose headers   'x-cache-hits': '3',
+21 verbose headers   'x-timer': 'S1479460542.221660,VS0,VE0',
+21 verbose headers   vary: 'Accept-Encoding' }
+22 silly get cb [ 304,
+22 silly get   { date: 'Fri, 18 Nov 2016 09:15:42 GMT',
+22 silly get     via: '1.1 varnish',
+22 silly get     'cache-control': 'max-age=300',
+22 silly get     etag: 'W/"582966c1-2ab4e"',
+22 silly get     age: '147',
+22 silly get     connection: 'keep-alive',
+22 silly get     'x-served-by': 'cache-lcy1135-LCY',
+22 silly get     'x-cache': 'HIT',
+22 silly get     'x-cache-hits': '3',
+22 silly get     'x-timer': 'S1479460542.221660,VS0,VE0',
+22 silly get     vary: 'Accept-Encoding' } ]
+23 verbose etag https://registry.npmjs.org/bower from cache
+24 verbose get saving bower to /Users/gewangjie/.npm/registry.npmjs.org/bower/.cache.json
+25 verbose correctMkdir /Users/gewangjie/.npm correctMkdir not in flight; initializing
+26 silly install normalizeTree
+27 silly loadCurrentTree Finishing
+28 silly loadIdealTree Starting
+29 silly install loadIdealTree
+30 silly cloneCurrentTree Starting
+31 silly install cloneCurrentTreeToIdealTree
+32 silly cloneCurrentTree Finishing
+33 silly loadShrinkwrap Starting
+34 silly install loadShrinkwrap
+35 silly loadShrinkwrap Finishing
+36 silly loadAllDepsIntoIdealTree Starting
+37 silly install loadAllDepsIntoIdealTree
+38 silly resolveWithNewModule bower@1.8.0 checking installable status
+39 silly cache add args [ 'bower', null ]
+40 verbose cache add spec bower
+41 silly cache add parsed spec Result {
+41 silly cache add   raw: 'bower',
+41 silly cache add   scope: null,
+41 silly cache add   name: 'bower',
+41 silly cache add   rawSpec: '',
+41 silly cache add   spec: 'latest',
+41 silly cache add   type: 'tag' }
+42 silly addNamed bower@latest
+43 verbose addNamed "latest" is being treated as a dist-tag for bower
+44 info addNameTag [ 'bower', 'latest' ]
+45 silly mapToRegistry name bower
+46 silly mapToRegistry using default registry
+47 silly mapToRegistry registry https://registry.npmjs.org/
+48 silly mapToRegistry uri https://registry.npmjs.org/bower
+49 verbose addNameTag registry:https://registry.npmjs.org/bower not in flight; fetching
+50 verbose get https://registry.npmjs.org/bower not expired, no request
+51 silly addNameTag next cb for bower with tag latest
+52 silly addNamed bower@1.8.0
+53 verbose addNamed "1.8.0" is a plain semver version for bower
+54 silly mapToRegistry name bower
+55 silly mapToRegistry using default registry
+56 silly mapToRegistry registry https://registry.npmjs.org/
+57 silly mapToRegistry uri https://registry.npmjs.org/bower
+58 verbose addRemoteTarball https://registry.npmjs.org/bower/-/bower-1.8.0.tgz not in flight; adding
+59 verbose addRemoteTarball [ 'https://registry.npmjs.org/bower/-/bower-1.8.0.tgz',
+59 verbose addRemoteTarball   '55dbebef0ad9155382d9e9d3e497c1372345b44a' ]
+60 info retry fetch attempt 1 at 17:15:45
+61 info attempt registry request try #1 at 17:15:45
+62 http fetch GET https://registry.npmjs.org/bower/-/bower-1.8.0.tgz
+63 http fetch 200 https://registry.npmjs.org/bower/-/bower-1.8.0.tgz
+64 silly fetchAndShaCheck shasum 55dbebef0ad9155382d9e9d3e497c1372345b44a
+65 verbose addTmpTarball /var/folders/q6/xrkz_p_90qj1nh1ltx7v5ddm0000gn/T/npm-70592-7c2eb232/registry.npmjs.org/bower/-/bower-1.8.0.tgz not in flight; adding
+66 verbose addTmpTarball already have metadata; skipping unpack for bower@1.8.0
+67 verbose correctMkdir /Users/gewangjie/.npm correctMkdir not in flight; initializing
+68 silly cache afterAdd bower@1.8.0
+69 verbose afterAdd /Users/gewangjie/.npm/bower/1.8.0/package/package.json not in flight; writing
+70 verbose correctMkdir /Users/gewangjie/.npm correctMkdir not in flight; initializing
+71 verbose afterAdd /Users/gewangjie/.npm/bower/1.8.0/package/package.json written
+72 silly loadAllDepsIntoIdealTree Finishing
+73 silly idealTree:prePrune lib
+73 silly idealTree:prePrune └── bower@1.8.0
+74 silly loadIdealTree Finishing
+75 silly currentTree lib
+75 silly currentTree └── bower@1.7.9
+76 silly idealTree lib
+76 silly idealTree └── bower@1.8.0
+77 silly generateActionsToTake Starting
+78 silly install generateActionsToTake
+79 warn checkPermissions Missing write access to /usr/local/lib/node_modules/bower
+80 warn checkPermissions Missing write access to /usr/local/lib/node_modules
+81 silly rollbackFailedOptional Starting
+82 silly rollbackFailedOptional Finishing
+83 silly runTopLevelLifecycles Starting
+84 silly runTopLevelLifecycles Finishing
+85 silly install printInstalled
+86 verbose stack Error: EACCES: permission denied, access '/usr/local/lib/node_modules/bower'
+86 verbose stack     at Error (native)
+87 verbose cwd /Users/gewangjie/Rain/work/graduation
+88 error Darwin 16.1.0
+89 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "i" "-g" "bower"
+90 error node v6.2.2
+91 error npm  v3.7.3
+92 error path /usr/local/lib/node_modules/bower
+93 error code EACCES
+94 error errno -13
+95 error syscall access
+96 error Error: EACCES: permission denied, access '/usr/local/lib/node_modules/bower'
+96 error     at Error (native)
+96 error  { Error: EACCES: permission denied, access '/usr/local/lib/node_modules/bower'
+96 error     at Error (native)
+96 error   errno: -13,
+96 error   code: 'EACCES',
+96 error   syscall: 'access',
+96 error   path: '/usr/local/lib/node_modules/bower' }
+97 error Please try running this command again as root/Administrator.
+98 verbose exit [ -13, true ]

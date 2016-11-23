@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vue版购物车</title>
+    <meta name="viewport"
+          content="user-scalable=0,width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="//at.alicdn.com/t/font_1473575033_9464047.css">
+    <link type="text/css" rel="stylesheet" href="../../css/component.css">
+    <link type="text/css" rel="stylesheet" href="../../css/frozen.css">
+    <link type="text/css" rel="stylesheet" href="../../css/wx.css">
+    <link type="text/css" rel="stylesheet" href="../../css/vue.shopcart.css">
+</head>
+<body>
+<div id="app">
+    <div class="ui-container" v-if="!isNull">
+        <div class="select-all-product" @click="allCheck">
+            <input id="allSelect"
+                   :checked="allChecked"
+                   disabled type="checkbox"/>全选
+        </div>
+        <ul class="ui-list ui-list-pure ui-list-border" style="margin-bottom: 70px" id="order-content">
+            <template v-for="product in cartInfo">
+                <li style="padding: 0">
+                    <ul class="goods-list">
+                        <li class="productName" @click="allProductCheck(product)">
+                            <input type="checkbox"
+                                   :checked="product.isChecked" disable
+                                   class="checkboxParent"/>
+                            <span style="padding-left: 5px">{{product[0].productInfo.name}}</span>
+                        </li>
+                        <template v-for="item in product">
+                            <li>
+                                <div class="goods-item">
+                                    <div class="shopTips" v-if="item.isDelete || item.isSkuCount">
+                                        该商品{{item.isDelete?'':'已下架'}}{{item.isSkuCount?'':'库存为0'}}
+                                    </div>
+                                    <dl class="ui-row-flex" style="padding-bottom: 5px">
+                                        <dd class="product-check" style="width:16px"
+                                            @click="productCheck(product,item)">
+                                            <input type="checkbox" disabled
+                                                   v-model="cartId"
+                                                   class="checkboxChildren"
+                                                   value="{{item.id}}"
+                                                   :checked="item.isChecked"
+                                            />
+                                        </dd>
+                                        <dd data-productid="{{item.productInfo.id}}"
+                                            class="tee-front tee-front-s {{config.getClass(item.skuInfo)}} product">
+                                            <img :src="item.productInfo.coverImage" alt=""/>
+                                        </dd>
+                                        <dd class="ui-col ui-flex ui-flex-ver ui-flex-pack-center"
+                                            style="padding-left: 20px">
+                                            <ul>
+                                                <li style="color:#969696; font-size: 14px">
+                                                    {{config.style[item.skuInfo.style]['name']}}
+                                                    {{config.sex[item.skuInfo.sex]['name']}}
+                                                    {{config.size[item.skuInfo.size]['name']}}
+                                                    {{config.color[item.skuInfo.color]['name']}}
+                                                </li>
+                                                <li class="ui-row-flex" style="padding-top: 20px;">
+                                                    <div style="-webkit-box-flex: 1" v-if="item.isPromotion">
+                                                        <span class="priceOriginal through">¥{{(item.price/100).toFixed(2)}}</span><br>
+                                                        <span class="pricePresent">¥{{(item.promotionPrice/100).toFixed(2)}}</span>
+                                                    </div>
+                                                    <div style="-webkit-box-flex: 1" v-if="!item.isPromotion">
+                                                        <span class="priceOriginal">&nbsp;</span><br>
+                                                        <span class="pricePresent">¥{{(item.price/100).toFixed(2)}}</span>
+                                                    </div>
+                                                    <div style="width: 75px;padding-top: 25px">
+                                                        <ul class="ui-row-flex ">
+                                                            <li class="btn-number"
+                                                                @click="setNum(item,'-')">
+                                                                <a class="order-btn-number">-</a>
+                                                            </li>
+                                                            <li class="txt-number">
+                                                                <input type="tel"
+                                                                       readonly="readonly"
+                                                                       class="order-txt-number"
+                                                                       @input="countAmount"
+                                                                       v-model="item.count"
+                                                                       value="{{item.count}}"/></li>
+                                                            <li class="btn-number"
+                                                                @click="setNum(item,'+')">
+                                                                <a class="order-btn-number">+</a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </dd>
+                                    </dl>
+                                    <a class="ui-btn-danger delete" id="{{item.id}}"
+                                       data-productname="{{item.name}}">删除</a>
+                                </div>
+                            </li>
+                        </template>
+                    </ul>
+                </li>
+            </template>
+        </ul>
+        <input type="hidden" value="1" name="outPayType"/>
+    </div>
+    <div class="null-list" v-if="isNull">
+
+    </div>
+    <div class="ui-footer ui-row-flex">
+        <button class="t-btn t-btn-default t-btn-block" id="cart-submit">
+            共 ¥{{totalAmount}}，去支付
+        </button>
+    </div>
+</div>
+
+<script src="../../js/zepto.js"></script>
+<script src="../../js/config.js"></script>
+<script src="../../js/vue.js"></script>
+<script type="text/javascript">
+    var testDate = {
+        "1muw": [{
+            "id": 218,
+            "price": 8900,
+            "count": 1,
+            "skuInfo": {"style": 1, "sex": 1, "size": 2, "color": 1},
+            "skuCount": 188,
+            "productInfo": {
+                "id": "1muw",
+                "name": "工大1",
+                "coverImage": "https://o5b8xkmz9.qnssl.com/FmEZ5scmcEA8SNFzXggFqDULCmZ9",
+                "imageStatus": 1
+            },
+            "isPromotion": false
+        }],
+        "1muy": [{
+            "id": 217,
+            "price": 8900,
+            "count": 1,
+            "skuInfo": {"style": 1, "sex": 3, "size": 7, "color": 1},
+            "skuCount": 241,
+            "productInfo": {
+                "id": "1muy",
+                "name": "工大2",
+                "coverImage": "https://o5b8xkmz9.qnssl.com/Fn1BmQh7Ogdm0KJy7wYZwVsyXy4S",
+                "imageStatus": 1
+            },
+            "isPromotion": false
+        }, {
+            "id": 216,
+            "price": 8900,
+            "count": 1,
+            "skuInfo": {"style": 1, "sex": 2, "size": 3, "color": 1},
+            "skuCount": 135,
+            "productInfo": {
+                "id": "1muy",
+                "name": "工大2",
+                "coverImage": "https://o5b8xkmz9.qnssl.com/Fn1BmQh7Ogdm0KJy7wYZwVsyXy4S",
+                "imageStatus": 1
+            },
+            "isPromotion": false
+        }, {
+            "id": 215,
+            "price": 8900,
+            "count": 1,
+            "skuInfo": {"style": 1, "sex": 1, "size": 4, "color": 1},
+            "skuCount": 124,
+            "productInfo": {
+                "id": "1muy",
+                "name": "工大2",
+                "coverImage": "https://o5b8xkmz9.qnssl.com/Fn1BmQh7Ogdm0KJy7wYZwVsyXy4S",
+                "imageStatus": 1
+            },
+            "isPromotion": false
+        }, {
+            "id": 214,
+            "price": 8900,
+            "count": 1,
+            "skuInfo": {"style": 1, "sex": 2, "size": 1, "color": 1},
+            "skuCount": 0,
+            "productInfo": {
+                "id": "1muy",
+                "name": "工大2",
+                "coverImage": "https://o5b8xkmz9.qnssl.com/Fn1BmQh7Ogdm0KJy7wYZwVsyXy4S",
+                "imageStatus": 1
+            },
+            "isPromotion": false
+        }, {
+            "id": 213,
+            "price": 8900,
+            "count": 1,
+            "skuInfo": {"style": 1, "sex": 3, "size": 5, "color": 1},
+            "skuCount": 218,
+            "productInfo": {
+                "id": "1muy",
+                "name": "工大2",
+                "coverImage": "https://o5b8xkmz9.qnssl.com/Fn1BmQh7Ogdm0KJy7wYZwVsyXy4S",
+                "imageStatus": 2
+            },
+            "isPromotion": false
+        }, {
+            "id": 212,
+            "price": 8900,
+            "count": 1,
+            "skuInfo": {"style": 1, "sex": 1, "size": 2, "color": 1},
+            "skuCount": 188,
+            "productInfo": {
+                "id": "1muy",
+                "name": "工大2",
+                "coverImage": "https://o5b8xkmz9.qnssl.com/Fn1BmQh7Ogdm0KJy7wYZwVsyXy4S",
+                "imageStatus": 1
+            },
+            "isPromotion": false
+        }]
+    };
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            isNull: false,
+            allChecked: true,
+            cartInfo: testDate,
+            config: config,
+            totalAmount: '0',
+            cartId: []
+        },
+        created: function () {
+            this.init();
+        },
+        methods: {
+            //初始化
+            init: function () {
+                var total = 0;
+                for (var i in this.cartInfo) {
+                    this.cartInfo[i].isChecked = true;
+                    this.cartInfo[i].forEach(function (item) {
+                        item.isDelete = (item.productInfo.imageStatus == 2);//已下架
+                        item.isSkuCount = (item.skuCount == 0);//库存为0
+                        if (!item.isDelete && !item.isSkuCount) {
+                            item.isChecked = true;
+                            total += item.price * item.count;
+                        } else {
+                            item.isChecked = false;
+                        }
+                    })
+                }
+                this.totalAmount = (total / 100).toFixed(2);
+            },
+            //处理单项
+            _dealItem: function (callback) {
+                var total = 0;
+                for (var i in this.cartInfo) {
+                    this.cartInfo[i].forEach(function (item) {
+                        callback && (total += callback(item) || 0);
+                    })
+                }
+                this.totalAmount = (total / 100).toFixed(2);
+            },
+            //计算总价
+            countAmount: function () {
+                this._dealItem(function (item) {
+                    return item.isChecked && (item.price * item.count);
+                })
+            },
+            //返回跳转链接
+            href: function (id) {
+                return '/h5/profit/sale-orders/' + id
+            },
+            //全选
+            allCheck: function () {
+                if (this.allChecked) {
+                    this.allChecked = false;
+                    this.cartId = [];
+                    for (var i in this.cartInfo) {
+                        this.cartInfo[i].isChecked = false;
+                        this.cartInfo[i].forEach(function (item) {
+                            item.isChecked = false;
+                        })
+                    }
+                    this.countAmount();
+                } else {
+                    this.allChecked = true;
+                    this.init();
+                }
+            },
+            //商品全选
+            allProductCheck: function (product) {
+                if (product.isChecked) {
+                    product.forEach(function (item) {
+                        item.isChecked = false;
+                    });
+                } else {
+                    product.forEach(function (item) {
+                        if (!item.isDelete && !item.isSkuCount) {
+                            item.isChecked = true;
+                        } else {
+                            item.isChecked = false;
+                        }
+                    });
+                }
+                product.isChecked = !product.isChecked;
+                this.allChecked = this.cartInfo.every(function (p) {
+                    return p.isChecked == true;
+                });
+                this.countAmount();
+            },
+            //单选
+            productCheck: function (product, item) {
+                console.log('checked:', !item.isChecked);
+                console.log(this.cartId);
+                if (!item.isDelete && !item.isSkuCount) {
+                    item.isChecked = !item.isChecked;
+                }
+                product.isChecked = product.every(function (i) {
+                    return i.isChecked == true;
+                });
+                this.allChecked = this.cartInfo.every(function (p) {
+                    return p.isChecked == true;
+                });
+                this.countAmount();
+            },
+            //变更数量
+            setNum: function (item, num) {
+                num == '+' ? item.count++ : item.count--;
+                item.count <= 0 && (item.count = 1);
+                this.countAmount();
+            }
+        }
+    });
+</script>
+</body>
+</html>
