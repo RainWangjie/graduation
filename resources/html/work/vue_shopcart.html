@@ -12,7 +12,7 @@
     <link type="text/css" rel="stylesheet" href="../../css/vue.shopcart.css">
 </head>
 <body>
-<div id="app">
+<div id="app" @click="hideDelete">
     <div class="ui-container" v-if="!isNull">
         <div class="select-all-product" @click="allCheck">
             <input id="allSelect"
@@ -20,33 +20,32 @@
                    disabled type="checkbox"/>全选
         </div>
         <ul class="ui-list ui-list-pure ui-list-border" style="margin-bottom: 70px" id="order-content">
-            <template v-for="product in cartInfo">
-                <li style="padding: 0">
+            <template v-for="(product,key) in cartInfo">
+                <li style="padding: 0" :key="key">
                     <ul class="goods-list">
-                        <li class="productName" @click="allProductCheck(product)">
+                        <li class="productName" @click="allProductCheck(key)">
                             <input type="checkbox"
-                                   :checked="product.isChecked" disable
+                                   :checked="product.isChecked" disabled
                                    class="checkboxParent"/>
                             <span style="padding-left: 5px">{{product[0].productInfo.name}}</span>
                         </li>
-                        <template v-for="item in product">
-                            <li>
-                                <div class="goods-item">
+                        <template v-for="(item,index) in product">
+                            <li :key="index">
+                                <div class="goods-item" :class="{remove:item.remove}">
                                     <div class="shopTips" v-if="item.isDelete || item.isSkuCount">
                                         该商品{{item.isDelete?'':'已下架'}}{{item.isSkuCount?'':'库存为0'}}
                                     </div>
                                     <dl class="ui-row-flex" style="padding-bottom: 5px">
                                         <dd class="product-check" style="width:16px"
-                                            @click="productCheck(product,item)">
+                                            @click="productCheck(key,index)">
                                             <input type="checkbox" disabled
                                                    v-model="cartId"
                                                    class="checkboxChildren"
-                                                   value="{{item.id}}"
-                                                   :checked="item.isChecked"
-                                            />
+                                                   :checked="item.isChecked"/>
                                         </dd>
-                                        <dd data-productid="{{item.productInfo.id}}"
-                                            class="tee-front tee-front-s {{config.getClass(item.skuInfo)}} product">
+                                        <dd :data-productid="item.productInfo.id"
+                                            class="tee-front tee-front-s product"
+                                            :class="config.getClass(item.skuInfo)">
                                             <img :src="item.productInfo.coverImage" alt=""/>
                                         </dd>
                                         <dd class="ui-col ui-flex ui-flex-ver ui-flex-pack-center"
@@ -70,7 +69,7 @@
                                                     <div style="width: 75px;padding-top: 25px">
                                                         <ul class="ui-row-flex ">
                                                             <li class="btn-number"
-                                                                @click="setNum(item,'-')">
+                                                                @click="setNum(key,index,'-')">
                                                                 <a class="order-btn-number">-</a>
                                                             </li>
                                                             <li class="txt-number">
@@ -79,9 +78,9 @@
                                                                        class="order-txt-number"
                                                                        @input="countAmount"
                                                                        v-model="item.count"
-                                                                       value="{{item.count}}"/></li>
+                                                                       :value="item.count"/></li>
                                                             <li class="btn-number"
-                                                                @click="setNum(item,'+')">
+                                                                @click="setNum(key,index,'+')">
                                                                 <a class="order-btn-number">+</a>
                                                             </li>
                                                         </ul>
@@ -90,8 +89,8 @@
                                             </ul>
                                         </dd>
                                     </dl>
-                                    <a class="ui-btn-danger delete" id="{{item.id}}"
-                                       data-productname="{{item.name}}">删除</a>
+                                    <a class="ui-btn-danger delete"
+                                       @click="deleteProduct(key,index)">删除</a>
                                 </div>
                             </li>
                         </template>
@@ -105,15 +104,17 @@
 
     </div>
     <div class="ui-footer ui-row-flex">
-        <button class="t-btn t-btn-default t-btn-block" id="cart-submit">
+        <button class="t-btn t-btn-default t-btn-block" id="cart-submit"
+                @click="submitCart">
             共 ¥{{totalAmount}}，去支付
         </button>
     </div>
 </div>
 
 <script src="../../js/zepto.js"></script>
+<script src="../../js/frozen.js"></script>
 <script src="../../js/config.js"></script>
-<script src="../../js/vue.js"></script>
+<script src="../../js/vue2.0.js"></script>
 <script type="text/javascript">
     var testDate = {
         "1muw": [{
@@ -210,7 +211,6 @@
             "isPromotion": false
         }]
     };
-
     var app = new Vue({
         el: '#app',
         data: {
@@ -233,6 +233,7 @@
                     this.cartInfo[i].forEach(function (item) {
                         item.isDelete = (item.productInfo.imageStatus == 2);//已下架
                         item.isSkuCount = (item.skuCount == 0);//库存为0
+                        item.remove = false;
                         if (!item.isDelete && !item.isSkuCount) {
                             item.isChecked = true;
                             total += item.price * item.count;
@@ -263,6 +264,15 @@
             href: function (id) {
                 return '/h5/profit/sale-orders/' + id
             },
+            //选择框联动
+            _check: function () {
+                for (var p in this.cartInfo) {
+                    if (this.cartInfo[p].isChecked == false) {
+                        return false
+                    }
+                }
+                return true
+            },
             //全选
             allCheck: function () {
                 if (this.allChecked) {
@@ -281,7 +291,8 @@
                 }
             },
             //商品全选
-            allProductCheck: function (product) {
+            allProductCheck: function (key) {
+                var product = this.cartInfo[key];
                 if (product.isChecked) {
                     product.forEach(function (item) {
                         item.isChecked = false;
@@ -296,13 +307,13 @@
                     });
                 }
                 product.isChecked = !product.isChecked;
-                this.allChecked = this.cartInfo.every(function (p) {
-                    return p.isChecked == true;
-                });
+                this.allChecked = this._check();
                 this.countAmount();
             },
             //单选
-            productCheck: function (product, item) {
+            productCheck: function (key, index) {
+                var product = this.cartInfo[key],
+                    item = product[index];
                 console.log('checked:', !item.isChecked);
                 console.log(this.cartId);
                 if (!item.isDelete && !item.isSkuCount) {
@@ -311,16 +322,47 @@
                 product.isChecked = product.every(function (i) {
                     return i.isChecked == true;
                 });
-                this.allChecked = this.cartInfo.every(function (p) {
-                    return p.isChecked == true;
-                });
+                this.allChecked = this._check();
                 this.countAmount();
             },
             //变更数量
-            setNum: function (item, num) {
+            setNum: function (key, index, num) {
+                var item = this.cartInfo[key][index];
                 num == '+' ? item.count++ : item.count--;
-                item.count <= 0 && (item.count = 1);
+                if (item.count <= 0) {
+                    (item.count = 1);
+                    item.remove = true;
+                }
                 this.countAmount();
+            },
+            //hide delete
+            hideDelete: function () {
+                for (var i in this.cartInfo) {
+                    this.cartInfo[i].forEach(function (item) {
+                        item.remove = false;
+                    })
+                }
+            },
+            //删除商品
+            deleteProduct: function (key, index) {
+                var t = this;
+                var item = t.cartInfo[key][index];
+                $.dialog({
+                    title: '',
+                    content: '确定删除？',
+                    button: ['删除', '再考虑考虑']
+                }).on("dialog:action", function (e) {
+                    if (0 == e.index) {
+                        alert(item.productInfo.name + '删除成功');
+                    }
+                }).on("dialog:hide", function (e) {
+                    t.hideDelete();
+                    console.log("dialog hide")
+                });
+            },
+            //提交订单
+            submitCart: function () {
+                alert(this.cartId);
             }
         }
     });
