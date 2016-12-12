@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>测试</title>
+    <style>
+        #q {
+            width: 100px;
+            height: 100px;
+            background: #f10000;
+            transition: all .5s;
+        }
+
+        #q.bigger {
+            width: 200px;
+            height: 200px;
+            background: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+<div id="q">
+
+</div>
+<button id="btn">btn</button>
+<script type="text/javascript" src="../js/jquery.js"></script>
+<script>
+    //原生JS
+//    var _div = document.getElementById('q'),
+//            _btn = document.getElementById('btn');
+//
+//    _btn.onclick = function () {
+//      _div.className = 'bigger';
+//    };
+    //    Jquery
+    $('#btn').click(function(){
+        $('#q').toggleClass('bigger');
+    })
+</script>
+</body>
+</html>
