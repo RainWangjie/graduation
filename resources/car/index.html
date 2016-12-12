@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>仿通讯录选择器</title>
+    <style>
+        body {
+            margin: 0;
+            -webkit-touch-callout: none
+        }
+        
+        div {
+            box-sizing: border-box;
+        }
+        
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .selectedWord {
+            position: fixed;
+            width: 50px;
+            height: 50px;
+            top: 50%;
+            left: 50%;
+            margin: -25px 0 0 -25px;
+            text-align: center;
+            line-height: 50px;
+            background: rgba(0, 0, 0, .7);
+            color: white;
+            border-radius: 5px;
+        }
+        
+        .wordList {
+            position: fixed;
+            margin: 0;
+            top: 0;
+            right: 5px;
+            bottom: 0;
+            -webkit-box-orient: vertical;
+            display: -webkit-box;
+            text-align: center;
+        }
+        
+        .nameList li {
+            padding: 3px 0;
+        }
+        
+        .wordList.deep {
+            background: rgba(0, 0, 0, .6);
+        }
+        
+        .wordItem {
+            -webkit-box-flex: 1;
+            line-height: 2;
+        }
+        
+        .itemList {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+        
+        .nameIndex {
+            background: #5d8bc3;
+            line-height: 2;
+            padding-left: 15px;
+        }
+        
+        .nameItem {
+            line-height: 1.5;
+            padding: 5px 0 5px 20px;
+        }
+        
+        .imageItem {
+            width: 30px;
+            height: 30px;
+            vertical-align: top;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="selectedWord" v-show="isSelected">{{selectedWord}}</div>
+        <ul class="wordList" :class="{deep:isSelected}" @mousedown.stop.prevent="posMouseDown" @mousemove.stop.prevent="posMouseMove"
+            @mouseup.stop.prevent="posMouseUp">
+            <li class="wordItem" v-for="(i,index) in carData">
+                {{index}}
+            </li>
+        </ul>
+        <ul class="itemList">
+            <li v-for="(i,index) in carData">
+                <div class="nameIndex">{{index}}</div>
+                <ul>
+                    <li v-for="item in carData[index]" class="nameItem" @click="linkToCar(item.name)">
+                        <img class='imageItem' :src="qiniuBaseUrl+item.img_src" /> {{item.name}}
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <script src="../js/zepto.js"></script>
+    <script src="../js/vue2.0.js"></script>
+    <script src="name.js"></script>
+    <script>
+    new Vue({
+        el: '#app',
+        data: {
+            carData: carData,
+            nameIndexPos: {},
+            wordArray:[],
+            wordLength:0,
+            isSelected: false,
+            isSrcolled:false,
+            selectedWord: 'A',
+            qiniuBaseUrl:'http://ohqrmlewn.bkt.clouddn.com/',
+            winHeight: window.screen.height
+        },
+        mounted: function () {
+            //实例渲染完，获取首字母位置
+            this._getPosition();
+        },
+        methods: {
+            _getPosition: function () {
+                var nameList = document.getElementsByClassName('nameIndex');
+                let i;                
+                for ( i = 0; i < nameList.length; i++) {
+                    var item = nameList[i],
+                        key = item.innerHTML;
+                    this.nameIndexPos[key] = item.offsetTop;
+                    this.wordArray.push(key);
+                }
+                var wordList = document.getElementsByClassName('wordItem');
+                this.wordLength = this.wordArray.length;
+                console.log(this.nameIndexPos);
+            },
+            linkToCar: function (name) {
+                alert(name);
+            },
+            _setPosition: function (pos) {
+                var index = Math.floor(pos/this.winHeight* this.wordLength),
+                    word = this.wordArray[index],
+                    scrollTop = this.nameIndexPos[word];
+                console.log(index, word);
+                document.body.scrollTop = scrollTop > 0 ? scrollTop : 0;
+                this.selectedWord = word;
+            },
+            posMouseDown: function (e) {
+                this._setPosition(e.y);                                
+                this.isSelected = true;
+                this.isSrcolled = true;
+                console.log('MouseDown', e.y);
+            },
+            posMouseMove: function (e) {
+                e.preventDefault();
+                if (this.isSelected && this.isSrcolled) {
+                    console.log('滑动');
+                    this._setPosition(e.y);  
+                    this._timeDelay();
+                  }
+            },
+            posMouseUp: function (e) {
+                this.isSelected = false;
+                this.isSrcolled = false;                
+                console.log('MouseUp', e.y);
+            },
+              _timeDelay: function () {
+                let t = this;
+                this.isSrcolled = false;
+                setTimeout(function () {
+                    t.isSrcolled = true;
+                }, 100);
+            }
+        }
+    })
+</script>
+</body>
+
+</html>
