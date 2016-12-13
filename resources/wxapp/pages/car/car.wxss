@@ -1,0 +1,53 @@
+.selectedWord {
+  position: fixed;
+  width: 50px;
+  height: 50px;
+  top: 50%;
+  left: 50%;
+  margin: -25px 0 0 -25px;
+  text-align: center;
+  line-height: 50px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border-radius: 5px;
+}
+
+.wordList {
+  position: fixed;
+  top: 0;
+  right: 5px;
+  bottom: 0;
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  text-align: center;
+}
+
+.wordItem {
+  -webkit-box-flex: 1;
+      line-height: 2;
+}
+
+.wordList.deep {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.itemList {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.nameIndex {
+  background: #5d8bc3;
+  line-height: 2;
+  padding-left: 15px;
+}
+
+.nameItem {
+  line-height: 1.5;
+  padding: 5px 0 5px 20px;
+}
+.imageItem{
+  width: 30px; height: 30px;
+  vertical-align: top;
+}
