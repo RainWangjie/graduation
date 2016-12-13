@@ -1,0 +1,49 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/logs/logs",
+    "pages/canvas/canvas",
+     "pages/car/car"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "WeChat",
+    "backgroundColor": "#eeeeee",
+    "backgroundTextStyle": "light",
+    "enablePullDownRefresh": "true"
+  },
+  "tabBar": {
+    "color": "#a9b7b7",
+    "selectedColor": "#eb4f38",
+    "borderStyle": "white",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "images/home-outline.png",
+        "selectedIconPath": "images/home-selected.png"
+      },
+      {
+        "pagePath": "pages/logs/logs",
+        "text": "日志",
+        "iconPath": "images/contacts-outline.png",
+        "selectedIconPath": "images/contacts-selected.png"
+      },
+      {
+        "pagePath": "pages/canvas/canvas",
+        "text": "画布",
+        "iconPath": "images/settings-outline.png",
+        "selectedIconPath": "images/settings-selected.png"
+      },
+      {
+        "pagePath": "pages/car/car",
+        "text": "车库",
+        "iconPath": "images/car-outline.png",
+        "selectedIconPath": "images/car-selected.png"
+      }
+    ]
+  },
+  "debug": true
+}
