@@ -1,28 +1,34 @@
 <scroll-view scroll-y="true" style="height: 100%;" id="app" scroll-into-view="{{toView}}">
   <view class="selectedWord" hidden="{{!isSelected}}">{{toView}}</view>
   <view class="wordList">
-    <view class="wordItem" 
-          wx:for="{{carData}}"
-          bindtouchstart='posMouseDown'
-          bindtouchend='posMouseUp'
-          bindtouchmove='posMouseMove'
-          data-index='{{index}}'>
+    <view class="wordItem" wx:for="{{carData}}" bindtouchstart='posMouseDown' bindtouchend='posMouseUp' bindtouchmove='posMouseMove' data-index='{{index}}'>
       {{index}}
     </view>
   </view>
   <view class="itemList">
     <view wx:for="{{carData}}" id="{{index}}">
-      <view class="nameIndex" >{{index}}</view>
+      <view class="nameIndex">{{index}}</view>
       <view>
-        <view wx:for="{{item}}" 
-        wx:for-item="itemName" 
-        class="nameItem"
-        bindtap="linkToCar"
-        data-name='{{itemName.name}}'>
-         <image class='imageItem' src="http://ohqrmlewn.bkt.clouddn.com/{{itemName.img_src}}"></image>
+        <view wx:for="{{item}}" wx:for-item="itemName" class="nameItem" bindtap="linkToCar" data-name='{{itemName.name}}'>
+          <image class='imageItem' src="http://ohqrmlewn.bkt.clouddn.com/{{itemName.img_src}}"></image>
           {{itemName.name}}
         </view>
       </view>
     </view>
   </view>
 </scroll-view>
+<view class="detailList {{isShow}}" bindtap='cancalLink'>
+  <view class='serieList'>
+  <view wx:for="{{carSelected}}"
+          wx:for-index="idx" wx:for-item="itemName" id='{{idx}}'
+          class="series">
+      <view class="detail">{{idx}}</view>
+      <view wx:for="{{itemName}}">
+        <view>
+          <text class="carName">{{item.name}}</text>
+          <text class="carPrice">{{item.price}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
