@@ -1,13 +1,17 @@
 var app = getApp();
 var carData = require('carData');
+var carDetail = require('carDetail');
 Page({
     data: {
         toView: 'A',
         carData: carData,
+        carDetail: carDetail,
+        carSelected: {},
         wordList: [],
         isSelected: false,
         winHeight: 0,
-        isSrcolled: false
+        isSrcolled: false,
+        isShow: ''
     },
     onReady: function () {
         this._init()
@@ -24,13 +28,16 @@ Page({
         for (let key in this.data.carData) {
             this.data.wordList.push(key)
         }
-        console.log('渲染完毕:', this.data.wordList);
     },
     linkToCar: function (e) {
-        wx.showToast({
-            title: e.target.dataset.name,
-            icon: 'success',
-            duration: 2000
+        this.setData({
+            isShow: 'show',
+            carSelected: this.data.carDetail[e.target.dataset.name]
+        })
+    },
+    cancalLink: function () {
+        this.setData({
+            isShow: '',
         })
     },
     posMouseDown: function (e) {
