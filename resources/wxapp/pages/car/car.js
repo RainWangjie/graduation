@@ -32,7 +32,7 @@ Page({
     linkToCar: function (e) {
         this.setData({
             isShow: 'show',
-            carSelected: this.data.carDetail[e.target.dataset.name]
+            carSelected: this.data.carDetail[e.target.dataset.id]
         })
     },
     cancalLink: function () {

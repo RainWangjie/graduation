@@ -1,15 +1,19 @@
 <scroll-view scroll-y="true" style="height: 100%;" id="app" scroll-into-view="{{toView}}">
   <view class="selectedWord" hidden="{{!isSelected}}">{{toView}}</view>
+
+  <!--字母列表-->
   <view class="wordList">
     <view class="wordItem" wx:for="{{carData}}" bindtouchstart='posMouseDown' bindtouchend='posMouseUp' bindtouchmove='posMouseMove' data-index='{{index}}'>
       {{index}}
     </view>
   </view>
+
+  <!--品牌列表-->
   <view class="itemList">
     <view wx:for="{{carData}}" id="{{index}}">
       <view class="nameIndex">{{index}}</view>
       <view>
-        <view wx:for="{{item}}" wx:for-item="itemName" class="nameItem" bindtap="linkToCar" data-name='{{itemName.name}}'>
+        <view wx:for="{{item}}" wx:for-item="itemName" class="nameItem" bindtap="linkToCar" data-name='{{itemName.name}}' data-id='{{itemName.id}}'>
           <image class='imageItem' src="http://ohqrmlewn.bkt.clouddn.com/{{itemName.img_src}}"></image>
           {{itemName.name}}
         </view>
@@ -17,16 +21,22 @@
     </view>
   </view>
 </scroll-view>
+
+<!--品牌详情-->
 <view class="detailList {{isShow}}" bindtap='cancalLink'>
   <view class='serieList'>
-  <view wx:for="{{carSelected}}"
-          wx:for-index="idx" wx:for-item="itemName" id='{{idx}}'
-          class="series">
-      <view class="detail">{{idx}}</view>
-      <view wx:for="{{itemName}}">
+    <view wx:for="{{carSelected}}" id='{{item.Id}}' class="series">
+      <view class="detail">{{item.name}}</view>
+      <view wx:for="{{item.SeriesItems}}" wx:for-index="idx" wx:for-item="itemCar" id="{{itemCar.id}}">
         <view>
-          <text class="carName">{{item.name}}</text>
-          <text class="carPrice">{{item.price}}</text>
+          <image class='imageItem' src="{{itemCar.seriesPicUrl}}"></image>
+          <text class="carName">{{itemCar.name}}</text>
+          <text class="carPrice" wx:if="{{itemCar.minprice!=0}}">
+            {{itemCar.minprice/10000}}万-{{itemCar.minprice/10000}}万
+          </text>
+            <text class="carPrice" wx:if="{{itemCar.minprice==0}}">
+            暂无报价
+          </text>
         </view>
       </view>
     </view>
