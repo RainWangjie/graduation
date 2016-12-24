@@ -6,7 +6,7 @@
     <view class="wordItem" wx:for="{{carData}}" bindtouchstart='posMouseDown' bindtouchend='posMouseUp' bindtouchmove='posMouseMove' data-index='{{index}}'>
       {{index}}
     </view>
-  </view>
+  </view>s
 
   <!--品牌列表-->
   <view class="itemList">
@@ -27,16 +27,13 @@
   <view class='serieList'>
     <view wx:for="{{carSelected}}" id='{{item.Id}}' class="series">
       <view class="detail">{{item.name}}</view>
-      <view wx:for="{{item.SeriesItems}}" wx:for-index="idx" wx:for-item="itemCar" id="{{itemCar.id}}">
-        <view>
-          <image class='imageItem' src="{{itemCar.seriesPicUrl}}"></image>
+      <view class="carItem" wx:for="{{item.SeriesItems}}" wx:for-index="idx" wx:for-item="itemCar" id="{{itemCar.id}}">
+        <image class='carImageItem' src="{{itemCar.seriesPicUrl}}" mode="widthFix"></image>
+        <view class="carDesItem"> 
           <text class="carName">{{itemCar.name}}</text>
           <text class="carPrice" wx:if="{{itemCar.minprice!=0}}">
-            {{itemCar.minprice/10000}}万-{{itemCar.minprice/10000}}万
-          </text>
-            <text class="carPrice" wx:if="{{itemCar.minprice==0}}">
-            暂无报价
-          </text>
+           {{itemCar.minprice/10000}}万-{{itemCar.minprice/10000}}万</text>
+          <text class="carPrice" wx:if="{{itemCar.minprice==0}}">暂无报价</text>
         </view>
       </view>
     </view>
