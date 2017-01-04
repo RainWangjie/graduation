@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>MVVM jQuery</title>
+</head>
+
+<body>
+    <input type="number" data-bind-123="name" />
+    <script src="../js/jquery.js"></script>
+    <script src="DataBinder.jquery.js"></script>
+    <script src="User.jquery.js"></script>
+    <script>
+        var user = new User(123);
+        user.set("name", "Wolfgang");
+    </script>
+</body>
+</html>
