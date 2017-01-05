@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>vue版地址管理---SPA</title>
+    <meta name="viewport"
+          content="user-scalable=0,width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <link type="text/css" rel="stylesheet" href="vue_address.css">
+</head>
+<body>
+<div id="app">
+    <div id="index" class="panel">
+        <h1>vue版地址管理</h1>
+        <ul class="nav">
+            <!-- 使用 router-link 组件来导航. -->
+            <!-- 通过传入 `to` 属性指定链接. -->
+            <!-- <router-link> 默认会被渲染成一个 `<a>` 标签 -->
+            <li>
+                <router-link to="/addressList">地址列表</router-link>
+            </li>
+            <li>
+                <router-link to="/newAddress">添加地址</router-link>
+            </li>
+            <li>
+                <router-link to="/mangerAddress">管理地址</router-link>
+            </li>
+        </ul>
+    </div>
+    <!-- 路由出口 -->
+    <!-- 路由匹配到的组件将渲染在这里 -->
+    <transition name="fade" mode="in-out">
+        <router-view></router-view>
+    </transition>
+</div>
+<!--单页面模版(组件)-->
+<script id="tpl_list" type="text/x-template">
+    <div class="panel">
+        <div class="address-list" v-if="addressList.length != 0">
+            <template v-for="item in addressList">
+                <div class="item">
+                    <div v-if="item.status == 1" class="icon-address"></div>
+                    <div>
+                        <div class="address-name">${item.receiver}</div>
+                        <div class="address-phone">${item.phone}</div>
+                        <div class="address-detail">
+                            ${item.address.province}
+                            ${item.address.city}
+                            ${item.address.district}
+                            ${item.address.detail}
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+        <div class="null-list" v-else>
+
+        </div>
+        <div class="addressFooter">
+            <router-link class="btn-address btn-add-address" to="/newAddress">添加地址</router-link>
+        </div>
+    </div>
+</script>
+<script id="tpl_new" type="text/x-template">
+    <div class="panel">
+        <div class="address-row">
+            <div class="label">收货人</div>
+            <input type="text" class="input input-focus" name="name" placeholder="请输入收货人姓名">
+        </div>
+        <div class="address-row">
+            <div class="label">手机号码</div>
+            <input type="tel" class="input input-focus" name="phone" maxlength="11" placeholder="请输入收货人手机号码">
+        </div>
+        <div class="address-row">
+            <div class="label">所在地区</div>
+            <div class="addressFormChoose">
+                <select class="user-AddressFormProvince">
+                    <option>请选择</option>
+                    <option v-for="(p, index) in province" @click="changeProvince(index)" :data-index="index">${p}</option>
+                </select>
+                <select class="user-AddressFormCity">
+                    <option>请选择</option>
+                    <option v-for="(c, index) in city" :data-index="index">${c}</option>
+                </select>
+                <select class="user-AddressFormDistrict">
+                    <option>请选择</option>
+                    <option v-for="(d, index) in district" :data-index="index">${d}</option>
+                </select>
+            </div>
+        </div>
+        <div class="address-row">
+            <div class="label">详细地址</div>
+            <textarea name="more" placeholder="请输入详细地址" class="input-focus"></textarea>
+        </div>
+
+        <div class="address-row">
+            <label for="checkboxDefault2">
+                <div class="label">设为默认</div>
+            </label>
+            <input type="checkbox" id="checkboxDefault2"/>
+        </div>
+
+        <div class="addressFooter">
+            <a class="btn-address btn-save-address">保存</a>
+            <router-link class="btn-address btn-cancal-address" to="/">取消</router-link>
+        </div>
+    </div>
+</script>
+<script id="tpl_manger" type="text/x-template">
+    <div class="panel">${text}</div>
+</script>
+<!--Vue2.0-->
+<script src="../../js/vue2.0.js"></script>
+<script src="../../js/vue-router.js"></script>
+<!--地址数据-->
+<script src="address_data.js"></script>
+<!--个人伪造数据-->
+<script src="address_data_temp.js"></script>
+<script src="vue_address.js"></script>
+</body>
+</html>
