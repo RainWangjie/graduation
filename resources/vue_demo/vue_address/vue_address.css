@@ -1,0 +1,172 @@
+/*basic*/
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+a {
+    text-decoration: none;
+}
+
+.panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    z-index: 9;
+    background-color: #f0f0f0;
+}
+
+#index {
+    text-align: center;
+}
+
+.nav {
+    list-style: none;
+    padding: 0;
+}
+
+[class^='btn-'] {
+    z-index: 1;
+}
+
+.fade-enter-active, .fade-leave-active {
+    transition: transform .5s
+}
+
+.fade-enter, .fade-leave-active {
+    transform: translateX(100%)
+}
+
+/*main*/
+.null-list {
+    text-align: center;
+    padding-top: 100%;
+    background-image: url(https://o5b8263mg.qnssl.com/FptphG8iKm11s44SH3_EQ2nGvjb5);
+    background-position: center;
+    background-size: 35%;
+    background-repeat: no-repeat
+}
+
+.icon-address {
+    position: absolute;
+    left: 3px;
+    top: 20px;
+    width: 24px;
+    height: 24px;
+    background-image: url(address.png);
+    background-size: 100%;
+}
+
+.address-list .item {
+    margin-top: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 13px 14px 13px 30px;
+    position: relative;
+    color: #000;
+    background-color: #FFF;
+}
+
+.address-list .address-name {
+    width: auto;
+    text-align: left;
+    float: left;
+}
+
+.address-list .address-phone {
+    width: auto;
+    text-align: right;
+    height: 21px;
+    line-height: 21px;
+    font-size: 14px;
+    color: #323232;
+}
+
+.address-list .address-detail {
+    padding-top: 10px;
+    width: auto;
+    line-height: 1.3em;
+    text-align: left;
+    font-size: 12px;
+    clear: both;
+    color: #969696;
+}
+
+.address-row {
+    border-bottom: 1px solid #ccc;
+    padding: 15px 17px;
+    height: auto;
+    width: 100%;
+    box-sizing: border-box;
+    float: left;
+    background: #fff;
+}
+
+.address-row .label {
+    width: 70px;
+    text-align: left;
+    color: #323232;
+}
+
+.address-row input, .address-row .label{
+    height: 30px;
+    line-height: 30px;
+    float: left;
+}
+
+/*btn*/
+.addressFooter {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 50px;
+    box-sizing: border-box;
+    background: #fff;
+    padding: 6px 10px;
+    border-top: 1px solid #c8c8c8;
+    z-index: 9999;
+}
+
+.btn-address {
+    padding: 8px 10px;
+    font-size: 14px;
+    border: 1px solid #1e1e1e;
+    border-radius: 3px;
+    color: #1e1e1e;
+}
+
+.btn-add-address, .btn-save-address {
+    float: right;
+    background: #1e1e1e;
+    color: #fff;
+}
+
+.btn-cancal-address {
+    float: left;
+}
+
+.address-name {
+
+}
+
+.nav a {
+    position: relative;
+    display: block;
+    margin: 20px auto;
+    width: 100%;
+    height: 80px;
+    max-width: 250px;
+    text-transform: uppercase;
+    overflow: hidden;
+    border: 1px solid currentColor;
+    line-height: 80px;
+    text-align: center;
+}
