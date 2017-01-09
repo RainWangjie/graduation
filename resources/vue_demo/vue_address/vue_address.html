@@ -66,43 +66,42 @@
     <div class="panel">
         <div class="address-row">
             <div class="label">收货人</div>
-            <input type="text" class="input input-focus" name="name" placeholder="请输入收货人姓名">
+            <input type="text" class="input input-focus" name="name" placeholder="请输入收货人姓名"
+                   v-model="postData.name">
         </div>
         <div class="address-row">
             <div class="label">手机号码</div>
-            <input type="tel" class="input input-focus" name="phone" maxlength="11" placeholder="请输入收货人手机号码">
+            <input type="tel" class="input input-focus" name="phone" maxlength="11" placeholder="请输入收货人手机号码"
+                   v-model="postData.phone">
         </div>
         <div class="address-row">
             <div class="label">所在地区</div>
             <div class="addressFormChoose">
-                <select class="user-AddressFormProvince">
-                    <option>请选择</option>
-                    <option v-for="(p, index) in province" @click="changeProvince(index)" :data-index="index">${p}</option>
+                <select class="user-AddressFormProvince" @change="changeProvince()" v-model="selectAddress.province">
+                    <option v-for="(p, index) in province" :value="index">${p}</option>
                 </select>
-                <select class="user-AddressFormCity">
-                    <option>请选择</option>
-                    <option v-for="(c, index) in city" :data-index="index">${c}</option>
+                <select class="user-AddressFormCity" @change="changeCity()" v-model="selectAddress.city">
+                    <option v-for="(c, indexC) in city" :value="indexC">${c}</option>
                 </select>
-                <select class="user-AddressFormDistrict">
-                    <option>请选择</option>
-                    <option v-for="(d, index) in district" :data-index="index">${d}</option>
+                <select class="user-AddressFormDistrict" @change="changeDistrict()" v-model="selectAddress.district">
+                    <option v-for="(d, indexD) in district" :value="indexD">${d}</option>
                 </select>
             </div>
         </div>
         <div class="address-row">
             <div class="label">详细地址</div>
-            <textarea name="more" placeholder="请输入详细地址" class="input-focus"></textarea>
+            <textarea name="more" placeholder="请输入详细地址" class="input-focus" v-model="postData.detail"></textarea>
         </div>
 
         <div class="address-row">
             <label for="checkboxDefault2">
                 <div class="label">设为默认</div>
             </label>
-            <input type="checkbox" id="checkboxDefault2"/>
+            <input v-model="postData.status" type="checkbox" id="checkboxDefault2"/>
         </div>
 
         <div class="addressFooter">
-            <a class="btn-address btn-save-address">保存</a>
+            <a class="btn-address btn-save-address" @click="postData">保存</a>
             <router-link class="btn-address btn-cancal-address" to="/">取消</router-link>
         </div>
     </div>
@@ -112,17 +111,21 @@
     <div class="panel">
         <div class="address-list" v-if="addressList.length != 0">
             <template v-for="item in addressList">
-                <div class="item">
-                    <div v-if="item.status == 1" class="icon-address"></div>
-                    <div>
+                <div class="item edit-item">
+                    <div @click="($event,item.id)">
                         <div class="address-name">${item.receiver}</div>
                         <div class="address-phone">${item.phone}</div>
                         <div class="address-detail">
                             ${item.address.province}
-                            ${item.address.city}
+                            ${item.address.city}editAddress
                             ${item.address.district}
                             ${item.address.detail}
                         </div>
+                    </div>
+                    <div class="addressMessageMenu">
+                        <input class="setStatus" type="checkbox" v-model="item.status"
+                               @click="setStatus($event,item.id)">
+                        <button class="addressDelete" @click="deleteAddress($event,item.id)">删除</button>
                     </div>
                 </div>
             </template>

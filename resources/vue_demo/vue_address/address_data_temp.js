@@ -3,8 +3,9 @@
  * 地址管理伪造数据
  */
 
-var data_temp = [
-    {
+var data_temp = {
+    '1': {
+        id: 1,
         status: 1,
         receiver: '葛王杰',
         phone: '157575115750',
@@ -15,7 +16,8 @@ var data_temp = [
             detail: '北山街道黄龙雅苑3-1-601'
         }
     },
-    {
+    '2': {
+        id: 2,
         status: 0,
         receiver: '潘冰竹',
         phone: '18868813166',
@@ -26,7 +28,8 @@ var data_temp = [
             detail: '湖墅街道莫干山路741号(浙报理想文创园5号楼华清集团)'
         }
     },
-    {
+    '13': {
+        id: 13,
         status: 0,
         receiver: '谭志华',
         phone: '18573190209',
@@ -37,4 +40,4 @@ var data_temp = [
             detail: '浏阳河大道588号红橡国际广场17A'
         }
     }
-];
+};
