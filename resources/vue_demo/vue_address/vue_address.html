@@ -33,6 +33,7 @@
     </transition>
 </div>
 <!--单页面模版(组件)-->
+<!--地址列表-->
 <script id="tpl_list" type="text/x-template">
     <div class="panel">
         <div class="address-list" v-if="addressList.length != 0">
@@ -60,6 +61,7 @@
         </div>
     </div>
 </script>
+<!--新建地址-->
 <script id="tpl_new" type="text/x-template">
     <div class="panel">
         <div class="address-row">
@@ -105,8 +107,33 @@
         </div>
     </div>
 </script>
+<!--管理地址-->
 <script id="tpl_manger" type="text/x-template">
-    <div class="panel">${text}</div>
+    <div class="panel">
+        <div class="address-list" v-if="addressList.length != 0">
+            <template v-for="item in addressList">
+                <div class="item">
+                    <div v-if="item.status == 1" class="icon-address"></div>
+                    <div>
+                        <div class="address-name">${item.receiver}</div>
+                        <div class="address-phone">${item.phone}</div>
+                        <div class="address-detail">
+                            ${item.address.province}
+                            ${item.address.city}
+                            ${item.address.district}
+                            ${item.address.detail}
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+        <div class="null-list" v-else>
+
+        </div>
+        <div class="addressFooter">
+            <router-link class="btn-address btn-add-address" to="/newAddress">添加地址</router-link>
+        </div>
+    </div>
 </script>
 <!--Vue2.0-->
 <script src="../../js/vue2.0.js"></script>
