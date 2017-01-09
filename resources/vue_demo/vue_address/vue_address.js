@@ -71,7 +71,7 @@ const mangerAddress = Vue.component('mangerAddress', {
     template: '#tpl_manger',
     data: function () {
         return {
-            text: '管理地址'
+            addressList: data_temp
         };
     }
 });
