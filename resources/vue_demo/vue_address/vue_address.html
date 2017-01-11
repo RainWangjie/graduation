@@ -90,7 +90,7 @@
         </div>
         <div class="address-row">
             <div class="label">详细地址</div>
-            <textarea name="more" placeholder="请输入详细地址" class="input-focus" v-model="postData.detail"></textarea>
+            <textarea name="more" placeholder="请输入详细地址" class="input-focus" v-model="postData.selectAddress.detail"></textarea>
         </div>
 
         <div class="address-row">
@@ -101,7 +101,7 @@
         </div>
 
         <div class="addressFooter">
-            <a class="btn-address btn-save-address" @click="postData">保存</a>
+            <a class="btn-address btn-save-address" @click="saveData">保存</a>
             <router-link class="btn-address btn-cancal-address" to="/">取消</router-link>
         </div>
     </div>
@@ -112,12 +112,12 @@
         <div class="address-list" v-if="addressList.length != 0">
             <template v-for="item in addressList">
                 <div class="item edit-item">
-                    <div @click="($event,item.id)">
+                    <div @click="editAddress($event,item.id)">
                         <div class="address-name">${item.receiver}</div>
                         <div class="address-phone">${item.phone}</div>
                         <div class="address-detail">
                             ${item.address.province}
-                            ${item.address.city}editAddress
+                            ${item.address.city}
                             ${item.address.district}
                             ${item.address.detail}
                         </div>
