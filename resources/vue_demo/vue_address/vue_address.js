@@ -23,16 +23,17 @@ const newAddress = Vue.component('newAddress', {
     data: function () {
         return {
             postData: {
-                name: 'Mr.Rain',
-                phone: '15757115750',
+                name: '',
+                phone: '',
                 selectAddress: {
-                    province: citys['0'][0],
-                    city: citys['0_0'][0],
-                    district: citys['0_0_0'][0],
+                    province: '',
+                    city: '',
+                    district: '',
                     detail: ''
                 },
                 status: 0
             },
+            isNew: true,
             selectAddress: {
                 province: 0,
                 city: 0,
@@ -43,11 +44,44 @@ const newAddress = Vue.component('newAddress', {
             district: citys['0_0_0'],
         };
     },
-    created: function () {
-        console.log(router);
-        var id = router.query.id || '无参数id';
+    mounted: function () {
+        this._initAddress();
     },
     methods: {
+        _initAddress: function () {
+            if (this.$route.query.id) {
+                let id = this.$route.query.id;
+                this.postData.name = data_temp[id].receiver;
+                this.postData.phone = data_temp[id].phone;
+                this.postData.status = data_temp[id].status;
+                // 匹配地址
+                for (let i in this.province) {
+                    if (this.province[i] == data_temp[id].address.province) {
+                        this.selectAddress.province = i;
+                        this.changeProvince();
+                        break;
+                    }
+                }
+                for (let i in this.city) {
+                    if (this.city[i] == data_temp[id].address.city) {
+                        this.selectAddress.city = i;
+                        this.changeCity();
+                        break;
+                    }
+                }
+                for (let i in this.district) {
+                    if (this.district[i] == data_temp[id].address.district) {
+                        this.selectAddress.district = i;
+                        this.changeDistrict();
+                        break;
+                    }
+                }
+                this.postData.selectAddress.detail = data_temp[id].address.detail;
+                this.isNew = false;
+            } else {
+                this._changePostData();
+            }
+        },
         _print: function () {
             console.log(this.postData.selectAddress);
         },
@@ -63,7 +97,7 @@ const newAddress = Vue.component('newAddress', {
             this.postData.selectAddress.district = this.district[this.selectAddress.district];
         },
         changeProvince: function () {
-            var temp_city = `0_${this.selectAddress.province}`,
+            let temp_city = `0_${this.selectAddress.province}`,
                 temp_district = `0_${this.selectAddress.province}_${this.selectAddress.city}`;
             this.city = citys[temp_city];
             this.district = citys[temp_district];
@@ -73,7 +107,7 @@ const newAddress = Vue.component('newAddress', {
             this._print();
         },
         changeCity: function () {
-            var temp_district = `0_${this.selectAddress.province}_${this.selectAddress.city}`;
+            let temp_district = `0_${this.selectAddress.province}_${this.selectAddress.city}`;
             this.district = citys[temp_district];
             this._initDistrict();
             this._changePostData();
@@ -83,8 +117,21 @@ const newAddress = Vue.component('newAddress', {
             this._changePostData();
             this._print();
         },
-        postData: function () {
-
+        saveData: function () {
+            console.log('保存');
+            let temp = {
+                id: 4,
+                status: this.postData.status,
+                receiver: this.postData.name,
+                phone: this.postData.phone,
+                address: this.postData.selectAddress
+            };
+            if (this.isNew) {
+                data_temp['4'] = temp;
+            } else {
+                data_temp[this.$route.query.id] = temp;
+            }
+            router.go(-1);
         }
 
     }
@@ -102,7 +149,7 @@ const mangerAddress = Vue.component('mangerAddress', {
         editAddress: function (event, id) {
             // 跳转到新增地址页面
             console.log(`跳转到Id为${id}的地址编辑页`);
-            router.go({path: `/newAddress?id=${id}`});
+            router.push({path: '/newAddress', query: {id: id}});
         },
         deleteAddress: function (event, id) {
             alert(`删除Id为${id}的地址`);
@@ -116,7 +163,6 @@ const mangerAddress = Vue.component('mangerAddress', {
             } else {
                 alert('数据错误')
             }
-
         }
     }
 });
