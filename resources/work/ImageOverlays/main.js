@@ -24,6 +24,7 @@ function initLabel() {
             '</li>';
     }
     $('.label-list').append(html);
+    print('列表初始化');
 }
 initLabel();
 
@@ -45,7 +46,7 @@ $('#img-area').mousedown(function (event) {
     newLabel.y = mouse.y;
     newLabel.el = $($('#tpl-area').html());
     newLabel.isExist = false;
-    console.log('img');
+    print('创建标注start');
     return false;
 }).mousemove(function (event) {
     var difference_x = mouse.x - newLabel.x,
@@ -75,8 +76,8 @@ $('#img-area').mousedown(function (event) {
     newLabel.height = Math.abs(mouse.y - newLabel.y);
     labelList.push(newLabel);
     clearNewLabel();
-    console.log('mouseup');
-    return false;
+    print('创建标注end');
+        return false;
 }).mouseleave(function (event) {
     if (isMouseDown) {
         isMouseDown = false;
@@ -96,18 +97,23 @@ $('.label-area').mousedown(function (event) {
         x: mouse.x,
         y: mouse.y
     };
-    console.log('label');
+    print('移动start');
     return false;
 }).mousemove(function (event) {
     if (isMouseDown) {
         var id = $(this).attr('id').replace('label_', '');
         $(this).css({
             top: labelList[id].y + (labelMove.y - mouse.y),
-            left: labelList[id].x + (labelMove.x - mouse.x),
+            left: labelList[id].x + (labelMove.x - mouse.x)
         })
     }
     return false;
 }).mouseup(function (event) {
+    print('移动end');
     isMouseDown = false;
     return false;
 });
+
+function print(txt) {
+    $('.opreate').append('<li>'+txt+'</li>')
+}
