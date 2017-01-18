@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>图片标注</title>
+    <link type="text/css" rel="stylesheet" href="main.css">
+</head>
+<body>
+<div id="app">
+    <div class="img-panel">
+        <div id="img-area">
+            <img id="img-self"
+                 src="../../images/14478571_323138038054679_1904056841671802880_n.jpg"
+                 width="100%"
+                 draggable="false">
+        </div>
+    </div>
+    <div class="label-panel">
+        <ul class="label-list">
+
+        </ul>
+        <div class="text-c">
+            <button>控制窗打印数据</button>
+        </div>
+    </div>
+</div>
+<script type="text/html" id="tpl-area">
+    <div class="label-area">
+        <div class="ui-resizable-handle ui-resizable-line-h ui-resizable-t"></div>
+        <div class="ui-resizable-handle ui-resizable-line-v ui-resizable-l"></div>
+        <div class="ui-resizable-handle ui-resizable-line-h ui-resizable-b"></div>
+        <div class="ui-resizable-handle ui-resizable-line-v ui-resizable-r"></div>
+        <div class="ui-resizable-handle ui-resizable-point ui-resizable-tl"></div>
+        <div class="ui-resizable-handle ui-resizable-point ui-resizable-tr"></div>
+        <div class="ui-resizable-handle ui-resizable-point ui-resizable-bl"></div>
+        <div class="ui-resizable-handle ui-resizable-point ui-resizable-br"></div>
+    </div>
+</script>
+<script src="../../js/jquery.js"></script>
+<script src="mouse.js"></script>
+<script src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+#app {
+    width: 100%;
+    display: flex;
+    padding: 10px;
+}
+
+.img-panel,
+.label-panel {
+    flex: 1;
+}
+
+.label-panel {
+    margin: 0 10px;
+    padding: 10px;
+    border-left: 1px solid #000;
+}
+
+.img-area {
+    position: relative;
+}
+
+/*label-area*/
+.label-area {
+    position: absolute;
+    transition: all .1s;
+}
+
+.label-area:hover .ui-resizable-handle {
+    background: green;
+}
+
+.ui-resizable-handle {
+    position: absolute;
+    overflow: hidden;
+    font-size: 0;
+    line-height: 0;
+    background: red;
+}
+
+.ui-resizable-line-h {
+    width: 100%;
+    height: 1px;
+}
+
+.ui-resizable-line-v {
+    width: 1px;
+    height: 100%;
+}
+
+.ui-resizable-t {
+    top: 0;
+    left: 0;
+    cursor: n-resize;
+}
+
+.ui-resizable-b {
+    bottom: 0;
+    left: 0;
+    cursor: s-resize;
+}
+
+.ui-resizable-l {
+    top: 0;
+    left: 0;
+    cursor: w-resize;
+}
+
+.ui-resizable-r {
+    top: 0;
+    right: 0;
+    cursor: e-resize;
+}
+
+.ui-resizable-point {
+    width: 8px;
+    height: 8px;
+}
+
+.ui-resizable-tl {
+    top: -3px;
+    left: -3px;
+    cursor: nw-resize;
+}
+
+.ui-resizable-tr {
+    top: -3px;
+    right: -3px;
+    cursor: ne-resize;
+}
+
+.ui-resizable-bl {
+    bottom: -3px;
+    left: -3px;
+    cursor: sw-resize;
+}
+
+.ui-resizable-br {
+    bottom: -3px;
+    right: -3px;
+    cursor: se-resize;
+}
+
+.label-list {
+    list-style: none;
+}
+
+.color-block {
+    margin-left: 10px;
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+}
+
+.text-c {
+    text-align: center;
+}
+
