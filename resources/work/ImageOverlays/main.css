@@ -28,6 +28,8 @@ html, body {
 .label-area {
     position: absolute;
     transition: all .1s;
+    cursor: move;
+    z-index: 101;
 }
 
 .label-area:hover .ui-resizable-handle {
@@ -40,6 +42,7 @@ html, body {
     font-size: 0;
     line-height: 0;
     background: red;
+    z-index: 90;
 }
 
 .ui-resizable-line-h {
