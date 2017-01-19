@@ -1,21 +1,28 @@
 /**
  * Created by gewangjie on 2017/1/18.
  */
-var labelData = {
-    'shoes': {
-        'name': '鞋子',
-        'color': 'red'
-    },
-    'pants': {
-        'name': '裤子',
-        'color': 'blue'
-    },
-    'Jacket': {
-        'name': '上衣',
-        'color': 'green'
-    }
-};
-function initLabel() {
+var isMouseDown = false,
+    mouseType = 0,
+    mouse = {},
+    newLabel = {},
+    selectedLabel = {},
+    labelList = [],
+    labelTotal = 0,
+    labelData = {
+        'shoes': {
+            'name': '鞋子',
+            'color': 'red'
+        },
+        'pants': {
+            'name': '裤子',
+            'color': 'blue'
+        },
+        'Jacket': {
+            'name': '上衣',
+            'color': 'green'
+        }
+    };
+function initLabel(el) {
     var html = '';
     for (var i in labelData) {
         html += '<li>' +
@@ -23,39 +30,45 @@ function initLabel() {
             '<div class="color-block" style="background: ' + labelData[i].color + '"></div>' +
             '</li>';
     }
-    $('.label-list').append(html);
+    $(el).append(html);
     print('列表初始化');
+    // 绑定鼠标事件
+    bindNewLabel();
+    // move绑定到父元素
+    $('#img-area').on('mousemove', move);
 }
-initLabel();
-
-var isMouseDown = false,
-    mouse = captureMouse(document.getElementById('img-self')),
-    newLabel = {},
-    selectLabel = {},
-    labelList = [],
-    labelTotal = 0,
-    labelMove = {};
-
-function clearNewLabel() {
+function clearLabel() {
     newLabel = {};
 }
+
 // 创建label
-$('#img-area').mousedown(function (event) {
+function bindNewLabel() {
+    $('#img-area').on('mousedown', newLabelMouseDown)
+        .on('mouseup mouseleave', newLabelMouseup);
+}
+function newLabelMouseDown(event) {
+    mouse = captureMouse(event);
     isMouseDown = true;
+    mouseType = 1;
     newLabel.x = mouse.x;
     newLabel.y = mouse.y;
     newLabel.el = $($('#tpl-area').html());
     newLabel.isExist = false;
     print('创建标注start');
     return false;
-}).mousemove(function (event) {
-    var difference_x = mouse.x - newLabel.x,
-        difference_y = mouse.y - newLabel.y;
-    // 鼠标点击，操作距离大于20px
+}
+function newLabelMouseMove() {
     if (isMouseDown) {
+        var difference_x = mouse.x - newLabel.x,
+            difference_y = mouse.y - newLabel.y;
         if (!newLabel.isExist) {
-            newLabel.el.attr('id', 'label_' + (labelTotal++));
-            $(this).append(newLabel.el);
+            newLabel.el.attr('id', 'label_' + (labelTotal++)).css({
+                top: newLabel.y,
+                left: newLabel.x,
+                width: Math.max(difference_x, 20),
+                height: Math.max(difference_y, 20)
+            });
+            $('#img-area').append(newLabel.el);
             newLabel.isExist = true;
         }
         if (difference_x > 0 && difference_y > 0) {
@@ -70,50 +83,167 @@ $('#img-area').mousedown(function (event) {
         }
     }
     return false;
-}).mouseup(function () {
-    isMouseDown = false;
-    newLabel.width = Math.abs(mouse.x - newLabel.x);
-    newLabel.height = Math.abs(mouse.y - newLabel.y);
-    labelList.push(newLabel);
-    clearNewLabel();
-    print('创建标注end');
-        return false;
-}).mouseleave(function (event) {
-    if (isMouseDown) {
+}
+function newLabelMouseup() {
+    if (isMouseDown && mouseType == 1) {
         isMouseDown = false;
-        newLabel.width = Math.abs(mouse.x - newLabel.x);
-        newLabel.height = Math.abs(mouse.y - newLabel.y);
+        mouseType = 0;
+        newLabel.w = Math.abs(mouse.x - newLabel.x);
+        newLabel.h = Math.abs(mouse.y - newLabel.y);
         labelList.push(newLabel);
-        clearNewLabel();
-        console.log('mouseleave');
+        selectedLabel = labelList[labelTotal - 1];
+        print('创建标注end');
+        bindMoveLabel();
+        bindScaleLabel();
+        clearLabel();
     }
     return false;
-});
-
+}
 // 移动area
-$('.label-area').mousedown(function (event) {
+function bindMoveLabel() {
+    $('.label-area').on('mousedown', moveLabelMouseDown)
+        .on('mouseup', moveLabelMouseup);
+}
+function moveLabelMouseDown(event) {
+    mouse = captureMouse(event);
     isMouseDown = true;
+    mouseType = 2;
     labelMove = {
+        id: $(this).attr('id').replace('label_', ''),
         x: mouse.x,
         y: mouse.y
     };
     print('移动start');
     return false;
-}).mousemove(function (event) {
+}
+function moveLabelMouseMove() {
     if (isMouseDown) {
-        var id = $(this).attr('id').replace('label_', '');
-        $(this).css({
-            top: labelList[id].y + (labelMove.y - mouse.y),
-            left: labelList[id].x + (labelMove.x - mouse.x)
+        var id = labelMove.id;
+        $('#label_' + id).css({
+            top: labelList[id].y + mouse.y - labelMove.y,
+            left: labelList[id].x + mouse.x - labelMove.x
         })
     }
     return false;
-}).mouseup(function (event) {
-    print('移动end');
-    isMouseDown = false;
-    return false;
-});
-
-function print(txt) {
-    $('.opreate').append('<li>'+txt+'</li>')
 }
+function moveLabelMouseup() {
+    if (isMouseDown&& mouseType == 2) {
+        var id = $(this).attr('id').replace('label_', '');
+        labelList[id].y += (mouse.y - labelMove.y);
+        labelList[id].x += (mouse.x - labelMove.x);
+        print('移动end选中' + id);
+        isMouseDown = false;
+        mouseType = 0;
+    }
+    return false;
+}
+// 缩放area
+function bindScaleLabel() {
+    $('.ui-resizable-handle').on('mousedown', scaleLabelMouseDown)
+        .on('mouseup', scaleLabelMouseup);
+}
+function scaleLabelMouseDown(event) {
+    mouse = captureMouse(event);
+    isMouseDown = true;
+    mouseType = 3;
+    labelMove = {
+        id: $(this).parents('.label-area').attr('id').replace('label_', ''),
+        resize: $(this).data('resize'),
+        x: mouse.x,
+        y: mouse.y
+    };
+    print('缩放start' + labelMove.id);
+    return false;
+}
+function scaleLabelMouseMove() {
+    if (isMouseDown) {
+        var id = labelMove.id,
+            el = $('#label_' + id);
+        switch (labelMove.resize) {
+            case 't':
+                el.css({
+                    top: labelList[id].y + mouse.y - labelMove.y,
+                    height: labelList[id].h - ( mouse.y - labelMove.y)
+                });
+                break;
+            case 'l':
+                el.css({
+                    left: labelList[id].x + mouse.x - labelMove.x,
+                    width: labelList[id].w - (mouse.x - labelMove.x)
+                });
+                break;
+            case 'r':
+                el.css({
+                    width: labelList[id].w + mouse.x - labelMove.x
+                });
+                break;
+            case 'b':
+                el.css({
+                    height: labelList[id].h + mouse.y - labelMove.y
+                });
+                break;
+            case 'tl':
+                el.css({
+                    top: labelList[id].y + mouse.y - labelMove.y,
+                    left: labelList[id].x + mouse.x - labelMove.x,
+                    width: labelList[id].w - ( mouse.x - labelMove.x),
+                    height: labelList[id].h - ( mouse.y - labelMove.y)
+                });
+                break;
+            case 'tr':
+                el.css({
+                    top: labelList[id].y + mouse.y - labelMove.y,
+                    width: labelList[id].w + mouse.x - labelMove.x,
+                    height: labelList[id].h - ( mouse.y - labelMove.y)
+                });
+                break;
+            case 'bl':
+                el.css({
+                    left: labelList[id].x + mouse.x - labelMove.x,
+                    width: labelList[id].w - ( mouse.x - labelMove.x),
+                    height: labelList[id].h + mouse.y - labelMove.y
+                });
+                break;
+            case 'br':
+                el.css({
+                    height: labelList[id].h + mouse.y - labelMove.y,
+                    width: labelList[id].w + mouse.x - labelMove.x
+                });
+                break;
+        }
+    }
+    return false;
+}
+function scaleLabelMouseup() {
+    if (isMouseDown && mouseType == 3) {
+        var id = labelMove.id;
+        labelList[id].y += mouse.y - labelMove.y;
+        labelList[id].x += mouse.x - labelMove.x;
+        labelList[id].w -= (mouse.x - labelMove.x);
+        labelList[id].h -= (mouse.y - labelMove.y);
+        isMouseDown = false;
+        mouseType = 0;
+    }
+    return false;
+}
+
+function move(event) {
+    mouse = captureMouse(event);
+    switch (mouseType) {
+        case 1:
+            newLabelMouseMove();
+            break;
+        case 2:
+            moveLabelMouseMove();
+            break;
+        case 3:
+            scaleLabelMouseMove();
+            break;
+    }
+}
+function print(txt) {
+    $('.opreate').append('<li>' + txt + '</li>')
+}
+initLabel('.label-list');
+
+
