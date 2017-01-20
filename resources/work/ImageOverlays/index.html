@@ -12,9 +12,7 @@
 <div id="app">
     <div class="img-panel">
         <div id="img-area">
-            <img id="img-self"
-                 width="100%"
-                 draggable="false">
+            <img id="img-self" draggable="false">
         </div>
         <div class="placeholder">图片载入中。。。</div>
     </div>
@@ -22,12 +20,10 @@
         <ul class="label-list">
 
         </ul>
-        <div class="text-c">
-            <button id="printData">控制窗打印数据</button>
+        <div class="btn-group">
+            <button id="printData" class="btn-0">控制窗打印数据</button>
+            <button id="next-picture" class="btn-0">下一张</button>
         </div>
-        <ul class="operate">
-
-        </ul>
     </div>
 </div>
 <script type="text/html" id="tpl-area">
@@ -44,7 +40,7 @@
         <span class="remove-label"></span>
     </div>
 </script>
-<script src="../../js/jquery.js"></script>
+<script src="../../js/jquery.min.js"></script>
 <script src="mouse.js"></script>
 <script src="main.js"></script>
 </body>
