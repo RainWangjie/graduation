@@ -2,8 +2,13 @@
  * Created by gewangjie on 2017/1/18.
  */
 // jq与原生js混写，需移除jq
-// https://o5b8263mg.qnssl.com/FgNgHHQSjGy6ZkDCTY9e5o4BUoTr
-
+function getRandomColor() {
+    return '#' +
+        (function (color) {
+            return (color += '0123456789abcdef'[Math.floor(Math.random() * 16)])
+            && (color.length == 6) ? color : arguments.callee(color);
+        })('');
+}
 var isMouseDown = false,
     mouseType = 0,
     mouse = {},
@@ -12,43 +17,59 @@ var isMouseDown = false,
     labelList = [],
     labelMove = {},
     labelTotal = 0,
-    labelData = {
-        'shoes': {
-            'name': '鞋子',
-            'color': 'red'
-        },
-        'pants': {
-            'name': '裤子',
-            'color': 'blue'
-        },
-        'Jacket': {
-            'name': '上衣',
-            'color': 'green'
-        },
-        'hat': {
-            'name': '帽子',
-            'color': 'yellow'
-        }
-    };
+    labelName = ['衬衫', '小衫', 'T恤', '背心', '吊带', '打底衫', '西服', '夹克', '马甲', '卫衣', '风雪衣', '毛衣', '披风', '外套', '连衣裙', '连体裤', '半身裙', '裤装'],
+    labelData = [],
+    winScale = $('#img-area').width() / $('#img-area').height();//图片放置区域比例
+
+
 initLabel('.label-list');
-getImage('../../images/14582371_144806309321240_6764337809164599296_n.jpg');
+getImage();
 // 获取图片，初始化
-function getImage(url) {
-    clearAll();
-    $('.placeholder').show();
-    var img = new Image();
-    img.onload = function () {
-        $('.placeholder').hide();
-        $('#img-self').attr('src', url)
-    };
-    img.src = url
+function getImage() {
+    $.ajax({
+        url: 'https://test.teegether.cn/deep_fashion/ins_label/img',
+        type: 'GET',
+        success: function (d) {
+            d = JSON.parse(d);
+            if (d.status.code == '1000') {
+                var url = d.result,
+                    img = new Image();
+                clearAll();
+                $('.placeholder').show();
+                img.onload = function () {
+                    var imgScale = img.naturalWidth / img.naturalHeight;
+                    $('.placeholder').hide();
+                    if (imgScale > winScale) {
+                        $('#img-self').attr({
+                            'src': url,
+                            'width': '100%',
+                            'height': 'auto'
+                        });
+                    } else {
+                        $('#img-self').attr({
+                            'src': url,
+                            'width': 'auto',
+                            'height': '100%'
+                        });
+                    }
+                };
+                img.src = url
+            }
+        }
+    });
 }
 function initLabel(el) {
+
     var html = '';
-    for (var i in labelData) {
+    for (var i in labelName) {
+        var color = getRandomColor();
+        labelData.push({
+            'name': labelName[i],
+            'color': color
+        });
         html += '<li>' +
-            '<input type="checkbox" class="imgTag tag_' + i + '" name="imgTag" value="' + i + '">' + labelData[i].name +
-            '<div class="color-block" style="background: ' + labelData[i].color + '"></div>' +
+            '<input type="checkbox" class="imgTag tag_' + i + '" name="imgTag" value="' + i + '">' + labelName[i] +
+            '<div class="color-block" style="background: ' + color + '"></div>' +
             '</li>';
     }
     $(el).append(html);
@@ -70,6 +91,7 @@ function clearAll() {
     labelList = [];
     labelTotal = 0;
     $('.label-area').remove();
+    $('#img-self').attr('src', '')
 }
 // 创建label
 function bindNewLabel() {
@@ -274,7 +296,7 @@ function up() {
     return false;
 }
 function print(txt) {
-    $('.operate').append('<li>' + txt + '</li>')
+    console.log(txt)
 }
 // 删除标注
 $('body').on('click', '.remove-label', function () {
@@ -323,11 +345,13 @@ $('#printData').click(function () {
     for (var i in labelList) {
         var label = labelList[i];
         if (label.isExist) {
-            consoleTable.push([dealWH('h', label.y), dealWH('w', label.x), dealWH('w', label.w), dealWH('h', label.h), label.tagList.join(',')])
+            consoleTable.push([dealWH('h', label.y), dealWH('w', label.x), dealWH('w', label.w), dealWH('h', label.h), dealTagArray(label.tagList)])
         }
     }
     console.table(consoleTable);
 });
+// 获取新图
+$('#next-picture').click(getImage);
 // 处理宽高比例
 function dealWH(type, num) {
     var t = $('#img-self'),
@@ -338,4 +362,12 @@ function dealWH(type, num) {
     } else if (type == 'h') {
         return (num / h).toFixed(4);
     }
+}
+// 处理tag映射关系
+function dealTagArray(arr) {
+    var tags = '';
+    for (var i = 0; i < arr.length; i++) {
+        tags += labelData[arr[i]].name + ' ';
+    }
+    return tags
 }
