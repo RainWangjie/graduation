@@ -108,6 +108,51 @@ html, body {
     cursor: se-resize;
 }
 
+.tag-list {
+    position: absolute;
+    width: 70px;
+    top: 0;
+    right: -70px;
+}
+
+.tag-list li {
+    position: relative;
+}
+
+.tag-list .tag-item {
+    display: inline-block;
+    padding: 0 2px 0 8px;
+    color: white;
+    line-height: 1.5;
+    margin: 0 0 2px 0;
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.tag-item:before,
+.tag-item:after {
+    position: absolute;
+    content: " ";
+}
+
+.tag-item:before {
+    border: transparent 0.75em solid;
+    border-right-color: currentColor;
+    top: 0;
+    left: -1.5em;
+    height: 0;
+    width: 0;
+}
+
+.tag-item:after {
+    background: white;
+    width: 0.5em;
+    height: 0.5em;
+    top: 0.5em;
+    left: -0.125em;
+    border-radius: 0.25em;
+}
+
 .label-list {
     list-style: none;
 }
@@ -121,5 +166,14 @@ html, body {
 
 .text-c {
     text-align: center;
+}
+
+.operate {
+    max-height: 400px;
+    overflow: auto;
+}
+
+.operate li:last-child {
+    color: red;
 }
 
