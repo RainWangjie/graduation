@@ -2,6 +2,8 @@
  * Created by gewangjie on 2017/1/18.
  */
 // jq与原生js混写，需移除jq
+// https://o5b8263mg.qnssl.com/FgNgHHQSjGy6ZkDCTY9e5o4BUoTr
+
 var isMouseDown = false,
     mouseType = 0,
     mouse = {},
@@ -22,10 +24,25 @@ var isMouseDown = false,
         'Jacket': {
             'name': '上衣',
             'color': 'green'
+        },
+        'hat': {
+            'name': '帽子',
+            'color': 'yellow'
         }
     };
 initLabel('.label-list');
-
+getImage('../../images/14582371_144806309321240_6764337809164599296_n.jpg');
+// 获取图片，初始化
+function getImage(url) {
+    clearAll();
+    $('.placeholder').show();
+    var img = new Image();
+    img.onload = function () {
+        $('.placeholder').hide();
+        $('#img-self').attr('src', url)
+    };
+    img.src = url
+}
 function initLabel(el) {
     var html = '';
     for (var i in labelData) {
@@ -47,8 +64,12 @@ function clearLabel() {
     newLabel = {};
     labelMove = {};
 }
-function removeLabel() {
-
+function clearAll() {
+    clearLabel();
+    selected = 0;
+    labelList = [];
+    labelTotal = 0;
+    $('.label-area').remove();
 }
 // 创建label
 function bindNewLabel() {
@@ -90,12 +111,16 @@ function newLabelMouseMove() {
     }
 }
 function newLabelMouseup() {
-    newLabel.w = Math.abs(mouse.x - newLabel.x);
-    newLabel.h = Math.abs(mouse.y - newLabel.y);
-    labelList.push(newLabel);
-    print('创建标注' + (labelTotal - 1));
-    bindMoveLabel();
-    bindScaleLabel();
+    if (newLabel.isExist) {
+        newLabel.w = Math.abs(mouse.x - newLabel.x);
+        newLabel.h = Math.abs(mouse.y - newLabel.y);
+        labelList.push(newLabel);
+        print('创建标注' + (labelTotal - 1));
+        bindMoveLabel();
+        bindScaleLabel();
+    } else {
+        print('创建标注失败or撤销');
+    }
 }
 // 移动area
 function bindMoveLabel() {
@@ -251,6 +276,15 @@ function up() {
 function print(txt) {
     $('.operate').append('<li>' + txt + '</li>')
 }
+// 删除标注
+$('body').on('click', '.remove-label', function () {
+    if (confirm('删除该标注?')) {
+        var id = $(this).parent().attr('id').replace('label_', '');
+        $(this).parent().hide();
+        labelList[id].isExist = false;
+    }
+    return false;
+});
 // 修改标签
 function changeTag() {
     var tagList = [];
@@ -276,19 +310,32 @@ function linkage() {
     $('.imgTag').each(function () {
         $(this)[0].checked = false;
     });
-    for (var i in labelList[selected].tagList) {
-        var tag = labelList[selected].tagList[i];
-        $('.tag_' + tag)[0].checked = true;
+    if (labelList[selected].tagList) {
+        for (var i in labelList[selected].tagList) {
+            var tag = labelList[selected].tagList[i];
+            $('.tag_' + tag)[0].checked = true;
+        }
     }
 }
 // 打印数据
 $('#printData').click(function () {
-    var consoleTable = ['TOP','LEFT','WIDTH','HEIGHT','标签'];
+    var consoleTable = [['TOP', 'LEFT', 'WIDTH', 'HEIGHT', '标签']];
     for (var i in labelList) {
         var label = labelList[i];
         if (label.isExist) {
-            consoleTable.push([label.y, label.x, label.w, label.h, label.tagList.join(',')])
+            consoleTable.push([dealWH('h', label.y), dealWH('w', label.x), dealWH('w', label.w), dealWH('h', label.h), label.tagList.join(',')])
         }
     }
     console.table(consoleTable);
 });
+// 处理宽高比例
+function dealWH(type, num) {
+    var t = $('#img-self'),
+        w = t.width(),
+        h = t.height();
+    if (type == 'w') {
+        return (num / w).toFixed(4);
+    } else if (type == 'h') {
+        return (num / h).toFixed(4);
+    }
+}
