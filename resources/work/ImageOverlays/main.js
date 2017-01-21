@@ -137,7 +137,7 @@ function newLabelMouseDown(event) {
     labelList.push(newLabel);
     labelTotal++;
     print('创建标注开始');
-    animate();
+    // animate();
     return false;
 }
 function newLabelMouseMove() {
@@ -184,7 +184,7 @@ function moveLabelMouseDown(event) {
     };
     initMove();
     print('移动标注_' + selected);
-    animate();
+    // animate();
     return false;
 }
 function moveLabelMouseMove() {
@@ -210,7 +210,7 @@ function scaleLabelMouseDown(event) {
     };
     initMove();
     print('缩放start' + selected);
-    animate();
+    // animate();
     return false;
 }
 function scaleLabelMouseMove() {
@@ -295,7 +295,7 @@ function up() {
         $('.label-area').removeClass('selected');
         $('#label_' + selected).addClass('selected');
     }
-    window.cancelAnimationFrame(animate);
+    // window.cancelAnimationFrame(animate);
     isMouseDown = false;
     mouseType = 0;
     return false;
@@ -407,8 +407,11 @@ function dealWH(type, num) {
     }
 }
 // 按浏览器刷新率渲染标注
+animate();
+var q = 0;
 function animate() {
     window.requestAnimationFrame(animate);
+    console.log(q++);
     if (labelTotal > 0 && labelList[selected].isExist) {
         $('#label_' + selected).css({
             top: moveStep.y,
