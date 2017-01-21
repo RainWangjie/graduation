@@ -27,7 +27,7 @@ var imgAreaEl = $('#img-area'),
 
 initLabel('.label-list');
 getImage();
-// 获取图片，初始化
+// 获取图片
 function getImage() {
     placeHolderEl.html('新图片加载中......').show();
     $.ajax({
@@ -69,6 +69,7 @@ function getImage() {
         }
     });
 }
+// 初始化
 function initLabel(el) {
     var html = '';
     for (var i in labelName) {
@@ -92,6 +93,14 @@ function initLabel(el) {
     $('#img-area').on('mousemove', move)
         .on('mouseup', up);
 }
+// 初始化，moveStep
+function initMove() {
+    moveStep.y = labelList[selected].y;
+    moveStep.x = labelList[selected].x;
+    moveStep.w = labelList[selected].w;
+    moveStep.h = labelList[selected].h;
+}
+// 清除
 function clearLabel() {
     labelMove = {};
 }
@@ -150,7 +159,7 @@ function newLabelMouseMove() {
     }
 }
 function newLabelMouseup() {
-    if (newLabel.isExist) {
+    if (labelList[selected].isExist) {
         print('创建标注' + (labelTotal - 1));
         bindMoveLabel();
         bindScaleLabel();
@@ -173,6 +182,7 @@ function moveLabelMouseDown(event) {
         x: mouse.x,
         y: mouse.y
     };
+    initMove();
     print('移动标注_' + selected);
     animate();
     return false;
@@ -182,8 +192,6 @@ function moveLabelMouseMove() {
     moveStep.x = labelList[selected].x + mouse.x - labelMove.x;
 }
 function moveLabelMouseup() {
-    labelList[selected].x = moveStep.x;
-    labelList[selected].y = moveStep.y;
     print('移动结束并选中标注_' + selected);
 }
 // 缩放area
@@ -200,6 +208,7 @@ function scaleLabelMouseDown(event) {
         x: mouse.x,
         y: mouse.y
     };
+    initMove();
     print('缩放start' + selected);
     animate();
     return false;
@@ -243,12 +252,7 @@ function scaleLabelMouseMove() {
     }
 }
 function scaleLabelMouseup() {
-    var id = labelMove.id;
-    labelList[id].x = moveStep.x;
-    labelList[id].y = moveStep.y;
-    labelList[id].w = moveStep.w;
-    labelList[id].h = moveStep.h;
-    print('缩放结束并选中标注_' + id);
+    print('缩放结束并选中标注_' + selected);
 }
 // 公共方法
 function move(event) {
@@ -281,6 +285,10 @@ function up() {
                 scaleLabelMouseup();
                 break;
         }
+        labelList[selected].y = moveStep.y;
+        labelList[selected].x = moveStep.x;
+        labelList[selected].w = moveStep.w;
+        labelList[selected].h = moveStep.h;
         clearLabel();
         linkage();
         //操作label添加selected
@@ -401,7 +409,7 @@ function dealWH(type, num) {
 // 按浏览器刷新率渲染标注
 function animate() {
     window.requestAnimationFrame(animate);
-    if (labelList[selected].isExist) {
+    if (labelTotal > 0 && labelList[selected].isExist) {
         $('#label_' + selected).css({
             top: moveStep.y,
             left: moveStep.x,
