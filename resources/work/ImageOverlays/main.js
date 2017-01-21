@@ -26,7 +26,7 @@ var imgAreaEl = $('#img-area'),
     imgSrc = '';
 
 initLabel('.label-list');
-getImage();
+// getImage();
 // 获取图片
 function getImage() {
     placeHolderEl.html('新图片加载中......').show();
@@ -408,10 +408,8 @@ function dealWH(type, num) {
 }
 // 按浏览器刷新率渲染标注
 animate();
-var q = 0;
 function animate() {
     window.requestAnimationFrame(animate);
-    console.log(q++);
     if (labelTotal > 0 && labelList[selected].isExist) {
         $('#label_' + selected).css({
             top: moveStep.y,
