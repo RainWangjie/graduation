@@ -42,12 +42,14 @@ function getImage() {
                     if (imgScale > winScale) {
                         $('#img-self').attr({
                             'src': url,
+                            'data-scale': imgScale,
                             'width': '100%',
                             'height': 'auto'
                         });
                     } else {
                         $('#img-self').attr({
                             'src': url,
+                            'data-scale': imgScale,
                             'width': 'auto',
                             'height': '100%'
                         });
@@ -63,6 +65,7 @@ function getImage() {
         }
     });
 }
+
 function initLabel(el) {
     var html = '';
     for (var i in labelName) {
@@ -310,7 +313,7 @@ function print(txt) {
 $('body').on('click', '.remove-label', function () {
     if (confirm('删除该标注?')) {
         var id = $(this).parent().attr('id').replace('label_', '');
-        $(this).parent().hide();
+        $(this).parent().remove();
         labelList[id].isExist = false;
     }
     return false;
@@ -343,14 +346,16 @@ $('#printData').click(function () {
     var consoleTable = [['TOP', 'LEFT', 'WIDTH', 'HEIGHT', '标签']];
     for (var i in labelList) {
         var label = labelList[i];
-        if (label.isExist && label.tag) {
-            consoleTable.push([dealWH('h', label.y), dealWH('w', label.x), dealWH('w', label.w), dealWH('h', label.h), labelData[label.tag].name])
-        } else {
-            consoleTable.push([dealWH('h', label.y), dealWH('w', label.x), dealWH('w', label.w), dealWH('h', label.h), '空']);
-            label.el.addClass('error');
-            setTimeout(function () {
-                label.el.removeClass('error');
-            }, 1000);
+        if (label.isExist) {
+            if (label.tag) {
+                consoleTable.push([dealWH('h', label.y), dealWH('w', label.x), dealWH('w', label.w), dealWH('h', label.h), labelData[label.tag].name])
+            } else {
+                consoleTable.push([dealWH('h', label.y), dealWH('w', label.x), dealWH('w', label.w), dealWH('h', label.h), '空']);
+                label.el.addClass('error');
+                setTimeout(function () {
+                    $('.label-area').removeClass('error');
+                }, 1000);
+            }
         }
     }
     console.table(consoleTable);
