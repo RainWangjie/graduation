@@ -62,7 +62,6 @@ div {
 /*label-area*/
 .label-area {
     position: absolute;
-    transition: all .1s;
     transform: translate3d(0, 0, 0);
     cursor: move;
     z-index: 101;

@@ -26,7 +26,7 @@ var imgAreaEl = $('#img-area'),
     imgSrc = '';
 
 initLabel('.label-list');
-// getImage();
+getImage();
 // 获取图片
 function getImage() {
     placeHolderEl.html('新图片加载中......').show();
