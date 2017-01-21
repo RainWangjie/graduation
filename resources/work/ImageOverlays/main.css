@@ -17,6 +17,11 @@ div {
     padding: 10px;
 }
 
+.img-panel,
+.label-panel {
+    height: 100%;
+}
+
 .img-panel {
     flex: 3;
 }
@@ -51,6 +56,16 @@ div {
 
 .label-area.error {
     animation: errorShake .5s infinite;
+}
+
+.label-area.error:after {
+    content: '未选择标签';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: red;
+    font-size: 30px;
 }
 
 @keyframes errorShake {
@@ -157,7 +172,7 @@ div {
     display: none;
     position: absolute;
     top: 5px;
-    right: 5px;
+    right: 8px;
     width: 20px;
     height: 20px;
     cursor: pointer;
