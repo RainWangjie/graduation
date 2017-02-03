@@ -89,7 +89,7 @@ if (!window.requestAnimationFrame) {
     window.msRequestAnimationFrame ||
     window.oRequestAnimationFrame ||
     function (callback) {
-        return window.setTimeout(callback, 17 /*~ 1000/60*/);
+        return window.setTimeout(callback, 1000/60);
     });
 }
 

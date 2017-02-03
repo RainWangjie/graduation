@@ -10,20 +10,25 @@ function getRandomColor() {
             && (color.length == 6) ? color : arguments.callee(color);
         })('');
 }
-var imgAreaEl = $('#img-area'),
-    placeHolderEl = $('.placeholder'),
-    isMouseDown = false,
-    mouseType = 0,
-    mouse = {},
-    selected = 0,
-    moveStep = {},
-    labelList = [],
-    labelMove = {},
-    labelTotal = 0,
-    labelName = ['衬衫', '小衫', 'T恤', '背心', '吊带', '打底衫', '西服', '夹克', '马甲', '卫衣', '风雪衣', '毛衣', '披风', '外套', '连衣裙', '连体裤', '半身裙', '裤装'],
-    labelData = [],//标签数据name,color
+/*
+ tag：框选对应标签
+ label：标注（框选）
+ */
+
+var imgAreaEl = $('#img-area'),//图片放置元素
+    placeHolderEl = $('.placeholder'),//提示元素
+    isMouseDown = false,//鼠标点击动作
+    mouseType = 0,//鼠标操作内容，1：创建，2：移动，3：缩放
+    mouse = {},//mouse属性(x,y)
+    selected = 0,//操作标注索引
+    operateData = {},//标注操作参数(x,y,w,h)，animate方法使用(渲染)
+    labelList = [],//标注列表
+    labelMove = {},//记录标注初始坐标等相关参数(x,y,resize)
+    labelTotal = 0,//标注总数
+    tagName = ['衬衫', '小衫', 'T恤', '背心', '吊带', '打底衫', '西服', '夹克', '马甲', '卫衣', '风雪衣', '毛衣', '披风', '外套', '连衣裙', '连体裤', '半身裙', '裤装'],
+    tagData = [],//标签数据name,color
     winScale = imgAreaEl.width() / imgAreaEl.height(),//图片放置区域比例
-    imgSrc = '';
+    imgSrc = '';//当前图片链接
 
 initLabel('.label-list');
 getImage();
@@ -69,18 +74,18 @@ function getImage() {
         }
     });
 }
-// 初始化
+// 初始化标签
 function initLabel(el) {
     var html = '';
-    for (var i in labelName) {
+    for (var i in tagName) {
         var color = getRandomColor();
-        labelData.push({
-            'name': labelName[i],
+        tagData.push({
+            'name': tagName[i],
             'color': color
         });
         //最好class控制color
         html += '<li>' +
-            '<input type="radio" class="imgTag tag_' + i + '" name="imgTag" value="' + i + '">' + labelName[i] +
+            '<input type="radio" class="imgTag tag_' + i + '" name="imgTag" value="' + i + '">' + tagName[i] +
             '<div class="color-block" style="background: ' + color + '"></div>' +
             '</li>';
     }
@@ -93,12 +98,12 @@ function initLabel(el) {
     $('#img-area').on('mousemove', move)
         .on('mouseup', up);
 }
-// 初始化，moveStep
-function initMove() {
-    moveStep.y = labelList[selected].y;
-    moveStep.x = labelList[selected].x;
-    moveStep.w = labelList[selected].w;
-    moveStep.h = labelList[selected].h;
+// 初始化移动
+function initOperate() {
+    operateData.y = labelList[selected].y;
+    operateData.x = labelList[selected].x;
+    operateData.w = labelList[selected].w;
+    operateData.h = labelList[selected].h;
 }
 // 清除
 function clearLabel() {
@@ -137,21 +142,44 @@ function newLabelMouseDown(event) {
     labelList.push(newLabel);
     labelTotal++;
     print('创建标注开始');
-    // animate();
+    animate();
     return false;
 }
 function newLabelMouseMove() {
     var difference_x = mouse.x - labelMove.x,
         difference_y = mouse.y - labelMove.y;
     if (difference_x >= 0 && difference_y >= 0) {
-        moveStep = {
+        // 左上角向右下角
+        operateData = {
             x: labelMove.x,
             y: labelMove.y,
             w: Math.max(difference_x, 20),
             h: Math.max(difference_y, 20)
         };
+    } else if (difference_x >= 0 && difference_y < 0) {
+        // 左下角向右上角
+        operateData = {
+            x: labelMove.x,
+            y: labelMove.y + difference_y,
+            w: Math.max(difference_x, 20),
+            h: Math.max(-1 * difference_y, 20)
+        };
+    } else if (difference_x < 0 && difference_y >= 0) {
+        // 右上角向左下角
+        operateData = {
+            x: labelMove.x + difference_x,
+            y: labelMove.y,
+            w: Math.max(-1 * difference_x, 20),
+            h: Math.max(difference_y, 20)
+        };
     } else {
-        console.log('勿反向操作!')
+        // 右下角向左上角
+        operateData = {
+            x: labelMove.x + difference_x,
+            y: labelMove.y + difference_y,
+            w: Math.max(-1 * difference_x, 20),
+            h: Math.max(-1 * difference_y, 20)
+        };
     }
     if (!labelList[selected].isExist) {
         $('#img-area').append(labelList[selected].el);
@@ -167,6 +195,7 @@ function newLabelMouseup() {
         labelList.pop();
         labelTotal--;
         print('创建标注失败or撤销');
+        return;
     }
 }
 // 移动area
@@ -182,14 +211,14 @@ function moveLabelMouseDown(event) {
         x: mouse.x,
         y: mouse.y
     };
-    initMove();
+    initOperate();
     print('移动标注_' + selected);
-    // animate();
+    animate();
     return false;
 }
 function moveLabelMouseMove() {
-    moveStep.y = labelList[selected].y + mouse.y - labelMove.y;
-    moveStep.x = labelList[selected].x + mouse.x - labelMove.x;
+    operateData.y = labelList[selected].y + mouse.y - labelMove.y;
+    operateData.x = labelList[selected].x + mouse.x - labelMove.x;
 }
 function moveLabelMouseup() {
     print('移动结束并选中标注_' + selected);
@@ -208,46 +237,46 @@ function scaleLabelMouseDown(event) {
         x: mouse.x,
         y: mouse.y
     };
-    initMove();
+    initOperate();
     print('缩放start' + selected);
-    // animate();
+    animate();
     return false;
 }
 function scaleLabelMouseMove() {
     switch (labelMove.resize) {
         case 't':
-            moveStep.y = labelList[selected].y + mouse.y - labelMove.y;
-            moveStep.h = labelList[selected].h - ( mouse.y - labelMove.y);
+            operateData.y = labelList[selected].y + mouse.y - labelMove.y;
+            operateData.h = labelList[selected].h - (mouse.y - labelMove.y);
             break;
         case 'l':
-            moveStep.x = labelList[selected].x + mouse.x - labelMove.x;
-            moveStep.w = labelList[selected].w - (mouse.x - labelMove.x);
+            operateData.x = labelList[selected].x + mouse.x - labelMove.x;
+            operateData.w = labelList[selected].w - (mouse.x - labelMove.x);
             break;
         case 'r':
-            moveStep.w = labelList[selected].w + mouse.x - labelMove.x;
+            operateData.w = labelList[selected].w + mouse.x - labelMove.x;
             break;
         case 'b':
-            moveStep.h = labelList[selected].h + mouse.y - labelMove.y;
+            operateData.h = labelList[selected].h + mouse.y - labelMove.y;
             break;
         case 'tl':
-            moveStep.y = labelList[selected].y + mouse.y - labelMove.y;
-            moveStep.x = labelList[selected].x + mouse.x - labelMove.x;
-            moveStep.w = labelList[selected].w - ( mouse.x - labelMove.x);
-            moveStep.h = labelList[selected].h - ( mouse.y - labelMove.y);
+            operateData.y = labelList[selected].y + mouse.y - labelMove.y;
+            operateData.x = labelList[selected].x + mouse.x - labelMove.x;
+            operateData.w = labelList[selected].w - (mouse.x - labelMove.x);
+            operateData.h = labelList[selected].h - (mouse.y - labelMove.y);
             break;
         case 'tr':
-            moveStep.y = labelList[selected].y + mouse.y - labelMove.y;
-            moveStep.w = labelList[selected].w + mouse.x - labelMove.x;
-            moveStep.h = labelList[selected].h - ( mouse.y - labelMove.y);
+            operateData.y = labelList[selected].y + mouse.y - labelMove.y;
+            operateData.w = labelList[selected].w + mouse.x - labelMove.x;
+            operateData.h = labelList[selected].h - (mouse.y - labelMove.y);
             break;
         case 'bl':
-            moveStep.x = labelList[selected].x + mouse.x - labelMove.x;
-            moveStep.w = labelList[selected].w - ( mouse.x - labelMove.x);
-            moveStep.h = labelList[selected].h + mouse.y - labelMove.y;
+            operateData.x = labelList[selected].x + mouse.x - labelMove.x;
+            operateData.w = labelList[selected].w - (mouse.x - labelMove.x);
+            operateData.h = labelList[selected].h + mouse.y - labelMove.y;
             break;
         case 'br':
-            moveStep.h = labelList[selected].h + mouse.y - labelMove.y;
-            moveStep.w = labelList[selected].w + mouse.x - labelMove.x;
+            operateData.h = labelList[selected].h + mouse.y - labelMove.y;
+            operateData.w = labelList[selected].w + mouse.x - labelMove.x;
             break;
     }
 }
@@ -285,15 +314,17 @@ function up() {
                 scaleLabelMouseup();
                 break;
         }
-        labelList[selected].y = moveStep.y;
-        labelList[selected].x = moveStep.x;
-        labelList[selected].w = moveStep.w;
-        labelList[selected].h = moveStep.h;
-        clearLabel();
-        linkage();
-        //操作label添加selected
-        $('.label-area').removeClass('selected');
-        $('#label_' + selected).addClass('selected');
+        if (labelList[selected]) {//鼠标点击引起的错误
+            labelList[selected].y = operateData.y;
+            labelList[selected].x = operateData.x;
+            labelList[selected].w = operateData.w;
+            labelList[selected].h = operateData.h;
+            clearLabel();
+            linkage();
+            //操作label添加selected
+            $('.label-area').removeClass('selected');
+            $('#label_' + selected).addClass('selected');
+        }
     }
     // window.cancelAnimationFrame(animate);
     isMouseDown = false;
@@ -321,9 +352,9 @@ function changeTag() {
 function drawTag() {
     var el = $('#label_' + selected + ' .tag-list'),
         tag = labelList[selected].tag,
-        tagHtml = '<li class="tag-item" style="background:' + labelData[tag].color + '">' + labelData[tag].name + '</li>';
+        tagHtml = '<li class="tag-item" style="background:' + tagData[tag].color + '">' + tagData[tag].name + '</li>';
     el.html(tagHtml);
-    el.siblings(".ui-resizable-handle").css('background', labelData[tag].color);
+    el.siblings(".ui-resizable-handle").css('background', tagData[tag].color);
 }
 // tag,checkbox联动
 function linkage() {
@@ -340,7 +371,7 @@ $('#next-picture').click(function () {
     placeHolderEl.html('数据打包......').show();
     var labelDetail = [],
         isError = false,
-        consoleTable = [['TOP', 'LEFT', 'WIDTH', 'HEIGHT', '标签']];
+        consoleTable = [['TOP', 'LEFT', 'WIDTH', 'HEIGHT', '标签']];//控制台打印表格数据
     if (labelList.length == 0) {
         getImage();
         return;
@@ -349,9 +380,9 @@ $('#next-picture').click(function () {
         var label = labelList[i];
         if (label.isExist) {
             if (label.tag) {
-                consoleTable.push([dealWH('h', label.y), dealWH('w', label.x), dealWH('w', label.w), dealWH('h', label.h), labelData[label.tag].name])
+                consoleTable.push([dealWH('h', label.y), dealWH('w', label.x), dealWH('w', label.w), dealWH('h', label.h), tagData[label.tag].name])
                 labelDetail.push({
-                    'name': labelData[label.tag].name,
+                    'name': tagData[label.tag].name,
                     'pos': [dealWH('h', label.y), dealWH('w', label.x), dealWH('w', label.w), dealWH('h', label.h)]
                 })
             } else {
@@ -407,15 +438,15 @@ function dealWH(type, num) {
     }
 }
 // 按浏览器刷新率渲染标注
-animate();
 function animate() {
-    window.requestAnimationFrame(animate);
-    if (labelTotal > 0 && labelList[selected].isExist) {
+    isMouseDown && window.requestAnimationFrame(animate);
+    // console.log('1');
+    if (labelTotal > 0 && labelList[selected] && labelList[selected].isExist) {
         $('#label_' + selected).css({
-            top: moveStep.y,
-            left: moveStep.x,
-            width: moveStep.w,
-            height: moveStep.h
+            top: operateData.y,
+            left: operateData.x,
+            width: operateData.w,
+            height: operateData.h
         })
     }
 }
