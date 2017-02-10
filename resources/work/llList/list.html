@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>列表</title>
+    <meta name="viewport"
+          content="user-scalable=0,width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <link type="text/css" rel="stylesheet" href="list.main.css">
+    <style>
+        .banner .ven {
+            min-width: 2.6rem;
+            height: 2.6rem;
+            line-height: 2.6rem;
+            top: 0.7rem;
+            right: 1rem;
+            background-color: #656565;
+            color: #ffffff;
+            text-shadow: none;
+            border-radius: 0.4rem;
+            webkit-border-radius: 0.4rem;
+        }
+
+        .ven_box {
+            padding: 1rem 0;
+        }
+
+        .ven_box li {
+            padding: 0;
+            margin: 1rem 0;
+            float: left;
+            width: 33.333%;
+            height: auto;
+            line-height: normal;
+            text-align: center;
+        }
+
+        .ven_box li:before {
+            left: 0;
+            width: 1px;
+            height: 100%;
+            -webkit-transform: scale(0.7);
+            transform: scale(0.7);
+        }
+
+        .ven_box li.checked .count,
+        .ven_box li.checked .text {
+            color: #fc6e51;
+        }
+
+        .ven_box li .count {
+            height: 3rem;
+            line-height: 3rem;
+            color: #000000;
+            font-size: 2.4rem;
+            font-weight: 400;
+            margin: 0 auto;
+        }
+
+        .ven_box li .text {
+            height: 2rem;
+            line-height: 2rem;
+            color: #666666;
+            font-size: 1.4rem;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+<div id="content">
+    <div class="banner"></div>
+    <div id="sidebar" class="pop-panel"></div>
+    <ul class="ven_box pop-panel"></ul>
+    <div id="item-list"></div>
+</div>
+<script src="../../js/jquery.min.js"></script>
+<script src="../../jquery.plugin/jquery.plugin.list.js"></script>
+<script>
+    var designCenter_url = 'http://www.liblin.com.cn/designCenter';
+    var queryData = {
+        url: designCenter_url + '/layercake/fabriMsg/codeFabricList?json&rightId=9',
+        params: {
+            page: 0,
+            pageNo: 1,
+            isWear: 3,
+            sourceid: -1,
+            shejishiId: -1,
+            datatime: ''
+        },
+        mutexParams: ['sourceid', 'shejishiId']
+    };
+    var list = new _list(queryData);
+    var sidebar = new _sidebar({
+        el: '#sidebar',
+        data: [{
+            param: 'sourceid',
+            url: designCenter_url + '/original/userBrand?json&rightId=9',
+            text: '品牌'
+        }, {
+            param: 'shejishiId',
+            url: designCenter_url + '/original/getShejishi?json',
+            text: '设计师'
+        }],
+        //template:        支持自定义好模版
+    });
+    var venbox = new _venbox({
+        el:'.ven_box',
+        url: designCenter_url + '/layercake/fabriMsg/getStatusCount?json&rightId=9',
+        param: 'isWear',
+        query: ['sourceid', 'shejishiId']
+        //支持自定义好模版
+        //template:''
+    });
+</script>
+</body>
+</html>
