@@ -67,49 +67,133 @@
 </head>
 <body>
 <div id="content">
-    <div class="banner"></div>
-    <div id="sidebar" class="pop-panel"></div>
-    <ul class="ven_box pop-panel"></ul>
-    <div id="item-list"></div>
 </div>
 <script src="../../js/jquery.min.js"></script>
 <script src="../../jquery.plugin/jquery.plugin.list.js"></script>
+<script type="text/html" id="list-tpl">
+    <li class="item notChecked" data-idx="{payBatchCode}">
+        <div class="pic_box J_show_pic">
+            <img width="100%" height="100%"
+                 data-maxpic="http://www.liblin.com.cn/media/media/getImgUrlForAll?id={payBatchCode}&amp;type=2&amp;px=1000"
+                 src="http://www.liblin.com.cn/media/media/getImgUrlForAll?id={payBatchCode}&amp;type=2&amp;px=100">
+        </div>
+        <div class="content">
+            <div class="row"><span>{contractNum}款</span></div>
+            <div class="row"><span>{approvalName}中</span></div>
+            <div class="row"><span class="user">{applyUserName}</span>
+                <span>{applyTimeStr}</span>
+                <span>{totalAmount}元</span>
+            </div>
+        </div>
+        <div class="next tran"></div>
+    </li>
+</script>
 <script>
-    var designCenter_url = 'http://www.liblin.com.cn/designCenter';
-    var queryData = {
-        url: designCenter_url + '/layercake/fabriMsg/codeFabricList?json&rightId=9',
-        params: {
-            page: 0,
-            pageNo: 1,
-            isWear: 3,
-            sourceid: -1,
-            shejishiId: -1,
-            datatime: ''
-        },
-        mutexParams: ['sourceid', 'shejishiId']
-    };
-    var list = new _list(queryData);
-    var sidebar = new _sidebar({
-        el: '#sidebar',
-        data: [{
-            param: 'sourceid',
-            url: designCenter_url + '/original/userBrand?json&rightId=9',
-            text: '品牌'
+    var designCenter_url = 'http://www.liblin.com.cn/designCenter',
+        supplyCenter_url = 'http://www.liblin.com.cn/supplyCenter',
+        purchaseAction_url = 'http://www.liblin.com.cn/erp/purchaseAction';
+        $('#content').LClist([{
+            type: 'list',
+            url: designCenter_url + '/layercake/fabriMsg/codeFabricList?json&rightId=9',
+            isSearch: false,
+            params: {
+                page: 0,
+                pageNo: 1,
+                isWear: 3,
+                sourceid: -1,
+                shejishiId: -1,
+                datatime: ''
+            },
+            mutexParams: ['sourceid', 'shejishiId']
+            //template:        支持自定义好模版
+            // dealData:function(data){return data},默认null
         }, {
-            param: 'shejishiId',
-            url: designCenter_url + '/original/getShejishi?json',
-            text: '设计师'
-        }],
-        //template:        支持自定义好模版
-    });
-    var venbox = new _venbox({
-        el:'.ven_box',
-        url: designCenter_url + '/layercake/fabriMsg/getStatusCount?json&rightId=9',
-        param: 'isWear',
-        query: ['sourceid', 'shejishiId']
-        //支持自定义好模版
-        //template:''
-    });
+            type: 'sidebar',
+            search: 'chName',
+            data: [{
+                param: 'sourceid',
+                url: designCenter_url + '/original/userBrand?json&rightId=9',
+                text: '品牌'
+            }, {
+                param: 'shejishiId',
+                url: designCenter_url + '/original/getShejishi?json',
+                text: '设计师'
+            }],
+            //template:        支持自定义好模版
+        }, {
+            type: 'venbox',
+            url: designCenter_url + '/layercake/fabriMsg/getStatusCount?json&rightId=9',
+            param: 'isWear',
+            query: ['sourceid', 'shejishiId']
+            //template:      支持自定义好模版
+        }]);
+
+    //    $('#content').LClist([{
+    //        type: 'list',
+    //        url: supplyCenter_url + '/productionContract/paymentApprovalList?json',
+    //        params: {
+    //            page: 0,
+    //            pageNo: 1,
+    //            currentProcess: 1,
+    //            datatime: ''
+    //        },
+    //        mutexParams: [],
+    //        template: $('#list-tpl').html(),
+    //        dealData: function (data) {
+    //            data.totalAmount /= 100;
+    //            return data;
+    //        }
+    //    }, {
+    //        type: 'venbox',
+    //        url: supplyCenter_url + '/productionContract/getContractPaymentProgress?json&current',
+    //        param: 'currentProcess',
+    //        query: ['currentProcess'],
+    //        //template:      支持自定义好模版
+    ////        eventClick: function (t) {
+    ////
+    ////        }
+    //    }]);
+
+    //    $('#content').LClist([{
+    //        type: 'list',
+    //        url: purchaseAction_url + '/paymentApprovalList?json',
+    //        isSearch: '',
+    //        params: {
+    //            page: 0,
+    //            pageNo: 1,
+    //            currentProcess: 3,
+    //            suppliderId: 3135,
+    //            datatime: ''
+    //        },
+    //        mutexParams: [],
+    //        template: '<li class="item notChecked" data-idx="{payBatchId}">' +
+    //        '<div class="pic_box J_show_pic">' +
+    //        '<img width="100%" height="100%" ' +
+    //        'data-maxpic="http://www.liblin.com.cn/media/media/getImgUrlForAll?id={saleCode}&amp;type=2&amp;px=1000"' +
+    //        ' src="http://www.liblin.com.cn/media/media/getImgUrlForAll?id={saleCode}&amp;type=2&amp;px=100"></div>' +
+    //        '<div class="content">' +
+    //        '<div class="row"><span>{supliderName}  {purchaseNum}款</span></div>' +
+    //        '<div class="row"><span>{approvalName}中</span></div>' +
+    //        '<div class="row"><span class="user">{applyUserName}</span>' +
+    //        '<span>{applyTimeStr}</span>' +
+    //        '<span>{totalAmount}</span></div>' +
+    //        '</div>' +
+    //        '<div class="next tran"></div>' +
+    //        '</li>'
+    //    }, {
+    //        type: 'sidebar',
+    //        search: 'chName',
+    //        data: [{
+    //            param: 'suppliderId',
+    //            url: designCenter_url + '/queryAllSupliders?json',
+    //            text: '公司名'
+    //        }],
+    //    }, {
+    //        type:'venbox',
+    //        url: designCenter_url + '/getPaymentProgress?json',
+    //        param: 'currentProcess',
+    //        query: ['suppliderId']
+    //    }]);
 </script>
 </body>
 </html>
