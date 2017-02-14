@@ -21,16 +21,42 @@ var imgAreaEl = $('#img-area'),//图片放置元素
     mouseType = 0,//鼠标操作内容，1：创建，2：移动，3：缩放
     mouse = {},//mouse属性(x,y)
     selected = 0,//操作标注索引
+    tempSelected = 0,//暂存选择项
     operateData = {},//标注操作参数(x,y,w,h)，animate方法使用(渲染)
     labelList = [],//标注列表
     labelMove = {},//记录标注初始坐标等相关参数(x,y,resize)
     labelTotal = 0,//标注总数
-    tagName = ['衬衫', '上衣', 'T恤', '西服', '夹克', '卫衣', '针织衫', '大衣', '棉衣', '风衣', '连衣裙', '半身裙', '裤装'],
     tagData = [],//标签数据name,color
     winScale = imgAreaEl.width() / imgAreaEl.height(),//图片放置区域比例
     imgSrc = '';//当前图片链接
 
-initLabel('.label-list');
+var tagName = {
+        '上衣': {
+            detail: ['衬衫', '上衣', 'T恤', '西服', '夹克', '卫衣', '针织衫', '大衣', '棉衣', '风衣'],
+            tag_2_type: 1
+        },
+        '裙子': {
+            detail: ['连衣裙', '半身裙'],
+            tag_2_type: 2
+        },
+        '裤子': {
+            detail: ['裤装'],
+            tag_2_type: 3
+        },
+        '鞋': {
+            detail: ['鞋子']
+        },
+        '包': {
+            detail: ['包']
+        }
+    },
+    tagTotal = 0;
+var tag_2 = {
+    1: ['长袖', '短袖', '无袖', '吊带'],
+    3: ['长裤', '中裤', '短裤'],
+    2: ['长裙', '中裙', '短裙']
+};
+initTag('.label-group');
 getImage();
 // 获取图片
 function getImage() {
@@ -75,21 +101,27 @@ function getImage() {
     });
 }
 // 初始化标签
-function initLabel(el) {
-    var html = '';
+function initTag(el) {
     for (var i in tagName) {
-        var color = getRandomColor();
-        tagData.push({
-            'name': tagName[i],
-            'color': color
-        });
-        //最好class控制color
-        html += '<li>' +
-            '<input type="radio" class="imgTag tag_' + i + '" name="imgTag" value="' + i + '">' + tagName[i] +
-            '<div class="color-block" style="background: ' + color + '"></div>' +
-            '</li>';
+        var html = '<ul class="label-list">';
+        for (var j in tagName[i].detail) {
+            var name = tagName[i].detail[j];
+            var color = getRandomColor();
+            tagData.push({
+                'name': name,
+                'color': color,
+                'tag_2_type': tagName[i].tag_2_type || -1
+            });
+            //最好class控制color
+            html += '<li>' +
+                '<label><input type="radio" class="imgTag tag_' + tagTotal + '" name="imgTag" value="' + tagTotal + '">' + name +
+                '</label><div class="color-block" style="background: ' + color + '"></div>' +
+                '</li>';
+            tagTotal++;
+        }
+        html += "</ul>";
+        $(el).append(html);
     }
-    $(el).append(html);
     $('.imgTag').on('change', changeTag);
     print('列表初始化');
     // 绑定鼠标事件
@@ -97,6 +129,26 @@ function initLabel(el) {
     // move绑定到父元素
     $('#img-area').on('mousemove', move)
         .on('mouseup', up);
+}
+// 初始化二级标签
+function initSecondTag(tag, y) {//根据一级标签对应二级标签类型渲染列表，y为panel移动距离
+    if (tag != -1) {//二级标签为空则移除
+        var html = '';
+        for (var i in tag_2[tag]) {
+            html += '<li>' +
+                '<input type="radio" class="imgTag_2 tag_2_' + i + '" name="imgSecondTag" value="' + i + '">' + tag_2[tag][i] +
+                '</li>';
+        }
+        $('.second-tag-panel').html(html).addClass('show').css({
+            'transform': 'translate3d(120px,' + y + 'px,0)',
+            '-webkit-transform': 'translate3d(120px,' + y + 'px,0)'
+        });
+        // 二级标签已选择则模拟点击
+        labelList[selected].tag_2 != -1 && $('.imgTag_2').eq(labelList[selected].tag_2).click();
+    } else {
+        $('.second-tag-panel').removeClass('show');
+    }
+    drawTag();
 }
 // 初始化移动
 function initOperate() {
@@ -125,6 +177,7 @@ function newLabelMouseDown(event) {
     mouse = captureMouse(event);
     isMouseDown = true;
     mouseType = 1;
+    tempSelected = selected;
     selected = labelTotal;
     var newLabel = {
         x: mouse.x,
@@ -194,6 +247,7 @@ function newLabelMouseup() {
     } else {
         labelList.pop();
         labelTotal--;
+        selected = tempSelected;
         print('创建标注失败or撤销');
         return;
     }
@@ -345,18 +399,25 @@ $('body').on('click', '.remove-label', function () {
 });
 // 修改标签
 function changeTag() {
-    labelList[selected].tag = $('.imgTag:checked').val();
-    drawTag();
+    var value = $('.imgTag:checked').val();
+    // 一级标签被修改，二级标签重置
+    labelList[selected].tag != value && (labelList[selected].tag_2 = -1);
+    labelList[selected].tag = value;
+    initSecondTag(tagData[value].tag_2_type, this.offsetTop);
 }
 // 绘制标签
 function drawTag() {
     var el = $('#label_' + selected + ' .tag-list'),
-        tag = labelList[selected].tag,
-        tagHtml = '<li class="tag-item" style="background:' + tagData[tag].color + '">' + tagData[tag].name + '</li>';
+        _tag = labelList[selected].tag,//一级标签索引
+        _tag_name = tagData[_tag].name,
+        _tag_2 = labelList[selected].tag_2,//二级标签索引
+        _tag_2_type = tagData[_tag].tag_2_type,//一级标签对应二级标签类型
+        _tag_2_name = _tag_2 != -1 ? tag_2[_tag_2_type][_tag_2] : '',
+        tagHtml = '<li class="tag-item" style="background:' + tagData[_tag].color + '">' + _tag_name + _tag_2_name + '</li>';
     el.html(tagHtml);
-    el.siblings(".ui-resizable-handle").css('background', tagData[tag].color);
+    el.siblings(".ui-resizable-handle").css('background', tagData[_tag].color);
 }
-// tag,checkbox联动
+// tag,radio联动
 function linkage() {
     if (labelList[selected].tag) {
         $('.imgTag').eq(labelList[selected].tag).click();
@@ -364,8 +425,14 @@ function linkage() {
         $('.imgTag').each(function () {
             $(this).removeAttr('checked');
         });
+        $('.second-tag-panel').removeClass('show');
     }
 }
+// 二级标签点击
+$('.second-tag-panel').on('change', 'input', function () {
+    labelList[selected].tag_2 = $(this).val();
+    drawTag();
+});
 // 获取新图
 $('#next-picture').click(function () {
     placeHolderEl.html('数据打包......').show();
@@ -379,18 +446,19 @@ $('#next-picture').click(function () {
     for (var i in labelList) {
         var label = labelList[i];
         if (label.isExist) {
-            if (label.tag) {
-                consoleTable.push([dealWH('h', label.y), dealWH('w', label.x), dealWH('w', label.w), dealWH('h', label.h), tagData[label.tag].name])
+            var tagName = isTagRight(label.tag, label.tag_2);
+            if (typeof tagName === 'object') {
+                consoleTable.push([dealWH('h', label.y), dealWH('w', label.x), dealWH('w', label.w), dealWH('h', label.h), tagName]);
                 labelDetail.push({
-                    'name': tagData[label.tag].name,
+                    'name': tagName.tag + (tagName.tag_2 && (',' + tagName.tag_2)),
                     'pos': [dealWH('h', label.y), dealWH('w', label.x), dealWH('w', label.w), dealWH('h', label.h)]
                 })
             } else {
                 consoleTable.push([dealWH('h', label.y), dealWH('w', label.x), dealWH('w', label.w), dealWH('h', label.h), '空']);
-                label.el.addClass('error');
+                label.el.addClass(tagName);
                 placeHolderEl.hide();
                 setTimeout(function () {
-                    $('.label-area').removeClass('error');
+                    $('.label-area').removeClass('error_1').removeClass('error_2');
                 }, 1000);
                 isError = true;
             }
@@ -426,6 +494,23 @@ $('#next-picture').click(function () {
 
     }
 });
+// 处理标签,一、二级标签是否选择
+function isTagRight(_tag, _tag_2) {
+    if (!_tag) {
+        return 'error_1';
+    }
+    var _tag_name = tagData[_tag].name,
+        _tag_2_type = tagData[_tag].tag_2_type,//一级标签对应二级标签类型
+        _tag_2_name = _tag_2 != -1 ? tag_2[_tag_2_type][_tag_2] : '';
+    if (_tag_2_type != -1 && _tag_2 == -1) {
+        return 'error_2'
+    } else {
+        return {
+            tag: _tag_name,
+            tag_2: _tag_2_name
+        }
+    }
+}
 // 处理宽高比例
 function dealWH(type, num) {
     var t = $('#img-self'),
