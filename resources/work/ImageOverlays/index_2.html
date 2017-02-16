@@ -5,31 +5,35 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>图片标注</title>
+    <title>图片标注_2_对比</title>
     <link type="text/css" rel="stylesheet" href="main.css">
 </head>
 <body>
 <div id="app">
+    <!--操作区-->
     <div class="img-panel">
         <div id="img-area-self">
             <img id="img-self" draggable="false">
         </div>
     </div>
+    <!--标签区-->
     <div class="label-panel">
         <div class="label-group">
             <ul class="second-tag-panel">
 
             </ul>
         </div>
-        <ul class="label-summary">
-            <li class="label-count">已打标签：<span></span></li>
-            <li class="label-diff-count">标签diff：<span></span></li>
-            <li class="label-ok-count">标签ok：<span></span></li>
-            <li class="label-need-count">待打标签：<span></span></li>
-        </ul>
+        <div class="label-diff">
+
+        </div>
         <div class="btn-group">
-            <button id="skip" class="btn-0">不需要标注</button>
-            <button id="next-picture" class="btn-0" data-type="label">保存、获取下一张</button>
+            <button id="next-picture" class="btn-0" data-type="relabel">下一张</button>
+        </div>
+    </div>
+    <!--其他用户数据还原-->
+    <div class="img-panel">
+        <div id="img-area-other">
+            <img id="img-other" draggable="false">
         </div>
     </div>
     <div class="placeholder"></div>
@@ -48,11 +52,16 @@
         <span class="remove-label"></span>
     </div>
 </script>
+<script type="text/html" id="tpl-other-person">
+    <div class="label-area-right">
+        <ul class="tag-list"></ul>
+    </div>
+</script>
 <script src="../../js/jquery.min.js"></script>
 <script src="mouse.js"></script>
 <script src="main.js"></script>
 <script>
-    getImage();
+    getDiffImage();
 </script>
 </body>
 </html>

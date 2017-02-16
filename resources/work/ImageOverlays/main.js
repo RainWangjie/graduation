@@ -11,12 +11,13 @@ function getRandomColor() {
         })('');
 }
 /*
- tag：框选对应标签
  label：标注（框选）
+ tag：框选对应标签
+ tag_2:属性
  */
 
-var imgAreaEl = $('#img-area'),//图片放置元素
-    placeHolderEl = $('.placeholder'),//提示元素
+var _domain = '',
+    imgAreaEl = $('#img-area-self'),//图片放置元素
     isMouseDown = false,//鼠标点击动作
     mouseType = 0,//鼠标操作内容，1：创建，2：移动，3：缩放
     mouse = {},//mouse属性(x,y)
@@ -28,7 +29,18 @@ var imgAreaEl = $('#img-area'),//图片放置元素
     labelTotal = 0,//标注总数
     tagData = [],//标签数据name,color
     winScale = imgAreaEl.width() / imgAreaEl.height(),//图片放置区域比例
-    imgSrc = '';//当前图片链接
+    labelId = '',//当前图片链接
+    diffText = ['', '标注数量不同', '标注标签不同', '标注属性不同', '标注位置不同'];
+// 全局提示框
+var _placeHolderEl = {
+    el: $('.placeholder'),
+    setText: function (text) {
+        this.el.html(text).show();
+    },
+    hide: function () {
+        this.el.hide();
+    }
+};
 
 var tagName = {
         '上衣': {
@@ -57,40 +69,19 @@ var tag_2 = {
     2: ['长裙', '中裙', '短裙']
 };
 initTag('.label-group');
-getImage();
 // 获取图片
 function getImage() {
-    placeHolderEl.html('新图片加载中......').show();
+    _placeHolderEl.setText('新图片加载中......');
     $.ajax({
-        url: 'https://test.teegether.cn/deep_fashion/ins_label/img',
+        url: _domain + '/deep_fashion/ins_label/img',
         type: 'GET',
         success: function (d) {
             d = JSON.parse(d);
             if (d.status.code == '1000') {
-                var url = d.result,
-                    img = new Image();
                 clearAll();
-                img.onload = function () {
-                    var imgScale = img.naturalWidth / img.naturalHeight;
-                    placeHolderEl.hide();
-                    if (imgScale > winScale) {
-                        $('#img-self').attr({
-                            'src': url,
-                            'data-scale': imgScale,
-                            'width': '100%',
-                            'height': 'auto'
-                        });
-                    } else {
-                        $('#img-self').attr({
-                            'src': url,
-                            'data-scale': imgScale,
-                            'width': 'auto',
-                            'height': '100%'
-                        });
-                    }
-                };
-                img.src = url;
-                imgSrc = url;
+                adaptionImg(d.result.pic || '', $('#img-self'));
+                labelId = d.result.labelId;
+                editLabelSummary(d.result.summary);
             } else {
                 alert(d.message);
             }
@@ -99,6 +90,59 @@ function getImage() {
             alert('网络错误')
         }
     });
+    //重置标签
+    linkage();
+}
+// 获取差异图片
+function getDiffImage() {
+    $.ajax({
+        url: _domain + '/deep_fashion/ins_label/diffImg',
+        type: 'GET',
+        success: function (d) {
+            d = JSON.parse(d);
+            if (d.status.code == '1000') {
+                clearAll();
+                restore(d.result);
+                labelId = d.result.labelId;
+            } else {
+                alert(d.message);
+            }
+        },
+        error: function (d) {
+            alert('网络错误')
+        }
+    });
+}
+// 图片自适应
+function adaptionImg(url, el, callback) {
+    var img = new Image();
+    img.onload = function () {
+        var imgScale = img.naturalWidth / img.naturalHeight;
+        _placeHolderEl.hide();
+        if (imgScale > winScale) {
+            el.attr({
+                'src': url,
+                'data-scale': imgScale,
+                'width': '100%',
+                'height': 'auto'
+            });
+        } else {
+            el.attr({
+                'src': url,
+                'data-scale': imgScale,
+                'width': 'auto',
+                'height': '100%'
+            });
+        }
+        callback && callback();
+    };
+    img.onerror = function () {
+        _placeHolderEl.setText('图片获取失败...');
+        setTimeout(function () {
+            _placeHolderEl.hide();
+        }, 1000);
+    };
+    img.src = url;
 }
 // 初始化标签
 function initTag(el) {
@@ -126,9 +170,6 @@ function initTag(el) {
     print('列表初始化');
     // 绑定鼠标事件
     bindNewLabel();
-    // move绑定到父元素
-    $('#img-area').on('mousemove', move)
-        .on('mouseup', up);
 }
 // 初始化二级标签
 function initSecondTag(tag, y) {//根据一级标签对应二级标签类型渲染列表，y为panel移动距离
@@ -148,7 +189,7 @@ function initSecondTag(tag, y) {//根据一级标签对应二级标签类型渲�
     } else {
         $('.second-tag-panel').removeClass('show');
     }
-    drawTag();
+    drawTagList();
 }
 // 初始化移动
 function initOperate() {
@@ -167,11 +208,15 @@ function clearAll() {
     labelList = [];
     labelTotal = 0;
     $('.label-area').remove();
-    $('#img-self').attr('src', '')
+    $('.label-area-right').remove();
+    // $('#img-self').attr('src', '')
 }
 // 创建label
 function bindNewLabel() {
-    $('#img-area').on('mousedown', newLabelMouseDown);
+    // move绑定到父元素
+    $('#img-area-self').on('mousedown', newLabelMouseDown)
+        .on('mousemove', move)
+        .on('mouseup', up);
 }
 function newLabelMouseDown(event) {
     mouse = captureMouse(event);
@@ -235,7 +280,7 @@ function newLabelMouseMove() {
         };
     }
     if (!labelList[selected].isExist) {
-        $('#img-area').append(labelList[selected].el);
+        $('#img-area-self').append(labelList[selected].el);
         labelList[selected].isExist = true;
     }
 }
@@ -405,17 +450,23 @@ function changeTag() {
     labelList[selected].tag = value;
     initSecondTag(tagData[value].tag_2_type, this.offsetTop);
 }
-// 绘制标签
-function drawTag() {
+function drawTagList() {
     var el = $('#label_' + selected + ' .tag-list'),
         _tag = labelList[selected].tag,//一级标签索引
         _tag_name = tagData[_tag].name,
         _tag_2 = labelList[selected].tag_2,//二级标签索引
         _tag_2_type = tagData[_tag].tag_2_type,//一级标签对应二级标签类型
-        _tag_2_name = _tag_2 != -1 ? tag_2[_tag_2_type][_tag_2] : '',
-        tagHtml = '<li class="tag-item" style="background:' + tagData[_tag].color + '">' + _tag_name + _tag_2_name + '</li>';
-    el.html(tagHtml);
+        _tag_2_name = _tag_2 != -1 ? tag_2[_tag_2_type][_tag_2] : '';
+    el.html(drawTag(tagData[_tag].color, _tag_name)).append(drawTag_2(_tag_2_name));
     el.siblings(".ui-resizable-handle").css('background', tagData[_tag].color);
+}
+// 绘制标签
+function drawTag(color, tag) {
+    return '<li class="tag-item" style="background:' + color + '">' + tag + '</li>';
+}
+// 绘制属性
+function drawTag_2(tag_2) {
+    return tag_2 ? '<li class="tag-item tag_2">' + tag_2 + '</li>' : '';
 }
 // tag,radio联动
 function linkage() {
@@ -428,18 +479,44 @@ function linkage() {
         $('.second-tag-panel').removeClass('show');
     }
 }
+// 根据标签与属性返回对应索引
+function returnTagIndex(_tag_name, _tag_2_name) {
+    var _tag_index, _tag_2_type, _tag_2_index;
+    for (var i in tagData) {
+        if (tagData[i].name === _tag_name) {
+            _tag_index = i;
+            _tag_2_type = tagData[i].tag_2_type;
+            break;
+        }
+    }
+
+    for (var j in tag_2[_tag_2_type]) {
+        if (tag_2[_tag_2_type][j] === _tag_2_name) {
+            _tag_2_index = j;
+            break;
+        }
+    }
+    return {
+        tag_index: _tag_index,
+        tag_2_index: _tag_2_index
+    }
+}
 // 二级标签点击
 $('.second-tag-panel').on('change', 'input', function () {
     labelList[selected].tag_2 = $(this).val();
-    drawTag();
+    drawTagList();
 });
 // 获取新图
 $('#next-picture').click(function () {
-    placeHolderEl.html('数据打包......').show();
-    var labelDetail = [],
+    _placeHolderEl.setText('数据打包......');
+    var _type = $(this).data('type'),
+        labelDetail = [],
         isError = false,
-        consoleTable = [['TOP', 'LEFT', 'WIDTH', 'HEIGHT', '标签']];//控制台打印表格数据
-    if (labelList.length == 0) {
+        consoleTable = [['TOP', 'LEFT', 'WIDTH', 'HEIGHT', '标签']],//控制台打印表格数据
+        isExist = labelList.every(function (item) { //是否有标签
+            return item.isExist == false;
+        });
+    if (isExist && _type == 'label') {
         getImage();
         return;
     }
@@ -450,13 +527,14 @@ $('#next-picture').click(function () {
             if (typeof tagName === 'object') {
                 consoleTable.push([dealWH('h', label.y), dealWH('w', label.x), dealWH('w', label.w), dealWH('h', label.h), tagName]);
                 labelDetail.push({
-                    'name': tagName.tag + (tagName.tag_2 && (',' + tagName.tag_2)),
+                    'tag': tagName.tag,
+                    'property': [tagName.tag_2 || ''],
                     'pos': [dealWH('h', label.y), dealWH('w', label.x), dealWH('w', label.w), dealWH('h', label.h)]
                 })
             } else {
                 consoleTable.push([dealWH('h', label.y), dealWH('w', label.x), dealWH('w', label.w), dealWH('h', label.h), '空']);
                 label.el.addClass(tagName);
-                placeHolderEl.hide();
+                _placeHolderEl.hide();
                 setTimeout(function () {
                     $('.label-area').removeClass('error_1').removeClass('error_2');
                 }, 1000);
@@ -467,33 +545,81 @@ $('#next-picture').click(function () {
     console.table(consoleTable);
     if (!isError) {
         var postData = {
-            'pic': imgSrc,
+            'labelId': labelId,
             'labelDetail': JSON.stringify(labelDetail)
         };
         // 提交数据
-        placeHolderEl.html('数据上传......');
-        $.ajax({
-            url: 'https://test.teegether.cn/deep_fashion/ins_label/labels',
-            type: 'POST',
-            data: postData,
-            success: function (d) {
-                d = JSON.parse(d);
-                if (d.status.code == '1000') {
-                    getImage();
-                    linkage();
-                } else {
-                    alert(d.message);
+        _placeHolderEl.setText('数据上传......');
+        if (_type == 'label') {
+            $.ajax({
+                url: _domain + '/deep_fashion/ins_label/labels',
+                type: 'POST',
+                data: postData,
+                success: function (d) {
+                    d = JSON.parse(d);
+                    if (d.status.code == '1000') {
+                        getImage();
+                    } else {
+                        alert(d.message);
+                    }
+                    _placeHolderEl.hide();
+                },
+                error: function (d) {
+                    _placeHolderEl.hide();
+                    alert('网络错误')
                 }
-                placeHolderEl.hide();
-            },
-            error: function (d) {
-                placeHolderEl.hide();
-                alert('网络错误')
-            }
-        });
-
+            });
+        } else {
+            $.ajax({
+                url: _domain + '/deep_fashion/ins_label/diff',
+                type: 'POST',
+                data: postData,
+                success: function (d) {
+                    d = JSON.parse(d);
+                    if (d.status.code == '1000') {
+                        getDiffImage();
+                    } else {
+                        alert(d.message);
+                    }
+                    _placeHolderEl.hide();
+                },
+                error: function (d) {
+                    _placeHolderEl.hide();
+                    alert('网络错误')
+                }
+            });
+        }
     }
 });
+// 不需要标注按钮
+$('#skip').click(function () {
+    $.ajax({
+        url: _domain + '/deep_fashion/ins_label/nolabel',
+        type: 'POST',
+        data: {labelId: labelId},
+        success: function (d) {
+            d = JSON.parse(d);
+            if (d.status.code == '1000') {
+                getImage();
+            } else {
+                alert(d.message);
+            }
+            _placeHolderEl.hide();
+        },
+        error: function (d) {
+            _placeHolderEl.hide();
+            alert('网络错误')
+        }
+    });
+});
+
+// 修改标签统计文案
+function editLabelSummary(data) {
+    $('.label-count span').html(data.labelCount);
+    $('.label-diff-count span').html(data.labelDiffCount);
+    $('.label-ok-count span').html(data.labelOkCount);
+    $('.label-need-count span').html(data.needLabelCount);
+}
 // 处理标签,一、二级标签是否选择
 function isTagRight(_tag, _tag_2) {
     if (!_tag) {
@@ -525,7 +651,6 @@ function dealWH(type, num) {
 // 按浏览器刷新率渲染标注
 function animate() {
     isMouseDown && window.requestAnimationFrame(animate);
-    // console.log('1');
     if (labelTotal > 0 && labelList[selected] && labelList[selected].isExist) {
         $('#label_' + selected).css({
             top: operateData.y,
@@ -534,4 +659,81 @@ function animate() {
             height: operateData.h
         })
     }
+}
+// 根据数据还原框选
+function restore(data) {
+    restoreLeft(data);
+    restoreRight(data);
+    $('.label-diff').html(diffText[data.diffType]);
+}
+function restoreLeft(data) {
+    var t = $('#img-self');
+    adaptionImg(data.pic || '', t, function () {
+        var w = t.width(),
+            h = t.height();
+        for (var i in data.label) {
+            var item = data.label[i];
+            selected = i;
+            var _tag_name = item.tag,
+                _tag_2_name = item.property[0],
+                tagObj = returnTagIndex(_tag_name, _tag_2_name),
+                newLabel = {
+                    x: item.pos[1] * w,
+                    y: item.pos[0] * h,
+                    el: $($('#tpl-area').html()),
+                    isExist: true,
+                    w: item.pos[2] * w,
+                    h: item.pos[3] * h,
+                    tag: tagObj.tag_index,
+                    tag_2: tagObj.tag_2_index
+                },
+                color = tagData[tagObj.tag_index].color;
+            newLabel.el.attr('id', 'label_' + selected);
+            newLabel.el.find('.tag-list').eq(0).append(drawTag(color, _tag_name))
+                .append(drawTag_2(_tag_2_name))
+                .siblings(".ui-resizable-handle")
+                .css('background', color);
+            labelList.push(newLabel);
+            operateData = {
+                x: newLabel.x,
+                y: newLabel.y,
+                w: newLabel.w,
+                h: newLabel.h,
+            };
+            labelTotal++;
+            $('#img-area-self').append(newLabel.el);
+            //强制模拟鼠标动作，渲染一把
+            isMouseDown = true;
+            animate();
+            isMouseDown = false;
+        }
+        // 模拟选中最后一个标签
+        isMouseDown = true;
+        mouseType = 1;
+        up();
+    });
+}
+function restoreRight(data) {
+    var t = $('#img-other');
+    adaptionImg(data.pic || '', t, function () {
+        var w = t.width(),
+            h = t.height();
+        for (var i in data.diffLabel) {
+            var item = data.diffLabel[i];
+            var $tpl = $($('#tpl-other-person').html()),
+                _tag_name = item.tag,
+                _tag_2_name = item.property[0],
+                tagObj = returnTagIndex(_tag_name, _tag_2_name),
+                color = tagData[tagObj.tag_index].color;
+            $tpl.find('.tag-list').eq(0).append(drawTag(color, _tag_name)).append(drawTag_2(_tag_2_name));
+            $tpl.css({
+                borderColor: color,
+                top: item.pos[0] * h + 'px',
+                left: item.pos[1] * w + 'px',
+                width: item.pos[2] * w + 'px',
+                height: item.pos[3] * h + 'px'
+            });
+            $('#img-area-other').append($tpl);
+        }
+    });
 }
