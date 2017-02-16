@@ -29,6 +29,7 @@ div {
 }
 
 .img-panel {
+    position: relative;
     flex: 3;
 }
 
@@ -38,9 +39,11 @@ div {
     margin: 0 10px;
     padding: 10px;
     border-left: 1px solid #000;
+    border-right: 1px solid #000;
 }
 
-#img-area {
+#img-area-self,
+#img-area-other {
     position: relative;
     width: 100%;
     height: 100%;
@@ -73,6 +76,13 @@ div {
     transform: translate3d(0, 0, 0);
     cursor: move;
     z-index: 101;
+}
+
+.label-area-right {
+    position: absolute;
+    transform: translate3d(0, 0, 0);
+    z-index: 101;
+    border: 2px solid #f10000;
 }
 
 .label-area.error_1,
@@ -200,9 +210,11 @@ div {
     position: absolute;
     top: 5px;
     right: 8px;
-    width: 20px;
-    height: 20px;
+    width: 30px;
+    height: 30px;
     cursor: pointer;
+    background: #ccc;
+    border-radius: 50%;
 }
 
 .remove-label:before,
@@ -210,8 +222,8 @@ div {
     content: '';
     display: block;
     position: absolute;
-    top: 10px;
-    left: 0;
+    top: 14px;
+    left: 3px;
     width: 25px;
     height: 2px;
     transform: rotate(45deg);
@@ -225,8 +237,8 @@ div {
 .tag-list {
     position: absolute;
     width: 70px;
-    top: 30px;
-    right: -70px;
+    top: 10px;
+    left: 15px;
     z-index: 102;
 }
 
@@ -268,6 +280,10 @@ div {
     border-radius: 0.25em;
 }
 
+.tag-item.tag_2 {
+    background: rgba(0, 0, 0, .5);
+}
+
 .label-group {
     position: relative;
 }
@@ -305,6 +321,18 @@ div {
     width: 70px;
 }
 
+.label-summary {
+    margin-top: 20px;
+    font-size: 25px;
+}
+
+.label-diff {
+    margin-top: 20px;
+    font-size: 25px;
+    text-align: center;
+    color: #f10000;
+}
+
 .color-block {
     margin-left: 10px;
     display: inline-block;
@@ -316,7 +344,9 @@ div {
 .btn-group {
     position: absolute;
     width: 100%;
+    left: 0;
     bottom: 20px;
+    display: flex;
 }
 
 .btn-0,
@@ -329,9 +359,10 @@ div {
 }
 
 .btn-0 {
+    flex: 1;
     display: block;
     position: relative;
-    margin: 20px auto;
+    margin: 20px 5px;
     width: 100%;
     height: 80px;
     line-height: 80px;
