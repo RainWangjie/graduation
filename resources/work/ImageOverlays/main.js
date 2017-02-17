@@ -37,6 +37,13 @@ var _placeHolderEl = {
     setText: function (text) {
         this.el.html(text).show();
     },
+    setHide: function (text, time) {
+        var that = this;
+        this.setText(text);
+        setTimeout(function () {
+            that.hide()
+        }, time || 1000)
+    },
     hide: function () {
         this.el.hide();
     }
@@ -79,8 +86,12 @@ function getImage() {
             d = JSON.parse(d);
             if (d.status.code == '1000') {
                 clearAll();
-                adaptionImg(d.result.pic || '', $('#img-self'));
-                labelId = d.result.labelId;
+                if (d.result.pic !== undefined) {
+                    adaptionImg(d.result.pic, $('#img-self'));
+                    labelId = d.result.labelId;
+                } else {
+                    _placeHolderEl.setHide('没有图片了');
+                }
                 editLabelSummary(d.result.summary);
             } else {
                 alert(d.message);
@@ -102,8 +113,12 @@ function getDiffImage() {
             d = JSON.parse(d);
             if (d.status.code == '1000') {
                 clearAll();
-                restore(d.result);
-                labelId = d.result.labelId;
+                if (d.result !== undefined) {
+                    restore(d.result);
+                    labelId = d.result.labelId;
+                } else {
+                    _placeHolderEl.setHide('没有图片了');
+                }
             } else {
                 alert(d.message);
             }
@@ -137,10 +152,7 @@ function adaptionImg(url, el, callback) {
         callback && callback();
     };
     img.onerror = function () {
-        _placeHolderEl.setText('图片获取失败...');
-        setTimeout(function () {
-            _placeHolderEl.hide();
-        }, 1000);
+        _placeHolderEl.setHide('图片获取失败...');
     };
     img.src = url;
 }
@@ -489,13 +501,17 @@ function returnTagIndex(_tag_name, _tag_2_name) {
             break;
         }
     }
-
-    for (var j in tag_2[_tag_2_type]) {
-        if (tag_2[_tag_2_type][j] === _tag_2_name) {
-            _tag_2_index = j;
-            break;
+    if (_tag_2_type !== -1) {
+        for (var j in tag_2[_tag_2_type]) {
+            if (tag_2[_tag_2_type][j] === _tag_2_name) {
+                _tag_2_index = j;
+                break;
+            }
         }
+    } else {
+        _tag_2_index = -1;
     }
+
     return {
         tag_index: _tag_index,
         tag_2_index: _tag_2_index
@@ -668,7 +684,7 @@ function restore(data) {
 }
 function restoreLeft(data) {
     var t = $('#img-self');
-    adaptionImg(data.pic || '', t, function () {
+    adaptionImg(data.pic, t, function () {
         var w = t.width(),
             h = t.height();
         for (var i in data.label) {
@@ -715,7 +731,7 @@ function restoreLeft(data) {
 }
 function restoreRight(data) {
     var t = $('#img-other');
-    adaptionImg(data.pic || '', t, function () {
+    adaptionImg(data.pic, t, function () {
         var w = t.width(),
             h = t.height();
         for (var i in data.diffLabel) {
