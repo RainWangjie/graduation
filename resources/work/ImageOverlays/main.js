@@ -16,7 +16,7 @@ function getRandomColor() {
  tag_2:属性
  */
 
-var _domain = '',
+var _domain = 'https://test.teegether.cn',
     imgAreaEl = $('#img-area-self'),//图片放置元素
     isMouseDown = false,//鼠标点击动作
     mouseType = 0,//鼠标操作内容，1：创建，2：移动，3：缩放
@@ -130,6 +130,7 @@ function getDiffImage() {
 }
 // 图片自适应
 function adaptionImg(url, el, callback) {
+    url += '?x-oss-process=image/resize,w_500';
     var img = new Image();
     img.onload = function () {
         var imgScale = img.naturalWidth / img.naturalHeight;
@@ -189,8 +190,8 @@ function initSecondTag(tag, y) {//根据一级标签对应二级标签类型渲�
         var html = '';
         for (var i in tag_2[tag]) {
             html += '<li>' +
-                '<input type="radio" class="imgTag_2 tag_2_' + i + '" name="imgSecondTag" value="' + i + '">' + tag_2[tag][i] +
-                '</li>';
+                '<label><input type="radio" class="imgTag_2 tag_2_' + i + '" name="imgSecondTag" value="' + i + '">' + tag_2[tag][i] +
+                '</label></li>';
         }
         $('.second-tag-panel').html(html).addClass('show').css({
             'transform': 'translate3d(120px,' + y + 'px,0)',
@@ -263,32 +264,32 @@ function newLabelMouseMove() {
         operateData = {
             x: labelMove.x,
             y: labelMove.y,
-            w: Math.max(difference_x, 20),
-            h: Math.max(difference_y, 20)
+            w: difference_x,
+            h: difference_y
         };
     } else if (difference_x >= 0 && difference_y < 0) {
         // 左下角向右上角
         operateData = {
             x: labelMove.x,
             y: labelMove.y + difference_y,
-            w: Math.max(difference_x, 20),
-            h: Math.max(-1 * difference_y, 20)
+            w: difference_x,
+            h: -1 * difference_y
         };
     } else if (difference_x < 0 && difference_y >= 0) {
         // 右上角向左下角
         operateData = {
             x: labelMove.x + difference_x,
             y: labelMove.y,
-            w: Math.max(-1 * difference_x, 20),
-            h: Math.max(difference_y, 20)
+            w: -1 * difference_x,
+            h: difference_y
         };
     } else {
         // 右下角向左上角
         operateData = {
             x: labelMove.x + difference_x,
             y: labelMove.y + difference_y,
-            w: Math.max(-1 * difference_x, 20),
-            h: Math.max(-1 * difference_y, 20)
+            w: -1 * difference_x,
+            h: -1 * difference_y
         };
     }
     if (!labelList[selected].isExist) {
@@ -313,18 +314,30 @@ function newLabelMouseup() {
 function bindMoveLabel() {
     $('.label-area').on('mousedown', moveLabelMouseDown);
 }
+$(document).bind('contextmenu', function (e) {
+    return false; //屏蔽菜单
+});
 function moveLabelMouseDown(event) {
-    mouse = captureMouse(event);
-    isMouseDown = true;
-    mouseType = 2;
-    selected = $(this).attr('id').replace('label_', '');
-    labelMove = {
-        x: mouse.x,
-        y: mouse.y
-    };
-    initOperate();
-    print('移动标注_' + selected);
-    animate();
+    if (event.which == 3) {//右击删除
+        if (confirm('删除该标注?')) {
+            var id = $(this).attr('id').replace('label_', '');
+            $(this).remove();
+            labelList[id].isExist = false;
+        }
+        return false;
+    } else {
+        mouse = captureMouse(event);
+        isMouseDown = true;
+        mouseType = 2;
+        selected = $(this).attr('id').replace('label_', '');
+        labelMove = {
+            x: mouse.x,
+            y: mouse.y
+        };
+        initOperate();
+        print('移动标注_' + selected);
+        animate();
+    }
     return false;
 }
 function moveLabelMouseMove() {
@@ -428,8 +441,8 @@ function up() {
         if (labelList[selected]) {//鼠标点击引起的错误
             labelList[selected].y = operateData.y;
             labelList[selected].x = operateData.x;
-            labelList[selected].w = operateData.w;
-            labelList[selected].h = operateData.h;
+            labelList[selected].w = _max(operateData.w);
+            labelList[selected].h = _max(operateData.h);
             clearLabel();
             linkage();
             //操作label添加selected
@@ -668,6 +681,8 @@ function dealWH(type, num) {
 function animate() {
     isMouseDown && window.requestAnimationFrame(animate);
     if (labelTotal > 0 && labelList[selected] && labelList[selected].isExist) {
+        operateData.w = _max(operateData.w);
+        operateData.h = _max(operateData.h);
         $('#label_' + selected).css({
             top: operateData.y,
             left: operateData.x,
@@ -680,7 +695,8 @@ function animate() {
 function restore(data) {
     restoreLeft(data);
     restoreRight(data);
-    $('.label-diff').html(diffText[data.diffType]);
+    // 差异信息显示
+    $('.label-diff').html(diffText[data.diffType] + '<br/>' + data.diffDesc);
 }
 function restoreLeft(data) {
     var t = $('#img-self');
@@ -752,4 +768,8 @@ function restoreRight(data) {
             $('#img-area-other').append($tpl);
         }
     });
+}
+//取最小值
+function _max(num) {
+    return Math.max(20, num);
 }
