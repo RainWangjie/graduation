@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>图片标注_3_裁决</title>
+    <link type="text/css" rel="stylesheet" href="main.css">
+</head>
+<body>
+<div id="app">
+    <!--操作区-->
+    <div class="img-panel">
+        <div id="img-area-self">
+            <img id="img-self" draggable="false">
+        </div>
+    </div>
+    <!--标签区-->
+    <div class="label-panel">
+        <div class="finish-total">
+            剩余：<span></span>
+        </div>
+        <div class="btn-group">
+            <button class="btn-0 btn-finish-diff" data-finish="0">左图(数字键1)</button>
+            <button class="btn-0 btn-finish-diff" data-finish="0">右图(数字键2)</button>
+        </div>
+    </div>
+    <!--其他用户数据还原-->
+    <div class="img-panel">
+        <div id="img-area-other">
+            <img id="img-other" draggable="false">
+        </div>
+    </div>
+    <div class="placeholder"></div>
+</div>
+<script type="text/html" id="tpl-other-person">
+    <div class="label-area-right">
+        <ul class="tag-list"></ul>
+    </div>
+</script>
+<script src="../../js/jquery.min.js"></script>
+<script src="http://rawgit.com/mrdoob/stats.js/master/build/stats.min.js"></script>
+<script src="mouse.js"></script>
+<script src="main.js"></script>
+<script>
+    getFinalDiffImg();
+    // 解绑事件
+    unbindEvent();
+    document.addEventListener('keydown', function (e) {
+        switch (e.which) {
+            case 49:
+                postFinishImg(labelIdFinish[0]);
+                break;
+            case 50:
+                postFinishImg(labelIdFinish[1]);
+                break;
+        }
+    });
+    $('.btn-finish-diff').on('click', function () {
+        var type = $(this).data('finish'),
+            _lableId = labelIdFinish[type];
+        postFinishImg(_lableId);
+    });
+    function postFinishImg(id) {
+        _placeHolderEl.setText('数据提交中...');
+        $.ajax({
+            url: _domain + '/deep_fashion/ins_label/finalDiff',
+            type: 'POST',
+            data: {
+                'labelId': id
+            },
+            success: function (d) {
+                d = JSON.parse(d);
+                if (d.status.code == '1000') {
+                    getFinalDiffImg();
+                } else {
+                    alert(d.message);
+                }
+            },
+            error: function (d) {
+                alert('网络错误')
+            }
+        });
+    }
+</script>
+</body>
+</html>

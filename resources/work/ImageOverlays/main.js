@@ -30,6 +30,7 @@ var _domain = 'https://test.teegether.cn',
     tagData = [],//标签数据name,color
     winScale = imgAreaEl.width() / imgAreaEl.height(),//图片放置区域比例
     labelId = '',//当前图片链接
+    labelIdFinish = [],
     diffText = ['', '标注数量不同', '标注标签不同', '标注属性不同', '标注位置不同'];
 // 全局提示框
 var _placeHolderEl = {
@@ -106,6 +107,7 @@ function getImage() {
 }
 // 获取差异图片
 function getDiffImage() {
+    _placeHolderEl.setText('新图片加载中......');
     $.ajax({
         url: _domain + '/deep_fashion/ins_label/diffImg',
         type: 'GET',
@@ -116,6 +118,39 @@ function getDiffImage() {
                 if (d.result !== undefined) {
                     restore(d.result);
                     labelId = d.result.labelId;
+                } else {
+                    _placeHolderEl.setHide('没有图片了');
+                }
+            } else {
+                alert(d.message);
+            }
+        },
+        error: function (d) {
+            alert('网络错误')
+        }
+    });
+}
+// 获取裁决图片
+function getFinalDiffImg() {
+    _placeHolderEl.setText('新图片加载中......');
+    $.ajax({
+        url: _domain + '/deep_fashion/ins_label/finalDiffImg',
+        type: 'GET',
+        success: function (d) {
+            d = JSON.parse(d);
+            if (d.status.code == '1000') {
+                clearAll();
+                if (d.result !== undefined) {
+                    restoreRight({
+                        pic: d.result.pic,
+                        diffLabel: d.result.left.labelDetail
+                    }, '#img-self');
+                    restoreRight({
+                        pic: d.result.pic,
+                        diffLabel: d.result.right.labelDetail
+                    }, '#img-other');
+                    labelIdFinish = [d.result.left.labelId, d.result.right.labelId];
+                    $('.finish-total span').html(d.result.total);
                 } else {
                     _placeHolderEl.setHide('没有图片了');
                 }
@@ -217,6 +252,7 @@ function clearLabel() {
 }
 function clearAll() {
     clearLabel();
+    labelId = '';
     selected = 0;
     labelList = [];
     labelTotal = 0;
@@ -230,6 +266,11 @@ function bindNewLabel() {
     $('#img-area-self').on('mousedown', newLabelMouseDown)
         .on('mousemove', move)
         .on('mouseup', up);
+}
+function unbindEvent() {
+    $('#img-area-self').unbind('mousedown', newLabelMouseDown)
+        .unbind('mousemove', move)
+        .unbind('mouseup', up);
 }
 function newLabelMouseDown(event) {
     mouse = captureMouse(event);
@@ -537,6 +578,10 @@ $('.second-tag-panel').on('change', 'input', function () {
 });
 // 获取新图
 $('#next-picture').click(function () {
+    if (!labelId) {
+        _placeHolderEl.setHide('异常错误，请刷新后重新打标');
+        return;
+    }
     _placeHolderEl.setText('数据打包......');
     var _type = $(this).data('type'),
         labelDetail = [],
@@ -545,6 +590,7 @@ $('#next-picture').click(function () {
         isExist = labelList.every(function (item) { //是否有标签
             return item.isExist == false;
         });
+
     if (isExist && _type == 'label') {
         getImage();
         return;
@@ -677,8 +723,15 @@ function dealWH(type, num) {
         return (num / h).toFixed(4);
     }
 }
+// 帧率显示
+// var stats = new Stats();
+// stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+// stats.dom.style.cssText = 'position:fixed;top:0;right:0;cursor:pointer;opacity:0.9;z-index:10000';
+// document.body.appendChild(stats.dom);
 // 按浏览器刷新率渲染标注
 function animate() {
+    // stats.begin();
+    // stats.end();
     isMouseDown && window.requestAnimationFrame(animate);
     if (labelTotal > 0 && labelList[selected] && labelList[selected].isExist) {
         operateData.w = _max(operateData.w);
@@ -698,8 +751,8 @@ function restore(data) {
     // 差异信息显示
     $('.label-diff').html(diffText[data.diffType] + '<br/>' + data.diffDesc);
 }
-function restoreLeft(data) {
-    var t = $('#img-self');
+function restoreLeft(data, el) {
+    var t = el ? $(el) : $('#img-self');
     adaptionImg(data.pic, t, function () {
         var w = t.width(),
             h = t.height();
@@ -733,7 +786,7 @@ function restoreLeft(data) {
                 h: newLabel.h,
             };
             labelTotal++;
-            $('#img-area-self').append(newLabel.el);
+            t.after(newLabel.el);
             //强制模拟鼠标动作，渲染一把
             isMouseDown = true;
             animate();
@@ -745,8 +798,8 @@ function restoreLeft(data) {
         up();
     });
 }
-function restoreRight(data) {
-    var t = $('#img-other');
+function restoreRight(data, el) {
+    var t = el ? $(el) : $('#img-other');
     adaptionImg(data.pic, t, function () {
         var w = t.width(),
             h = t.height();
@@ -765,7 +818,7 @@ function restoreRight(data) {
                 width: item.pos[2] * w + 'px',
                 height: item.pos[3] * h + 'px'
             });
-            $('#img-area-other').append($tpl);
+            t.after($tpl);
         }
     });
 }
