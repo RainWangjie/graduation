@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>高性能视差滚动</title>
+    <style>
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            padding: 0
+        }
+
+        .container {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            overflow-y: scroll;
+            perspective: 1px;
+            perspective-origin: 0 0;
+        }
+
+        .parallax-parent{
+             transform-style: preserve-3d;
+        }
+
+        .parallax-child {
+            transform-origin: 0 0;
+            transform: translateZ(-2px) scale(3);
+            background-size: cover;
+            background-image: url(http://ruhnnwebpic.img-cn-hangzhou.aliyuncs.com/instagram/19932220_1991611391074582_2525121198711373824_n.jpg);
+            height: 1000px;
+        }
+
+        .text {
+            color: red;
+            font-size: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="parallax-parent">
+            <div class="parallax-child">
+            </div>
+            <div class="text">
+                asdadasadad
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
