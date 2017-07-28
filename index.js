@@ -1,14 +1,39 @@
 /**
  * Created by gewangjie on 2016/9/14.
  */
-var express = require('express'),
+var os = require('os'),
+    express = require('express'),
     app = express(),
     path = require('path'),
-    server = require('http').createServer(app);
+    opn = require('opn'),
+    server = require('http').createServer(app),
+    QRCode = require("qrcode-svg");
 
+let localhost = '', port = process.env.PORT || 9100;
 
-server.listen(process.env.PORT || 9100, function () {
-    console.log('success');
+try {
+    var network = os.networkInterfaces()
+    localhost = network['en0'][1].address
+} catch (e) {
+    localhost = 'localhost';
+}
+var url = 'http://' + localhost + ':' + port,
+    hello = new QRCode(url),
+    modules = hello.qrcode.modules,
+    ascii = '\t\t',
+    length = modules.length;
+for (var y = 0; y < length; y++) {
+    for (var x = 0; x < length; x++) {
+        var module = modules[x][y];
+        ascii += (module ? 'x' : ' ');
+    }
+    ascii += '\r\n\t\t';
+}
+
+server.listen(port, function () {
+    console.log('success:', url);
+    console.log(ascii);
+    opn(url);
 });
 
 
