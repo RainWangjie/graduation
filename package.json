@@ -9,6 +9,8 @@
     "opn": "^5.1.0"
   },
   "devDependencies": {
+    "koa": "^2.3.0",
+    "koa-static": "^4.0.1",
     "qrcode-svg": "^1.0.0"
   },
   "scripts": {
