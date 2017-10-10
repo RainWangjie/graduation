@@ -1,38 +1,31 @@
 /**
  * Created by gewangjie on 2016/9/14.
  */
-var os = require('os'),
+let os = require('os'),
     express = require('express'),
     app = express(),
     path = require('path'),
     opn = require('opn'),
     server = require('http').createServer(app),
-    QRCode = require("qrcode-svg");
+    QRCode = require("qrcode-terminal");
 
-let localhost = '', port = process.env.PORT || 9100;
+let localhost = '',
+    port = process.env.PORT || 9100;
 
 try {
-    var network = os.networkInterfaces()
+    let network = os.networkInterfaces();
     localhost = network['en0'][1].address
 } catch (e) {
     localhost = 'localhost';
 }
-var url = 'http://' + localhost + ':' + port,
-    hello = new QRCode(url),
-    modules = hello.qrcode.modules,
-    ascii = '\t\t',
-    length = modules.length;
-for (var y = 0; y < length; y++) {
-    for (var x = 0; x < length; x++) {
-        var module = modules[x][y];
-        ascii += (module ? 'x' : ' ');
-    }
-    ascii += '\r\n\t\t';
-}
+
+// Terminal内绘制二维码
+var url = 'http://' + localhost + ':' + port;
+QRCode.setErrorLevel('Q');
+QRCode.generate(url);
 
 server.listen(port, function () {
-    console.log('success:', url);
-    console.log(ascii);
+    console.log('连接同一wifi下打开or扫码：', url);
     opn(url);
 });
 
