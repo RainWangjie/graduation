@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>drawingboard</title>
+    <link href="https://cdn.bootcss.com/drawingboard.js/0.4.6/drawingboard.min.css" rel="stylesheet">
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            margin: 0;
+        }
+
+        #wrapper {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        #canvas,
+        #img {
+            flex: 1;
+            position: relative;
+        }
+
+        .bg {
+            background-position: center;
+            background-size: cover;
+            background-image: url(https://deepfashion.oss-cn-hangzhou.aliyuncs.com/t51.2885-15/e35/22580437_1705373279486496_8993487825051582464_n.jpg);
+
+        }
+        .drawing-board-canvas-wrapper {
+            border: 0;
+        }
+        .drawing-board-canvas-wrapper+.drawing-board-controls,
+        .drawing-board-controls+.drawing-board-canvas-wrapper {
+            margin-top: 0;
+        }
+        .drawing-board-controls {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+<div id="wrapper">
+    <div id="canvas" class="pane">
+
+    </div>
+    <div id="img" class="pane">
+
+    </div>
+</div>
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script src="../js/drawingboard.js"></script>
+<script>
+    var width = $('#wrapper').width();
+    $('.pane').height(width / 2).addClass('bg');
+
+    var imageBoard = new DrawingBoard.Board('canvas', {
+        background: '',
+        border: '0',
+        webStorage: false
+    });
+</script>
+</body>
+
+</html>
