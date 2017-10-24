@@ -3,3 +3,9 @@
 ```
 node koa
 ```
+
+或者
+
+```
+node index
+```
